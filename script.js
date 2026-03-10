@@ -601,6 +601,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '  python -c "import jowin; jowin.describe()"' },
         { t: 'out', v: '  ping olaris.io      — platform health check' },
         { t: 'out', v: '  cat resume.json     — full resume as JSON' },
+        { t: 'out', v: '  open resume         — download resume PDF' },
         { t: 'out', v: '  ls ./projects       — all projects' },
         { t: 'out', v: '  nmr --scan          — NMR spectral analysis' },
         { t: 'out', v: '  ps aux              — running processes' },
@@ -771,6 +772,14 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: 'postgres  1201   0.8   3.2  postgres: clinical_db (1,247,381 rows)' },
         { t: 'out', v: 'jowin     1330   0.3   0.6  dbt run --select clinical_reporting --profiles-dir .' },
         { t: 'out', v: 'jowin     1401   0.2   0.4  python metabolite_search_server.py --port 8001' },
+        { t: 'blank', v: '' },
+      ];
+    },
+    'open resume'() {
+      setTimeout(() => window.open('Jowin_Jestine_Resume.pdf', '_blank'), 600);
+      return [
+        { t: 'out', v: 'Opening Jowin_Jestine_Resume.pdf...' },
+        { t: 'dim', v: '✓ Download initiated — check your downloads folder' },
         { t: 'blank', v: '' },
       ];
     },

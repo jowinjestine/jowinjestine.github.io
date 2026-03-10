@@ -419,6 +419,28 @@ body {
   transform: translateY(-2px);
 }
 
+.btn-icon {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  color: var(--t2);
+  background: transparent;
+  text-decoration: none;
+  transition: border-color var(--dur), color var(--dur), box-shadow var(--dur), transform var(--dur);
+  flex-shrink: 0;
+}
+.btn-icon:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow: 0 0 20px rgba(56,189,248,0.18);
+  transform: translateY(-2px);
+}
+.btn-icon svg { width: 20px; height: 20px; }
+
 /* Scroll hint */
 .scroll-hint {
   position: absolute;

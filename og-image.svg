@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#080d1a"/>
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="glowL" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="glowR" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <!-- Glow orbs -->
+  <ellipse cx="200" cy="315" rx="300" ry="300" fill="url(#glowL)"/>
+  <ellipse cx="1000" cy="315" rx="300" ry="300" fill="url(#glowR)"/>
+  <!-- Top accent line -->
+  <rect x="80" y="80" width="120" height="3" rx="2" fill="url(#grad)"/>
+  <!-- JJ Logo -->
+  <text x="80" y="140" font-family="Inter,system-ui,sans-serif" font-weight="900"
+        font-size="52" fill="url(#grad)">JJ</text>
+  <!-- Name -->
+  <text x="80" y="260" font-family="Inter,system-ui,sans-serif" font-weight="800"
+        font-size="72" fill="#f1f5f9">Jowin Jestine</text>
+  <!-- Title -->
+  <text x="80" y="330" font-family="Inter,system-ui,sans-serif" font-weight="400"
+        font-size="32" fill="#94a3b8">Data Engineer III · Olaris · Boston, MA</text>
+  <!-- Divider -->
+  <rect x="80" y="370" width="1040" height="1" fill="rgba(255,255,255,0.08)"/>
+  <!-- Metric 1 -->
+  <text x="80" y="430" font-family="Inter,system-ui,sans-serif" font-weight="700"
+        font-size="36" fill="#38bdf8">1,200+</text>
+  <text x="80" y="468" font-family="Inter,system-ui,sans-serif" font-weight="400"
+        font-size="20" fill="#64748b">Clinical Records</text>
+  <!-- Metric 2 -->
+  <text x="380" y="430" font-family="Inter,system-ui,sans-serif" font-weight="700"
+        font-size="36" fill="#a855f7">75%</text>
+  <text x="380" y="468" font-family="Inter,system-ui,sans-serif" font-weight="400"
+        font-size="20" fill="#64748b">Latency Reduction</text>
+  <!-- Metric 3 -->
+  <text x="620" y="430" font-family="Inter,system-ui,sans-serif" font-weight="700"
+        font-size="36" fill="#38bdf8">iScience</text>
+  <text x="620" y="468" font-family="Inter,system-ui,sans-serif" font-weight="400"
+        font-size="20" fill="#64748b">Published · Cell Press 2025</text>
+  <!-- URL -->
+  <text x="80" y="570" font-family="'JetBrains Mono',monospace,sans-serif" font-weight="400"
+        font-size="20" fill="rgba(255,255,255,0.25)">jowinjestine.github.io</text>
+  <!-- Tags -->
+  <rect x="800" y="540" width="140" height="34" rx="17" fill="rgba(56,189,248,0.1)" stroke="rgba(56,189,248,0.25)" stroke-width="1"/>
+  <text x="870" y="562" font-family="Inter,system-ui,sans-serif" font-weight="500"
+        font-size="15" text-anchor="middle" fill="#38bdf8">Azure · HIPAA</text>
+  <rect x="960" y="540" width="160" height="34" rx="17" fill="rgba(168,85,247,0.1)" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
+  <text x="1040" y="562" font-family="Inter,system-ui,sans-serif" font-weight="500"
+        font-size="15" text-anchor="middle" fill="#a855f7">NMR · Metabolomics</text>
+</svg>
