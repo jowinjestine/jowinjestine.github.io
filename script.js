@@ -776,9 +776,9 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       ];
     },
     'open resume'() {
-      setTimeout(() => window.open('Jowin_Jestine_Resume.pdf', '_blank'), 600);
+      setTimeout(() => window.open('Jowin%20Jestine%20-%20Resume.pdf', '_blank'), 600);
       return [
-        { t: 'out', v: 'Opening Jowin_Jestine_Resume.pdf...' },
+        { t: 'out', v: 'Opening Jowin Jestine - Resume.pdf...' },
         { t: 'dim', v: '✓ Download initiated — check your downloads folder' },
         { t: 'blank', v: '' },
       ];
