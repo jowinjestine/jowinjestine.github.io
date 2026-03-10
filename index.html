@@ -26,7 +26,7 @@
       <li><a href="#experience">Experience</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#architecture">Architecture</a></li>
-      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#skills-radar">Skills Radar</a></li>
       <li><a href="#publications">Publications</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#education">Education</a></li>
@@ -43,7 +43,7 @@
     <a href="#experience" class="mobile-link">Experience</a>
     <a href="#projects" class="mobile-link">Projects</a>
     <a href="#architecture" class="mobile-link">Architecture</a>
-    <a href="#dashboard" class="mobile-link">Dashboard</a>
+    <a href="#skills-radar" class="mobile-link">Skills Radar</a>
     <a href="#publications" class="mobile-link">Publications</a>
     <a href="#skills" class="mobile-link">Skills</a>
     <a href="#education" class="mobile-link">Education</a>
@@ -406,9 +406,9 @@
   <section id="architecture">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">System Design</span>
-        <h2>Data Platform Architecture</h2>
-        <p class="section-sub">Click any node to explore the technology choices, design rationale, and performance metrics behind the Olaris clinical data platform.</p>
+        <span class="section-tag">HIPAA Workflow</span>
+        <h2>Clinical Order Intake Architecture</h2>
+        <p class="section-sub">The HIPAA-compliant order intake workflow powering Olaris clinical diagnostics — from lab partner to clinical report. Click any node to see the technology, rationale, and compliance detail. <a href="https://www.linkedin.com/posts/olaris_journalclub" target="_blank" rel="noopener" class="arch-jc-link">Read the Journal Club post ↗</a></p>
       </div>
       <div class="arch-wrap">
         <canvas id="archCanvas"></canvas>
@@ -420,45 +420,18 @@
     </div>
   </section>
 
-  <!-- ============ DASHBOARD ============ -->
-  <section id="dashboard">
+  <!-- ============ SKILLS RADAR ============ -->
+  <section id="skills-radar">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">Production Systems</span>
-        <h2>Platform Metrics <span class="live-badge">● LIVE</span></h2>
-        <p class="section-sub">Real-time telemetry from the Olaris clinical data platform.</p>
+        <span class="section-tag">Competencies</span>
+        <h2>Skills Radar</h2>
+        <p class="section-sub">Six core domains of expertise — hover any axis label to explore the underlying skills.</p>
       </div>
-      <div class="dash-grid">
-        <div class="dash-panel">
-          <div class="dash-label">PIPELINE STATUS</div>
-          <div class="dash-status"><span class="dash-dot"></span><span class="dash-status-text">RUNNING</span></div>
-          <div class="dash-uptime">Uptime <strong>99.97%</strong></div>
-        </div>
-        <div class="dash-panel">
-          <div class="dash-label">RECORDS PROCESSED</div>
-          <div class="dash-big-num" id="dashRecords">1,247,381</div>
-          <div class="dash-sub">+<span id="dashRecordsDelta">3</span> this second</div>
-        </div>
-        <div class="dash-panel">
-          <div class="dash-label">QUERY LATENCY</div>
-          <div class="dash-big-num"><span id="dashLatency">312</span><span class="dash-unit">ms</span></div>
-          <canvas class="dash-sparkline" id="sparkLatency" width="160" height="36"></canvas>
-        </div>
-        <div class="dash-panel">
-          <div class="dash-label">ACTIVE STUDIES</div>
-          <div class="dash-big-num">3</div>
-          <div class="dash-sub">↑ 1 this week</div>
-        </div>
-        <div class="dash-panel">
-          <div class="dash-label">API RESPONSE AVG</div>
-          <div class="dash-big-num"><span id="dashApi">287</span><span class="dash-unit">ms</span></div>
-          <canvas class="dash-sparkline" id="sparkApi" width="160" height="36"></canvas>
-        </div>
-        <div class="dash-panel">
-          <div class="dash-label">ERROR RATE</div>
-          <div class="dash-big-num dash-green"><span id="dashError">0.003</span><span class="dash-unit">%</span></div>
-          <canvas class="dash-sparkline" id="sparkError" width="160" height="36"></canvas>
-        </div>
+      <div class="radar-wrap">
+        <canvas id="radarCanvas" width="500" height="500"></canvas>
+        <div class="radar-legend" id="radarLegend"></div>
+        <div class="radar-tooltip" id="radarTooltip"></div>
       </div>
     </div>
   </section>

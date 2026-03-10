@@ -911,31 +911,34 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   const panelBody = document.getElementById('archPanelBody');
   const closePanel = document.getElementById('archPanelClose');
 
+  // Real Olaris HIPAA order-intake workflow (from Journal Club)
   const NODES = [
-    { id: 'nmr',   label: '🔬 NMR Spectrometer', sub: 'Bruker 600MHz', col: 0, row: 0,
-      info: { title: 'NMR Spectrometer', why: 'Raw 1H-NMR FID data acquired at 600MHz. Bruker TopSpin exports .fid files processed via our in-house Python pipeline using nmrglue.', code: 'import nmrglue as ng\nfid, dic = ng.bruker.read(path)\ndata = ng.bruker.remove_digital_filter(dic, fid)', metric: '200+ acquisition params monitored in real-time' }},
-    { id: 'ms',    label: '⚗️ LC-MS Platform',   sub: 'Sciex QTRAP',   col: 0, row: 1,
-      info: { title: 'LC-MS Instrument', why: 'Liquid chromatography–mass spectrometry for targeted metabolite quantification. Data exported as .wiff files parsed via the Olaris Global Panel (OGP) method.', code: 'from olaris_ogp import parse_wiff\nresults = parse_wiff(path, method="MRM")', metric: '140+ metabolites quantified per sample' }},
-    { id: 'adls',  label: '☁️ Azure ADLS Gen2',   sub: 'Blob + Delta',  col: 1, row: 0,
-      info: { title: 'Azure Data Lake Gen2', why: 'Immutable raw data storage with hierarchical namespace. Enforces CLIA-required audit trail. Geo-redundant replication for 99.999% durability.', code: 'from azure.storage.blob import BlobServiceClient\nclient.upload_blob(path, overwrite=False,\n  metadata={"study_id": sid})', metric: '1,200+ clinical records, zero data loss' }},
-    { id: 'func',  label: '⚡ Azure Functions',   sub: 'Event-driven',   col: 2, row: 0,
-      info: { title: 'Azure Functions (Serverless)', why: 'HTTP-triggered and Blob-triggered serverless functions orchestrate the ETL pipeline. Scales to zero, billed per-execution — saves ~$15K/yr vs dedicated VMs.', code: '@app.blob_trigger(path="raw/{name}")\ndef process_raw(blob: InputStream):\n    run_pipeline(blob.read())', metric: '<0.5s trigger-to-process time' }},
-    { id: 'dbt',   label: '🔄 dbt / SQLMesh',    sub: 'Transform',      col: 2, row: 1,
-      info: { title: 'dbt / SQLMesh Transformations', why: 'All clinical data transformations are SQL-first, version-controlled, and fully tested. Lineage graph visible in dbt docs. SQLMesh for forward-compatible migrations.', code: 'SELECT\n  patient_id,\n  metabolite_id,\n  concentration_umol_l\nFROM {{ ref("raw_nmr_results") }}\nWHERE qc_flag = \'PASS\'', metric: '100% test coverage on critical models' }},
-    { id: 'pg',    label: '🐘 PostgreSQL',         sub: 'RBAC + Audit',   col: 3, row: 0,
-      info: { title: 'PostgreSQL (Clinical DB)', why: 'HIPAA-compliant database with row-level security, field-level encryption, RBAC, geo-fencing, and full audit logging. asyncpg for async queries.', code: 'CREATE POLICY patient_isolation\n  ON clinical_results\n  USING (org_id = current_setting(\n    \'app.current_org\')::uuid);', metric: '<0.5s p99 query latency' }},
-    { id: 'api',   label: '🚀 FastAPI',            sub: 'REST + OpenAPI', col: 4, row: 0,
-      info: { title: 'FastAPI REST API', why: 'Async Python API serving clinical results to dashboards and external partners. Auto-generated OpenAPI docs. JWT auth + rate limiting. 75% latency reduction vs prior Flask API.', code: '@router.get("/results/{study_id}")\nasync def get_results(study_id: str,\n  db: AsyncSession = Depends(get_db)):', metric: '75% latency reduction, 99.97% uptime' }},
-    { id: 'dash',  label: '📊 Clinical Dashboard', sub: 'React + Recharts', col: 5, row: 0,
-      info: { title: 'Clinical Dashboard', why: 'Real-time results dashboard for clinicians. Metabolite heatmaps, trend charts, and CLIA-compliant report generation. Used daily by Olaris laboratory staff.', code: '// Live metabolite heatmap\n<MetaboliteHeatmap\n  data={studyResults}\n  highlights={biomarkers}', metric: 'Daily active use by clinical team' }},
-    { id: 'ml',    label: '🤖 ML Pipeline',        sub: 'XGBoost + DL',   col: 3, row: 1,
-      info: { title: 'ML / AI Pipeline', why: 'XGBoost classifier for biomarker prediction (myOLARIS-KTdx). Deep learning NMR quality control. Semantic metabolite search via sentence-transformers + FAISS.', code: 'model = XGBClassifier(n_estimators=300)\nmodel.fit(X_train, y_train,\n  eval_set=[(X_val, y_val)])\n# AUC: 0.878 on validation set', metric: 'AUC 0.878 — published in iScience 2025' }},
+    { id: 'lifepoint', label: '🏥 Lifepoint', sub: 'Lab Partner', col: 0, row: 0,
+      info: { title: 'Lifepoint Health (Lab Partner)', why: 'Lifepoint Health is a clinical reference lab that sends patient requisition orders to Olaris. Integration uses HTTPS with OAuth 2.0 client credentials, managed through Azure APIM for secure authentication and rate limiting.', code: 'POST /api/v1/requisitions\nAuthorization: Bearer {oauth2_token}\nContent-Type: application/json', metric: 'HIPAA-compliant data exchange with external partner' }},
+    { id: 'apim', label: '🔐 Azure APIM', sub: 'API Gateway', col: 1, row: 0,
+      info: { title: 'Azure API Management', why: 'APIM acts as the secure entry point for all external lab partner calls. Enforces OAuth 2.0, rate limiting, and IP whitelisting. Provides OpenAPI spec, request validation, and HIPAA-compliant audit logging of all inbound and outbound traffic.', code: '<inbound>\n  <validate-jwt header-name="Authorization"\n    require-expiration-time="true"/>\n  <rate-limit calls="100"\n    renewal-period="60"/>\n</inbound>', metric: 'Zero unauthorized requests since deployment' }},
+    { id: 'func', label: '⚡ Azure Functions', sub: 'Serverless Hub', col: 2, row: 0,
+      info: { title: 'Azure Functions (Serverless Orchestrator)', why: 'HTTP-triggered Azure Function is the central orchestration hub. It validates incoming requisitions, routes to the right services, writes to Postgres and Blob Storage, and triggers Power Automate for approvals. Scales to zero — no idle cost, ~$15K/yr saved vs dedicated VMs.', code: '@app.route(route="requisition")\ndef process_req(req: func.HttpRequest):\n    data = validate_payload(req.get_json())\n    db.insert(data)\n    blob.upload(data["raw"])\n    automate.trigger(data)', metric: '<0.5s end-to-end processing time' }},
+    { id: 'keyvault', label: '🔑 Key Vault', sub: 'Secrets & Keys', col: 2, row: 1,
+      info: { title: 'Azure Key Vault', why: 'All secrets — DB credentials, API keys, encryption keys — are managed in Key Vault. Azure Functions use Managed Identity so there are zero hard-coded credentials in code or config. Secrets are rotated automatically. Required for HIPAA key management compliance.', code: 'from azure.keyvault.secrets import SecretClient\nfrom azure.identity import ManagedIdentityCredential\n\ncred = ManagedIdentityCredential()\nclient = SecretClient(vault_url, cred)\ndb_pass = client.get_secret("pg-password")', metric: 'Zero hard-coded secrets in entire codebase' }},
+    { id: 'postgres', label: '🐘 PostgreSQL', sub: 'HIPAA Database', col: 3, row: 0,
+      info: { title: 'PostgreSQL (HIPAA-Compliant)', why: 'Central clinical database with row-level security, RBAC, geo-fencing, and pgAudit for full audit logging. Field-level encryption for PHI. asyncpg for async queries. Hosted on Azure Database for PostgreSQL Flexible Server with Customer-Managed Key encryption.', code: 'CREATE POLICY patient_isolation\n  ON requisitions\n  USING (org_id = current_setting(\n    \'app.current_org\')::uuid);\n-- pgAudit logs all DDL + DML', metric: '1,200+ clinical records · <0.5s p99 query' }},
+    { id: 'blob', label: '📦 Blob Storage', sub: 'HIPAA Files', col: 3, row: 1,
+      info: { title: 'Azure Blob Storage (HIPAA)', why: 'Raw instrument files (NMR .fid, LC-MS .wiff) and generated clinical reports are stored with immutable storage policies. Encryption at rest with Customer-Managed Keys (CMK). Geo-redundant replication for HIPAA Business Associate Agreement compliance.', code: 'client.upload_blob(\n  data=raw_file,\n  overwrite=False,\n  metadata={\n    "patient_id": pid,\n    "study_id": sid,\n    "instrument": "nmr"\n  })', metric: 'Immutable · CMK encrypted · 99.999% durability' }},
+    { id: 'reqapp', label: '📋 Patient Req App', sub: 'Order Intake', col: 4, row: 0,
+      info: { title: 'Patient Requisition App', why: 'Internal web application used by Olaris clinical staff to manage incoming patient orders from lab partners. Displays requisition status, enables manual approvals, and surfaces audit history. Backed by the FastAPI service with real-time polling.', code: '// Real-time requisition status\nconst { data } = useSWR(\n  `/api/requisitions/${id}`,\n  fetcher,\n  { refreshInterval: 5000 }\n);', metric: 'Used daily by Olaris clinical operations team' }},
+    { id: 'automate', label: '🔄 Power Automate', sub: 'Approvals & Notify', col: 5, row: 0,
+      info: { title: 'Power Automate (Approval Workflow)', why: 'Orchestrates the clinical approval loop: when a requisition arrives, it triggers an email-based approval to the Olaris medical director, sends status notifications back to lab partners via APIM callback, and logs all outcomes. No-code flow keeps clinical staff in control of approval logic.', code: '// HTTP action payload to Power Automate\n{\n  "requisition_id": "REQ-2024-0891",\n  "approval_needed": true,\n  "callback_url":\n    "https://apim.azure.../callback"\n}', metric: 'Automated approvals · partner notifications via APIM' }},
   ];
 
   const EDGES = [
-    ['nmr','adls'], ['ms','adls'], ['adls','func'], ['func','dbt'],
-    ['func','pg'], ['dbt','pg'], ['pg','api'], ['api','dash'],
-    ['pg','ml'], ['ml','api'],
+    ['lifepoint', 'apim'],
+    ['apim', 'func'],
+    ['func', 'keyvault'],
+    ['func', 'postgres'],
+    ['func', 'blob'],
+    ['func', 'reqapp'],
+    ['reqapp', 'automate'],
   ];
 
   let W, H;
@@ -1127,77 +1130,211 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
 })();
 
 /* ============================================================
-   DASHBOARD — Live Metrics
+   SKILLS RADAR CHART
    ============================================================ */
-(function initDashboard() {
-  // Sparkline helper
-  function Sparkline(canvasId, color, initVal, range) {
-    const c   = document.getElementById(canvasId);
-    if (!c) return null;
-    const ctx = c.getContext('2d');
-    const data = Array.from({ length: 20 }, () => initVal + (Math.random() - 0.5) * range);
-    function draw() {
-      const W = c.width, H = c.height;
-      ctx.clearRect(0, 0, W, H);
-      const min = Math.min(...data) * 0.95;
-      const max = Math.max(...data) * 1.05;
-      const scaleY = v => H - ((v - min) / (max - min)) * H * 0.85 - H * 0.05;
-      ctx.beginPath();
-      data.forEach((v, i) => {
-        const x = (i / (data.length - 1)) * W;
-        i === 0 ? ctx.moveTo(x, scaleY(v)) : ctx.lineTo(x, scaleY(v));
-      });
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      // Fill
-      ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
-      ctx.fillStyle = color + '18';
-      ctx.fill();
-    }
-    draw();
-    return { push(v) { data.push(v); if (data.length > 20) data.shift(); draw(); } };
-  }
+(function initSkillsRadar() {
+  const canvas  = document.getElementById('radarCanvas');
+  if (!canvas) return;
+  const ctx     = canvas.getContext('2d');
+  const legend  = document.getElementById('radarLegend');
+  const tooltip = document.getElementById('radarTooltip');
 
-  const sparkLatency = Sparkline('sparkLatency', '#38bdf8', 310, 80);
-  const sparkApi     = Sparkline('sparkApi',     '#a855f7', 285, 60);
-  const sparkError   = Sparkline('sparkError',   '#22c55e', 0.003, 0.002);
+  const AXES = [
+    { label: 'Data Engineering', score: 9.2, color: '#38bdf8',
+      skills: ['PostgreSQL', 'SQLMesh', 'Mage AI', 'Azure Functions', 'ADLS Gen2', 'Docker'] },
+    { label: 'Machine Learning', score: 8.0, color: '#a855f7',
+      skills: ['XGBoost', 'Deep Learning', 'NLP', 'Semantic Search', 'FAISS', 'TensorFlow'] },
+    { label: 'Cloud & Azure', score: 8.5, color: '#06b6d4',
+      skills: ['Azure APIM', 'Key Vault', 'Blob Storage', 'ADLS Gen2', 'Managed Identity', 'Cloudera'] },
+    { label: 'Scientific Domain', score: 9.5, color: '#f59e0b',
+      skills: ['NMR Metabolomics', 'Mass Spectrometry', 'CLIA Compliance', 'HIPAA', 'GxP Automation'] },
+    { label: 'Programming', score: 9.0, color: '#22c55e',
+      skills: ['Python', 'SQL', 'R', 'FastAPI', 'PyTorch', 'scikit-learn', 'Pandas'] },
+    { label: 'Analytics & Viz', score: 7.5, color: '#f472b6',
+      skills: ['Tableau', 'R Shiny', 'Power BI', 'Apache Superset', 'Plotly'] },
+  ];
 
-  // Live counter
-  let records = 1247381;
-  function updateDash() {
-    const delta = Math.floor(Math.random() * 3) + 1;
-    records += delta;
-    const el = document.getElementById('dashRecords');
-    if (el) el.textContent = records.toLocaleString();
-    const deltaEl = document.getElementById('dashRecordsDelta');
-    if (deltaEl) deltaEl.textContent = delta;
+  const N = AXES.length;
+  const MAX_SCORE = 10;
+  let animProg  = 0;
+  let started   = false;
+  let hoveredAxis = null;
 
-    const lat = Math.round(280 + Math.random() * 80);
-    const latEl = document.getElementById('dashLatency');
-    if (latEl) latEl.textContent = lat;
-    if (sparkLatency) sparkLatency.push(lat);
-
-    const api = Math.round(260 + Math.random() * 70);
-    const apiEl = document.getElementById('dashApi');
-    if (apiEl) apiEl.textContent = api;
-    if (sparkApi) sparkApi.push(api);
-
-    const err = (0.001 + Math.random() * 0.004).toFixed(3);
-    const errEl = document.getElementById('dashError');
-    if (errEl) errEl.textContent = err;
-    if (sparkError) sparkError.push(parseFloat(err));
-  }
-  setInterval(updateDash, 3000);
-
-  // Scroll reveal for panels
-  document.querySelectorAll('.dash-panel').forEach((el, i) => {
-    gsap.to(el, {
-      scrollTrigger: { trigger: el, start: 'top 88%', once: true },
-      opacity: 1, y: 0, duration: 0.55, ease: 'power3.out',
-      delay: (i % 3) * 0.08,
+  // Build legend items
+  if (legend) {
+    AXES.forEach((ax) => {
+      const item = document.createElement('div');
+      item.className = 'radar-legend-item';
+      item.innerHTML = `<span class="radar-legend-dot" style="background:${ax.color}"></span>${ax.label} <span style="color:${ax.color};margin-left:4px;font-size:11px">${ax.score}/10</span>`;
+      legend.appendChild(item);
     });
+  }
+
+  function getAngle(i) {
+    return (Math.PI * 2 * i / N) - Math.PI / 2; // top-start
+  }
+
+  function draw() {
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2;
+    const maxR = Math.min(W, H) * 0.30;
+    const prog = Math.min(animProg, 1);
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Grid rings (5 concentric polygons)
+    [0.2, 0.4, 0.6, 0.8, 1.0].forEach(r => {
+      ctx.beginPath();
+      for (let i = 0; i < N; i++) {
+        const ang = getAngle(i);
+        const x = cx + Math.cos(ang) * maxR * r;
+        const y = cy + Math.sin(ang) * maxR * r;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = r === 1.0 ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.04)';
+      ctx.lineWidth   = r === 1.0 ? 1 : 0.5;
+      ctx.stroke();
+
+      // Score label at rightmost point of each ring
+      if (r < 1.0) {
+        const lx = cx + Math.cos(getAngle(0)) * maxR * r + 6;
+        const ly = cy + Math.sin(getAngle(0)) * maxR * r;
+        ctx.font      = '9px "JetBrains Mono", monospace';
+        ctx.fillStyle = 'rgba(255,255,255,0.18)';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText((r * 10).toFixed(0), lx, ly);
+      }
+    });
+
+    // Axis spokes
+    AXES.forEach((ax, i) => {
+      const ang = getAngle(i);
+      const isHov = hoveredAxis === i;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(ang) * maxR, cy + Math.sin(ang) * maxR);
+      ctx.strokeStyle = isHov ? ax.color + 'bb' : 'rgba(255,255,255,0.07)';
+      ctx.lineWidth   = isHov ? 1.5 : 0.5;
+      ctx.stroke();
+    });
+
+    // Filled data polygon
+    ctx.beginPath();
+    AXES.forEach((ax, i) => {
+      const ang = getAngle(i);
+      const r   = (ax.score / MAX_SCORE) * maxR * prog;
+      const x   = cx + Math.cos(ang) * r;
+      const y   = cy + Math.sin(ang) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
+    grd.addColorStop(0, 'rgba(56,189,248,0.35)');
+    grd.addColorStop(1, 'rgba(168,85,247,0.12)');
+    ctx.fillStyle = grd;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(56,189,248,0.55)';
+    ctx.lineWidth   = 1.5;
+    ctx.stroke();
+
+    // Dots + axis labels
+    AXES.forEach((ax, i) => {
+      const ang  = getAngle(i);
+      const r    = (ax.score / MAX_SCORE) * maxR * prog;
+      const dotX = cx + Math.cos(ang) * r;
+      const dotY = cy + Math.sin(ang) * r;
+      const isHov = hoveredAxis === i;
+
+      // Dot
+      ctx.beginPath();
+      ctx.arc(dotX, dotY, isHov ? 5 : 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = ax.color;
+      ctx.shadowBlur   = isHov ? 14 : 0;
+      ctx.shadowColor  = ax.color;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Label
+      const labelR   = maxR + 22;
+      const lx       = cx + Math.cos(ang) * labelR;
+      const ly       = cy + Math.sin(ang) * labelR;
+      const cosA     = Math.cos(ang);
+      const sinA     = Math.sin(ang);
+
+      ctx.font         = isHov ? '600 12px "Inter", sans-serif' : '400 11px "Inter", sans-serif';
+      ctx.fillStyle    = isHov ? ax.color : '#94a3b8';
+      ctx.textAlign    = cosA > 0.1 ? 'left' : cosA < -0.1 ? 'right' : 'center';
+      ctx.textBaseline = sinA > 0.1 ? 'top'  : sinA < -0.1 ? 'bottom' : 'middle';
+      ctx.fillText(ax.label, lx, ly);
+
+      // Score tag when hovered
+      if (isHov && prog > 0.4) {
+        const sx = cx + Math.cos(ang) * (r + 18);
+        const sy = cy + Math.sin(ang) * (r + 18);
+        ctx.font         = '700 12px "JetBrains Mono", monospace';
+        ctx.fillStyle    = ax.color;
+        ctx.textAlign    = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${ax.score}`, sx, sy);
+      }
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  // Smooth animation on scroll trigger
+  function animateFill() {
+    if (animProg >= 1) return;
+    animProg = Math.min(animProg + 0.022, 1);
+    requestAnimationFrame(animateFill);
+  }
+
+  // Hover hit-test on axis labels
+  canvas.addEventListener('mousemove', e => {
+    const rect   = canvas.getBoundingClientRect();
+    const scaleX = canvas.width  / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top)  * scaleY;
+    const cx = canvas.width / 2, cy = canvas.height / 2;
+    const maxR = Math.min(canvas.width, canvas.height) * 0.30;
+
+    hoveredAxis = null;
+    AXES.forEach((ax, i) => {
+      const ang = getAngle(i);
+      const lx  = cx + Math.cos(ang) * (maxR + 22);
+      const ly  = cy + Math.sin(ang) * (maxR + 22);
+      if (Math.abs(mx - lx) < 70 && Math.abs(my - ly) < 22) {
+        hoveredAxis = i;
+        if (tooltip) {
+          tooltip.innerHTML = `<strong style="color:${ax.color}">${ax.label} — ${ax.score}/10</strong>${ax.skills.map(s => `<span>${s}</span>`).join('')}`;
+          tooltip.style.left = `${e.clientX + 14}px`;
+          tooltip.style.top  = `${e.clientY - 10}px`;
+          tooltip.classList.add('visible');
+        }
+      }
+    });
+    if (hoveredAxis === null && tooltip) tooltip.classList.remove('visible');
   });
+
+  canvas.addEventListener('mouseleave', () => {
+    hoveredAxis = null;
+    if (tooltip) tooltip.classList.remove('visible');
+  });
+
+  // ScrollTrigger fires animation
+  gsap.to({}, {
+    scrollTrigger: {
+      trigger: '#skills-radar',
+      start: 'top 78%',
+      once: true,
+      onEnter: () => { if (!started) { started = true; animateFill(); } },
+    },
+  });
+
+  draw();
 })();
 
 /* ============================================================

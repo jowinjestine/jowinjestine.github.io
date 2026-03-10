@@ -1566,6 +1566,19 @@ footer {
    ============================================================ */
 #architecture { background: var(--bg); }
 
+.arch-jc-link {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(56,189,248,0.3);
+  transition: border-color var(--dur), color var(--dur);
+}
+.arch-jc-link:hover {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+}
+
 .arch-wrap {
   position: relative;
   border: 1px solid var(--border);
@@ -1648,95 +1661,76 @@ footer {
 }
 
 /* ============================================================
-   DASHBOARD SECTION
+   SKILLS RADAR SECTION
    ============================================================ */
-#dashboard { background: var(--bg2); }
+#skills-radar { background: var(--bg2); }
 
-.live-badge {
-  font-family: var(--mono);
-  font-size: 13px;
-  color: #ef4444;
-  animation: liveBlink 1.4s ease-in-out infinite;
-  margin-left: 10px;
-}
-@keyframes liveBlink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-.dash-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+.radar-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
 }
 
-.dash-panel {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 22px 24px;
-  transition: border-color var(--dur), box-shadow var(--dur);
-  opacity: 0;
-  transform: translateY(20px);
-}
-.dash-panel:hover {
-  border-color: rgba(56,189,248,0.2);
-  box-shadow: 0 0 30px rgba(56,189,248,0.05);
+#radarCanvas {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-.dash-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  color: var(--t3);
-  margin-bottom: 12px;
+.radar-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 28px;
 }
 
-.dash-status {
+.radar-legend-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  font-size: 12px;
+  color: var(--t2);
+  font-family: var(--mono);
+  cursor: default;
 }
-.dash-dot {
-  width: 8px; height: 8px;
+
+.radar-legend-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34,197,94,0.6);
-  animation: dashPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
 }
-@keyframes dashPulse { 0%,100% { box-shadow: 0 0 8px rgba(34,197,94,0.6); } 50% { box-shadow: 0 0 18px rgba(34,197,94,0.9); } }
 
-.dash-status-text {
-  font-family: var(--mono);
-  font-size: 18px;
-  font-weight: 700;
-  color: #22c55e;
+.radar-tooltip {
+  position: fixed;
+  background: rgba(8,13,26,0.94);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--t2);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s;
+  max-width: 230px;
+  line-height: 1.6;
+  z-index: 100;
 }
-.dash-uptime { font-size: 12px; color: var(--t3); margin-top: 4px; }
-.dash-uptime strong { color: var(--t1); }
-
-.dash-big-num {
-  font-family: var(--mono);
-  font-size: 28px;
-  font-weight: 700;
-  background: var(--grad);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.1;
-  margin-bottom: 4px;
+.radar-tooltip.visible { opacity: 1; }
+.radar-tooltip strong { display: block; margin-bottom: 6px; font-size: 13px; }
+.radar-tooltip span {
+  display: inline-block;
+  background: rgba(255,255,255,0.07);
+  border-radius: 3px;
+  padding: 1px 7px;
+  margin: 2px 2px;
+  font-size: 10px;
+  color: var(--t2);
 }
-.dash-big-num.dash-green {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-.dash-unit { font-size: 14px; }
-.dash-sub { font-size: 12px; color: var(--t3); font-family: var(--mono); }
-
-.dash-sparkline { display: block; margin-top: 10px; }
-
-@media (max-width: 900px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px)  { .dash-grid { grid-template-columns: 1fr; } }
 
 /* ============================================================
    TERMINAL OVERLAY
