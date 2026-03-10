@@ -344,6 +344,12 @@ document.querySelectorAll('.edu-card').forEach((el, i) => {
   });
 });
 
+// Publications card reveal
+gsap.to('.pub-card', {
+  scrollTrigger: { trigger: '.pub-card', start: 'top 85%', once: true },
+  opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+});
+
 // Contact cards
 gsap.from('.contact-card', {
   scrollTrigger: { trigger: '.contact-cards', start: 'top 80%', once: true },
@@ -417,7 +423,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   })();
 
   // Expand ring over interactive elements
-  const interactiveSelector = 'a, button, .project-card, .tl-card, .skill-card, .contact-card, .edu-card, .filter-tab';
+  const interactiveSelector = 'a, button, .project-card, .tl-card, .skill-card, .contact-card, .edu-card, .pub-card, .filter-tab';
   document.querySelectorAll(interactiveSelector).forEach(el => {
     el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
     el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));

@@ -801,6 +801,125 @@ section { padding: var(--sec-pad) 0; }
 .chip.c2:hover { box-shadow: 0 4px 14px rgba(168,85,247,0.2); }
 
 /* ============================================================
+   PUBLICATIONS
+   ============================================================ */
+#publications { background: var(--bg2); }
+
+.pub-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 44px 48px;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: border-color var(--dur), box-shadow var(--dur);
+  max-width: 860px;
+  margin: 0 auto;
+}
+.pub-card:hover {
+  border-color: rgba(56,189,248,0.22);
+  box-shadow: 0 0 40px rgba(56,189,248,0.06);
+}
+
+.pub-journal-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.pub-journal-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--grad);
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+}
+.pub-publisher {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--t3);
+  letter-spacing: 0.5px;
+}
+
+.pub-title {
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 700;
+  color: var(--t1);
+  line-height: 1.4;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.pub-authors {
+  font-size: 13px;
+  color: var(--t2);
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+.pub-authors strong { color: var(--cyan); }
+
+.pub-abstract {
+  font-size: 14px;
+  color: var(--t2);
+  line-height: 1.75;
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pub-metrics {
+  display: flex;
+  gap: 48px;
+  margin-bottom: 28px;
+}
+.pub-metric { display: flex; flex-direction: column; gap: 4px; }
+.pm-val {
+  font-family: var(--mono);
+  font-size: 26px;
+  font-weight: 700;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.pm-lbl {
+  font-size: 11px;
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.pub-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pub-doi-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--blue);
+  text-decoration: none;
+  transition: color var(--dur);
+}
+.pub-doi-link:hover { color: var(--cyan); }
+
+.pub-contribution {
+  font-size: 12px;
+  color: var(--t3);
+  font-style: italic;
+}
+
+/* ============================================================
    EDUCATION
    ============================================================ */
 .edu-grid {
@@ -1386,4 +1505,7 @@ footer {
   .project-grid  { grid-template-columns: 1fr; }
   .featured-card { padding: 24px 20px; }
   .featured-bg-text { font-size: 80px; }
+  .pub-card { padding: 28px 20px; }
+  .pub-metrics { gap: 24px; flex-wrap: wrap; }
+  .pub-footer { flex-direction: column; align-items: flex-start; }
 }
