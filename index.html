@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jowin Jestine — Data Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ============ NAVBAR ============ -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">JJ</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#experience" class="mobile-link">Experience</a>
+    <a href="#skills" class="mobile-link">Skills</a>
+    <a href="#education" class="mobile-link">Education</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-glow"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Open to new opportunities
+      </div>
+
+      <h1 class="hero-name">
+        <span class="hero-greeting">Hi, I'm</span>
+        <span class="hero-title gradient-text">Jowin Jestine</span>
+      </h1>
+
+      <div class="hero-role">
+        <span class="role-static">I build&nbsp;</span>
+        <span class="role-typed" id="typewriter"></span><span class="cursor">|</span>
+      </div>
+
+      <p class="hero-desc">
+        Data Engineer III at <strong>Olaris</strong> — designing high-performance clinical
+        data pipelines at the intersection of biotech and data engineering.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num" data-target="3">0</span><span class="stat-suffix">+</span>
+          <span class="stat-label">Years at Olaris</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <span class="stat-num" data-target="1200">0</span><span class="stat-suffix">+</span>
+          <span class="stat-label">Clinical Records</span>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat">
+          <span class="stat-num" data-target="75">0</span><span class="stat-suffix">%</span>
+          <span class="stat-label">Query Latency Cut</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#experience" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">About Me</span>
+        <h2>Transforming Clinical Data<br/>into Actionable Insights</h2>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-visual">
+          <div class="orbit-wrap">
+            <canvas id="orbitCanvas" width="340" height="340"></canvas>
+            <div class="orbit-badge">
+              <span class="orbit-badge-icon">⚡</span>
+              Data Engineer III
+            </div>
+            <div class="orbit-location">📍 Boston, MA</div>
+          </div>
+        </div>
+
+        <div class="about-body">
+          <p>I'm a Data Engineer specialising in <strong>biotech and clinical diagnostics</strong>, working at Olaris — a company pioneering metabolomics-based disease diagnostics using targeted mass spectrometry and NMR.</p>
+          <p>My work spans the full data lifecycle: raw instrument data ingestion, HIPAA-compliant data platform design, and clinical reporting pipelines. I architect systems that are <strong>reproducible, auditable, and regulatory-ready</strong>.</p>
+          <p>With a Master's in Business Analytics from UConn and a Computer Engineering degree from University of Mumbai, I bridge scientific rigour with engineering excellence.</p>
+
+          <div class="about-pills">
+            <div class="about-pill">
+              <span class="pill-icon">🔬</span>
+              <div>
+                <strong>Biotech-Focused</strong>
+                <span>CLIA-compliant pipelines for MS &amp; NMR data</span>
+              </div>
+            </div>
+            <div class="about-pill">
+              <span class="pill-icon">☁️</span>
+              <div>
+                <strong>Cloud-Native</strong>
+                <span>Azure infrastructure with ADLS Gen2 &amp; Functions</span>
+              </div>
+            </div>
+            <div class="about-pill">
+              <span class="pill-icon">🤖</span>
+              <div>
+                <strong>ML-Enabled</strong>
+                <span>XGBoost, deep learning &amp; semantic search at scale</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section id="experience">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Experience</span>
+        <h2>Where I've Made an Impact</h2>
+      </div>
+
+      <div class="timeline">
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div>
+                <h3>Olaris, Inc.</h3>
+                <span class="tl-location">Boston, MA</span>
+              </div>
+              <div class="tl-meta">
+                <span class="tl-role">Data Engineer III</span>
+                <span class="tl-date">2025 — Present</span>
+              </div>
+            </div>
+            <ul class="tl-bullets">
+              <li>Engineered end-to-end analytics system using Azure Functions, FastAPI &amp; PostgreSQL — <strong>&lt;0.5s response time</strong>, <strong>75% latency reduction</strong></li>
+              <li>Architected HIPAA-compliant cloud database with RBAC, geo-fencing &amp; audit logs governing <strong>1,200+ clinical records</strong>, saving $15K/yr in compliance costs</li>
+              <li>Integrated AI-driven semantic search across <strong>100K+ metabolites</strong> from two diagnostic platforms, cutting retrieval time by 70%</li>
+            </ul>
+            <div class="tl-tags">
+              <span>Azure Functions</span><span>FastAPI</span><span>PostgreSQL</span><span>HIPAA</span><span>Semantic Search</span><span>SQLMesh</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div>
+                <h3>Olaris, Inc.</h3>
+                <span class="tl-location">Boston, MA</span>
+              </div>
+              <div class="tl-meta">
+                <span class="tl-role">Data Engineer I</span>
+                <span class="tl-date">2023 — 2024</span>
+              </div>
+            </div>
+            <ul class="tl-bullets">
+              <li>Developed deep learning model evaluating NMR signal peak quality across <strong>10K+ observations</strong>, improving accuracy by 35% and cutting manual review by 72%</li>
+              <li>Built reusable Python ML libraries standardising NMR ingestion and feature extraction for research pipelines</li>
+              <li>Deployed FastAPI monitoring service with real-time MS Teams alerts across <strong>200+ instrument parameters</strong></li>
+            </ul>
+            <div class="tl-tags">
+              <span>Deep Learning</span><span>NMR</span><span>Python</span><span>FastAPI</span><span>Mage AI</span><span>Docker</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div>
+                <h3>Boehringer Ingelheim</h3>
+                <span class="tl-location">Hartford, CT · via Yoh</span>
+              </div>
+              <div class="tl-meta">
+                <span class="tl-role">Data Engineer, Biotherapeutics</span>
+                <span class="tl-date">2022 — 2023</span>
+              </div>
+            </div>
+            <ul class="tl-bullets">
+              <li>Migrated <strong>100+ Excel/PowerPoint artifacts</strong> across 13 research initiatives into relational databases, enabling Cloudera Data Lake integration</li>
+              <li>Defined data schemas via YAML, reducing onboarding time by <strong>30%</strong> and improving cross-team data consistency</li>
+              <li>Supported HIPAA compliance strategies for multi-site data warehouses, reducing regulatory risk across clinical analytics</li>
+            </ul>
+            <div class="tl-tags">
+              <span>Cloudera</span><span>Python</span><span>SQL</span><span>YAML</span><span>HIPAA</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div>
+                <h3>University of Connecticut</h3>
+                <span class="tl-location">Storrs, CT</span>
+              </div>
+              <div class="tl-meta">
+                <span class="tl-role">Data Analyst, Budget Planning &amp; Institutional Research</span>
+                <span class="tl-date">2021 — 2022</span>
+              </div>
+            </div>
+            <ul class="tl-bullets">
+              <li>Queried and modelled <strong>400K+ records</strong> from SAS using SQL to support student success and retention analysis</li>
+              <li>Built interactive dashboards in R Shiny and Tableau enabling real-time decision-making across academic departments</li>
+            </ul>
+            <div class="tl-tags">
+              <span>SQL</span><span>SAS</span><span>R Shiny</span><span>Tableau</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-header">
+              <div>
+                <h3>Cigna</h3>
+                <span class="tl-location">Hartford, CT</span>
+              </div>
+              <div class="tl-meta">
+                <span class="tl-role">Graduate Data Science Consultant</span>
+                <span class="tl-date">2021 — 2022</span>
+              </div>
+            </div>
+            <ul class="tl-bullets">
+              <li>Trained TensorFlow neural network automating ServiceNow incident routing — improved accuracy from 30% to <strong>87%</strong></li>
+              <li>Applied NLP (lemmatization, topic modelling) reducing resolution time by 50%</li>
+              <li>Delivered real-time classifier with <strong>96% recall</strong> and 80% precision for incident prioritisation</li>
+            </ul>
+            <div class="tl-tags">
+              <span>TensorFlow</span><span>NLP</span><span>Python</span><span>ServiceNow</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Skills</span>
+        <h2>Tools of the Trade</h2>
+      </div>
+
+      <div class="skills-grid">
+
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <span class="skill-emoji">🔧</span>
+            <h3>Data Engineering</h3>
+          </div>
+          <div class="skill-chips">
+            <span class="chip c1">PostgreSQL</span>
+            <span class="chip c1">Mage AI</span>
+            <span class="chip c1">SQLMesh</span>
+            <span class="chip c1">Azure Data Lake</span>
+            <span class="chip c2">Docker</span>
+            <span class="chip c2">Bitbucket CI/CD</span>
+            <span class="chip c2">Azure Functions</span>
+            <span class="chip c2">OpenMetadata</span>
+            <span class="chip c2">Great Expectations</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <span class="skill-emoji">💻</span>
+            <h3>Programming</h3>
+          </div>
+          <div class="skill-chips">
+            <span class="chip c1">Python</span>
+            <span class="chip c1">SQL</span>
+            <span class="chip c1">R</span>
+            <span class="chip c2">FastAPI</span>
+            <span class="chip c2">TensorFlow</span>
+            <span class="chip c2">PyTorch</span>
+            <span class="chip c2">scikit-learn</span>
+            <span class="chip c2">Pandas</span>
+            <span class="chip c2">Spark</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <span class="skill-emoji">☁️</span>
+            <h3>Cloud &amp; Infra</h3>
+          </div>
+          <div class="skill-chips">
+            <span class="chip c1">Microsoft Azure</span>
+            <span class="chip c1">Docker</span>
+            <span class="chip c1">Linux</span>
+            <span class="chip c2">Cloudera</span>
+            <span class="chip c2">ADLS Gen2</span>
+            <span class="chip c2">Azure Blob Storage</span>
+            <span class="chip c2">pgAudit</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <span class="skill-emoji">🤖</span>
+            <h3>Machine Learning</h3>
+          </div>
+          <div class="skill-chips">
+            <span class="chip c1">XGBoost</span>
+            <span class="chip c1">Deep Learning</span>
+            <span class="chip c1">NLP</span>
+            <span class="chip c2">Semantic Search</span>
+            <span class="chip c2">Symbolic Regression</span>
+            <span class="chip c2">Nested CV</span>
+            <span class="chip c2">Predictive Modelling</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <span class="skill-emoji">📊</span>
+            <h3>Visualisation</h3>
+          </div>
+          <div class="skill-chips">
+            <span class="chip c1">Tableau</span>
+            <span class="chip c1">R Shiny</span>
+            <span class="chip c2">Power BI</span>
+            <span class="chip c2">Apache Superset</span>
+            <span class="chip c2">Plotly</span>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <span class="skill-emoji">🧬</span>
+            <h3>Scientific Domain</h3>
+          </div>
+          <div class="skill-chips">
+            <span class="chip c1">NMR Metabolomics</span>
+            <span class="chip c1">Mass Spectrometry</span>
+            <span class="chip c2">CLIA Compliance</span>
+            <span class="chip c2">HIPAA</span>
+            <span class="chip c2">GxP Automation</span>
+            <span class="chip c2">ELN Integration</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EDUCATION ============ -->
+  <section id="education">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Education</span>
+        <h2>Academic Foundation</h2>
+      </div>
+
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-icon-wrap">🎓</div>
+          <div class="edu-body">
+            <h3>Master of Business Analytics &amp; Project Management</h3>
+            <span class="edu-school">University of Connecticut</span>
+            <span class="edu-loc">Hartford, CT</span>
+          </div>
+          <div class="edu-glow"></div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon-wrap">⚙️</div>
+          <div class="edu-body">
+            <h3>Bachelor of Engineering in Computer Engineering</h3>
+            <span class="edu-school">University of Mumbai</span>
+            <span class="edu-loc">Mumbai, India</span>
+          </div>
+          <div class="edu-glow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-wrap">
+        <span class="section-tag">Contact</span>
+        <h2>Let's Build Something Together</h2>
+        <p>Whether it's a data pipeline, an analytics platform, or a conversation about biotech data infrastructure — I'm all ears.</p>
+
+        <div class="contact-cards">
+          <a href="mailto:jowinjestine@gmail.com" class="contact-card">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <span class="contact-label">Email</span>
+              <span class="contact-val">jowinjestine@gmail.com</span>
+            </div>
+          </a>
+          <a href="https://www.linkedin.com/in/jowinjestine" target="_blank" rel="noopener" class="contact-card">
+            <div class="contact-icon">💼</div>
+            <div>
+              <span class="contact-label">LinkedIn</span>
+              <span class="contact-val">in/jowinjestine</span>
+            </div>
+          </a>
+          <a href="tel:+18607066565" class="contact-card">
+            <div class="contact-icon">📞</div>
+            <div>
+              <span class="contact-label">Phone</span>
+              <span class="contact-val">(860) 706-6565</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="container footer-inner">
+      <span class="footer-logo gradient-text">JJ</span>
+      <span class="footer-name">Jowin Jestine — Data Engineer III</span>
+      <span class="footer-copy">© 2025</span>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
