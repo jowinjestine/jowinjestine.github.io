@@ -25,6 +25,8 @@
       <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#projects">Projects</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
       <li><a href="#publications">Publications</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#education">Education</a></li>
@@ -40,6 +42,8 @@
     <a href="#about" class="mobile-link">About</a>
     <a href="#experience" class="mobile-link">Experience</a>
     <a href="#projects" class="mobile-link">Projects</a>
+    <a href="#architecture" class="mobile-link">Architecture</a>
+    <a href="#dashboard" class="mobile-link">Dashboard</a>
     <a href="#publications" class="mobile-link">Publications</a>
     <a href="#skills" class="mobile-link">Skills</a>
     <a href="#education" class="mobile-link">Education</a>
@@ -340,54 +344,121 @@
       <!-- Project grid -->
       <div class="project-grid">
 
-        <div class="project-card" data-category="ml">
+        <div class="project-card" data-category="ml" data-modal="metabolite-search">
           <span class="project-cat cat-ml">🤖 Machine Learning</span>
           <h3 class="project-title">AI Metabolite Search Engine</h3>
           <p class="project-desc">Semantic search across 100K+ metabolites from two diagnostic platforms — replaced keyword lookup with embedding-based retrieval, accelerating downstream analysis.</p>
           <div class="project-metric metric-ml">70% faster retrieval</div>
           <div class="tl-tags"><span>Semantic Search</span><span>Python</span><span>Azure</span><span>FastAPI</span></div>
+          <button class="case-study-btn" data-modal="metabolite-search">Case Study →</button>
         </div>
 
-        <div class="project-card" data-category="ml">
+        <div class="project-card" data-category="ml" data-modal="nmr-quality">
           <span class="project-cat cat-ml">🧠 Deep Learning</span>
           <h3 class="project-title">NMR Signal Quality Model</h3>
           <p class="project-desc">Deep learning classifier evaluating NMR signal peak quality across 10K+ instrument observations, dramatically cutting analyst manual review burden.</p>
           <div class="project-metric metric-ml">35% accuracy gain · 72% less review</div>
           <div class="tl-tags"><span>Deep Learning</span><span>Python</span><span>NMR</span><span>scikit-learn</span></div>
+          <button class="case-study-btn" data-modal="nmr-quality">Case Study →</button>
         </div>
 
-        <div class="project-card" data-category="engineering">
+        <div class="project-card" data-category="engineering" data-modal="nmr-monitoring">
           <span class="project-cat cat-eng">⚙️ Data Engineering</span>
           <h3 class="project-title">Live NMR Monitoring System</h3>
           <p class="project-desc">Real-time instrument monitoring database with automated MS Teams alerting pipeline tracking acquisition parameters and QC metrics across 200+ parameters.</p>
           <div class="project-metric">200+ params · real-time alerts</div>
           <div class="tl-tags"><span>FastAPI</span><span>Mage AI</span><span>PostgreSQL</span><span>Docker</span></div>
+          <button class="case-study-btn" data-modal="nmr-monitoring">Case Study →</button>
         </div>
 
-        <div class="project-card" data-category="ml">
+        <div class="project-card" data-category="ml" data-modal="it-routing">
           <span class="project-cat cat-ml">🔤 NLP</span>
           <h3 class="project-title">IT Incident Routing Neural Net</h3>
           <p class="project-desc">TensorFlow NLP system automating ServiceNow IT incident routing at Cigna using topic modelling and lemmatization — improved accuracy from 30% to 87%.</p>
           <div class="project-metric metric-ml">30% → 87% accuracy · 96% recall</div>
           <div class="tl-tags"><span>TensorFlow</span><span>NLP</span><span>Python</span><span>ServiceNow</span></div>
+          <button class="case-study-btn" data-modal="it-routing">Case Study →</button>
         </div>
 
-        <div class="project-card" data-category="engineering">
+        <div class="project-card" data-category="engineering" data-modal="data-migration">
           <span class="project-cat cat-eng">☁️ Data Engineering</span>
           <h3 class="project-title">Biotech Research Data Migration</h3>
           <p class="project-desc">Migrated 100+ Excel and PowerPoint artifacts across 13 Boehringer Ingelheim research initiatives into a structured Cloudera Data Lake with YAML-defined schemas.</p>
           <div class="project-metric">13 initiatives · 30% faster onboarding</div>
           <div class="tl-tags"><span>Cloudera</span><span>Python</span><span>SQL</span><span>YAML</span></div>
+          <button class="case-study-btn" data-modal="data-migration">Case Study →</button>
         </div>
 
-        <div class="project-card" data-category="analytics">
+        <div class="project-card" data-category="analytics" data-modal="research-dashboard">
           <span class="project-cat cat-analytics">📊 Analytics</span>
           <h3 class="project-title">Institutional Research Dashboard</h3>
           <p class="project-desc">Modelled 400K+ student records from SAS to build interactive R Shiny and Tableau dashboards supporting real-time academic decision-making at UConn.</p>
           <div class="project-metric">400K+ records · live dashboards</div>
           <div class="tl-tags"><span>R Shiny</span><span>Tableau</span><span>SQL</span><span>SAS</span></div>
+          <button class="case-study-btn" data-modal="research-dashboard">Case Study →</button>
         </div>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ARCHITECTURE ============ -->
+  <section id="architecture">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">System Design</span>
+        <h2>Data Platform Architecture</h2>
+        <p class="section-sub">Click any node to explore the technology choices, design rationale, and performance metrics behind the Olaris clinical data platform.</p>
+      </div>
+      <div class="arch-wrap">
+        <canvas id="archCanvas"></canvas>
+        <div class="arch-panel" id="archPanel">
+          <button class="arch-panel-close" id="archPanelClose">✕</button>
+          <div class="arch-panel-body" id="archPanelBody"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section id="dashboard">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Production Systems</span>
+        <h2>Platform Metrics <span class="live-badge">● LIVE</span></h2>
+        <p class="section-sub">Real-time telemetry from the Olaris clinical data platform.</p>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-panel">
+          <div class="dash-label">PIPELINE STATUS</div>
+          <div class="dash-status"><span class="dash-dot"></span><span class="dash-status-text">RUNNING</span></div>
+          <div class="dash-uptime">Uptime <strong>99.97%</strong></div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-label">RECORDS PROCESSED</div>
+          <div class="dash-big-num" id="dashRecords">1,247,381</div>
+          <div class="dash-sub">+<span id="dashRecordsDelta">3</span> this second</div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-label">QUERY LATENCY</div>
+          <div class="dash-big-num"><span id="dashLatency">312</span><span class="dash-unit">ms</span></div>
+          <canvas class="dash-sparkline" id="sparkLatency" width="160" height="36"></canvas>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-label">ACTIVE STUDIES</div>
+          <div class="dash-big-num">3</div>
+          <div class="dash-sub">↑ 1 this week</div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-label">API RESPONSE AVG</div>
+          <div class="dash-big-num"><span id="dashApi">287</span><span class="dash-unit">ms</span></div>
+          <canvas class="dash-sparkline" id="sparkApi" width="160" height="36"></canvas>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-label">ERROR RATE</div>
+          <div class="dash-big-num dash-green"><span id="dashError">0.003</span><span class="dash-unit">%</span></div>
+          <canvas class="dash-sparkline" id="sparkError" width="160" height="36"></canvas>
+        </div>
       </div>
     </div>
   </section>
@@ -614,9 +685,32 @@
     <div class="container footer-inner">
       <span class="footer-logo gradient-text">JJ</span>
       <span class="footer-name">Jowin Jestine — Data Engineer III</span>
+      <span class="footer-hint">press <kbd>/</kbd> for terminal</span>
       <span class="footer-copy">© 2025</span>
     </div>
   </footer>
+
+  <!-- ============ TERMINAL OVERLAY ============ -->
+  <div id="terminal-overlay" aria-hidden="true">
+    <div class="term-topbar">
+      <span class="term-dot" style="background:#ff5f56"></span>
+      <span class="term-dot" style="background:#ffbd2e"></span>
+      <span class="term-dot" style="background:#27c93f"></span>
+      <span class="term-title">jowin@portfolio — bash</span>
+      <button class="term-close" id="termClose" aria-label="Close terminal">✕</button>
+    </div>
+    <div class="term-body" id="termBody"></div>
+    <div class="term-input-row">
+      <span class="term-prompt">jowin@portfolio:~$</span>
+      <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false" />
+    </div>
+  </div>
+
+  <!-- ============ MODAL OVERLAY ============ -->
+  <div id="modal-overlay" aria-hidden="true">
+    <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+    <div class="modal-card" id="modalCard"></div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
