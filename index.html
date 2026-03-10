@@ -11,12 +11,20 @@
 </head>
 <body>
 
+  <!-- Custom cursor -->
+  <div class="c-dot" id="cDot"></div>
+  <div class="c-ring" id="cRing"></div>
+
+  <!-- Scroll progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
   <!-- ============ NAVBAR ============ -->
   <nav id="navbar">
     <a href="#hero" class="nav-logo">JJ</a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#education">Education</a></li>
       <li><a href="#contact" class="nav-cta">Contact</a></li>
@@ -30,6 +38,7 @@
   <div class="mobile-menu" id="mobileMenu">
     <a href="#about" class="mobile-link">About</a>
     <a href="#experience" class="mobile-link">Experience</a>
+    <a href="#projects" class="mobile-link">Projects</a>
     <a href="#skills" class="mobile-link">Skills</a>
     <a href="#education" class="mobile-link">Education</a>
     <a href="#contact" class="mobile-link">Contact</a>
@@ -270,6 +279,111 @@
               <span>TensorFlow</span><span>NLP</span><span>Python</span><span>ServiceNow</span>
             </div>
           </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Projects</span>
+        <h2>Things I've Built</h2>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="engineering">Data Engineering</button>
+        <button class="filter-tab" data-filter="ml">Machine Learning</button>
+        <button class="filter-tab" data-filter="analytics">Analytics</button>
+      </div>
+
+      <!-- Featured card -->
+      <div class="featured-card">
+        <div class="featured-label">Featured Project</div>
+        <h3 class="featured-title">Clinical Data Platform</h3>
+        <p class="featured-desc">
+          HIPAA-compliant, cloud-hosted biotech data platform on Azure — governing clinical records with
+          role-based access control, geo-fencing, field-level encryption, and full audit logging.
+          Powers the diagnostic reporting pipeline for targeted mass spectrometry and NMR-based metabolomics.
+        </p>
+        <div class="featured-metrics">
+          <div class="featured-metric">
+            <span class="featured-metric-val">1,200+</span>
+            <span class="featured-metric-label">Clinical Records</span>
+          </div>
+          <div class="featured-metric">
+            <span class="featured-metric-val">&lt;0.5s</span>
+            <span class="featured-metric-label">Response Time</span>
+          </div>
+          <div class="featured-metric">
+            <span class="featured-metric-val">75%</span>
+            <span class="featured-metric-label">Latency Reduction</span>
+          </div>
+          <div class="featured-metric">
+            <span class="featured-metric-val">$15K</span>
+            <span class="featured-metric-label">Annual Savings</span>
+          </div>
+        </div>
+        <div class="tl-tags">
+          <span>PostgreSQL</span><span>Azure</span><span>FastAPI</span>
+          <span>HIPAA</span><span>RBAC</span><span>SQLMesh</span><span>Python</span>
+        </div>
+        <div class="featured-bg-text">OLARIS</div>
+      </div>
+
+      <!-- Project grid -->
+      <div class="project-grid">
+
+        <div class="project-card" data-category="ml">
+          <span class="project-cat cat-ml">🤖 Machine Learning</span>
+          <h3 class="project-title">AI Metabolite Search Engine</h3>
+          <p class="project-desc">Semantic search across 100K+ metabolites from two diagnostic platforms — replaced keyword lookup with embedding-based retrieval, accelerating downstream analysis.</p>
+          <div class="project-metric metric-ml">70% faster retrieval</div>
+          <div class="tl-tags"><span>Semantic Search</span><span>Python</span><span>Azure</span><span>FastAPI</span></div>
+        </div>
+
+        <div class="project-card" data-category="ml">
+          <span class="project-cat cat-ml">🧠 Deep Learning</span>
+          <h3 class="project-title">NMR Signal Quality Model</h3>
+          <p class="project-desc">Deep learning classifier evaluating NMR signal peak quality across 10K+ instrument observations, dramatically cutting analyst manual review burden.</p>
+          <div class="project-metric metric-ml">35% accuracy gain · 72% less review</div>
+          <div class="tl-tags"><span>Deep Learning</span><span>Python</span><span>NMR</span><span>scikit-learn</span></div>
+        </div>
+
+        <div class="project-card" data-category="engineering">
+          <span class="project-cat cat-eng">⚙️ Data Engineering</span>
+          <h3 class="project-title">Live NMR Monitoring System</h3>
+          <p class="project-desc">Real-time instrument monitoring database with automated MS Teams alerting pipeline tracking acquisition parameters and QC metrics across 200+ parameters.</p>
+          <div class="project-metric">200+ params · real-time alerts</div>
+          <div class="tl-tags"><span>FastAPI</span><span>Mage AI</span><span>PostgreSQL</span><span>Docker</span></div>
+        </div>
+
+        <div class="project-card" data-category="ml">
+          <span class="project-cat cat-ml">🔤 NLP</span>
+          <h3 class="project-title">IT Incident Routing Neural Net</h3>
+          <p class="project-desc">TensorFlow NLP system automating ServiceNow IT incident routing at Cigna using topic modelling and lemmatization — improved accuracy from 30% to 87%.</p>
+          <div class="project-metric metric-ml">30% → 87% accuracy · 96% recall</div>
+          <div class="tl-tags"><span>TensorFlow</span><span>NLP</span><span>Python</span><span>ServiceNow</span></div>
+        </div>
+
+        <div class="project-card" data-category="engineering">
+          <span class="project-cat cat-eng">☁️ Data Engineering</span>
+          <h3 class="project-title">Biotech Research Data Migration</h3>
+          <p class="project-desc">Migrated 100+ Excel and PowerPoint artifacts across 13 Boehringer Ingelheim research initiatives into a structured Cloudera Data Lake with YAML-defined schemas.</p>
+          <div class="project-metric">13 initiatives · 30% faster onboarding</div>
+          <div class="tl-tags"><span>Cloudera</span><span>Python</span><span>SQL</span><span>YAML</span></div>
+        </div>
+
+        <div class="project-card" data-category="analytics">
+          <span class="project-cat cat-analytics">📊 Analytics</span>
+          <h3 class="project-title">Institutional Research Dashboard</h3>
+          <p class="project-desc">Modelled 400K+ student records from SAS to build interactive R Shiny and Tableau dashboards supporting real-time academic decision-making at UConn.</p>
+          <div class="project-metric">400K+ records · live dashboards</div>
+          <div class="tl-tags"><span>R Shiny</span><span>Tableau</span><span>SQL</span><span>SAS</span></div>
         </div>
 
       </div>

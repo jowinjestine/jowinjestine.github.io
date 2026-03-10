@@ -390,3 +390,121 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
   sections.forEach(s => obs.observe(s));
 })();
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+(function initCursor() {
+  const dot  = document.getElementById('cDot');
+  const ring = document.getElementById('cRing');
+  if (!dot || !ring) return;
+
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let rx = mx, ry = my;
+
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; }, { passive: true });
+
+  (function loop() {
+    // Dot snaps immediately
+    dot.style.left = mx + 'px';
+    dot.style.top  = my + 'px';
+    // Ring lags behind with lerp
+    rx += (mx - rx) * 0.13;
+    ry += (my - ry) * 0.13;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+
+  // Expand ring over interactive elements
+  const interactiveSelector = 'a, button, .project-card, .tl-card, .skill-card, .contact-card, .edu-card, .filter-tab';
+  document.querySelectorAll(interactiveSelector).forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+  });
+})();
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+(function initProgress() {
+  const bar = document.getElementById('scrollProgress');
+  if (!bar) return;
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+})();
+
+/* ============================================================
+   3D TILT on project cards
+   ============================================================ */
+document.querySelectorAll('.project-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r    = card.getBoundingClientRect();
+    const x    = e.clientX - r.left;
+    const y    = e.clientY - r.top;
+    const rotX = ((y - r.height / 2) / (r.height / 2)) * -7;
+    const rotY = ((x - r.width  / 2) / (r.width  / 2)) *  7;
+
+    card.style.transition = 'border-color 0.3s, box-shadow 0.3s';
+    card.style.transform  = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(8px)`;
+
+    // Spotlight glow follows mouse
+    card.style.setProperty('--mx', `${(x / r.width)  * 100}%`);
+    card.style.setProperty('--my', `${(y / r.height) * 100}%`);
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transition = 'transform 0.55s cubic-bezier(0.23,1,0.32,1), border-color 0.3s, box-shadow 0.3s';
+    card.style.transform  = '';
+  });
+});
+
+/* ============================================================
+   PROJECT FILTER TABS
+   ============================================================ */
+(function initFilters() {
+  const tabs  = document.querySelectorAll('.filter-tab');
+  const cards = document.querySelectorAll('.project-card[data-category]');
+  if (!tabs.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.dataset.filter;
+
+      cards.forEach(card => {
+        const match = filter === 'all' || card.dataset.category === filter;
+        gsap.to(card, {
+          opacity:  match ? 1    : 0.15,
+          scale:    match ? 1    : 0.96,
+          duration: 0.3,
+          ease:     'power2.out',
+        });
+      });
+    });
+  });
+})();
+
+/* ============================================================
+   PROJECT CARDS SCROLL REVEAL
+   ============================================================ */
+gsap.from('.featured-card', {
+  scrollTrigger: { trigger: '.featured-card', start: 'top 82%', once: true },
+  opacity: 0, y: 36, duration: 0.75, ease: 'power3.out',
+});
+
+gsap.from('.filter-tabs', {
+  scrollTrigger: { trigger: '.filter-tabs', start: 'top 88%', once: true },
+  opacity: 0, y: 18, duration: 0.45, ease: 'power3.out',
+});
+
+document.querySelectorAll('.project-card').forEach((el, i) => {
+  gsap.from(el, {
+    scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+    opacity: 0, y: 30, duration: 0.55, ease: 'power3.out',
+    delay: (i % 3) * 0.1,
+  });
+});
