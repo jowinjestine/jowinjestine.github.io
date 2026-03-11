@@ -330,8 +330,7 @@ ScrollTrigger.create({
 const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.2 });
 
 heroTl
-  .to('.hero-badge',   { opacity: 1, y: 0, duration: 0.55 })
-  .to('.hero-name',    { opacity: 1, y: 0, duration: 0.6  }, '-=0.25')
+  .to('.hero-name',    { opacity: 1, y: 0, duration: 0.6  })
   .to('.hero-role',    { opacity: 1, y: 0, duration: 0.5  }, '-=0.25')
   .to('.hero-desc',    { opacity: 1, y: 0, duration: 0.5  }, '-=0.2' )
   .to('.hero-stats',   { opacity: 1, y: 0, duration: 0.45 }, '-=0.15')
