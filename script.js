@@ -30,8 +30,14 @@ gsap.registerPlugin(ScrollTrigger);
   ];
 
   function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   // Lorentzian peak function
@@ -149,8 +155,14 @@ gsap.registerPlugin(ScrollTrigger);
   const canvas = document.getElementById('orbitCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const W   = canvas.width;
-  const H   = canvas.height;
+  const dpr = window.devicePixelRatio || 1;
+  const W   = 340;
+  const H   = 340;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
   const cx  = W / 2;
   const cy  = H / 2;
 
@@ -334,7 +346,8 @@ heroTl
   .to('.hero-role',    { opacity: 1, y: 0, duration: 0.5  }, '-=0.25')
   .to('.hero-desc',    { opacity: 1, y: 0, duration: 0.5  }, '-=0.2' )
   .to('.hero-stats',   { opacity: 1, y: 0, duration: 0.45 }, '-=0.15')
-  .to('.hero-actions', { opacity: 1, y: 0, duration: 0.45 }, '-=0.15');
+  .to('.hero-now',     { opacity: 1, y: 0, duration: 0.4  }, '-=0.10')
+  .to('.hero-actions', { opacity: 1, y: 0, duration: 0.45 }, '-=0.10');
 
 /* ============================================================
    SCROLL-TRIGGERED ANIMATIONS
@@ -955,15 +968,40 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   let selectedId = null;
 
   function resize() {
-    W = canvas.width  = canvas.offsetWidth;
-    H = canvas.height = 420;
-    canvas.style.height = '420px';
+    const dpr      = window.devicePixelRatio || 1;
+    const isMobile = window.innerWidth <= 640;
+    W = canvas.offsetWidth;
+    H = isMobile ? 520 : 420;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
+  const MOBILE_LAYOUT = {
+    lifepoint: { mc: 0, mr: 0 },
+    apim:      { mc: 1, mr: 0 },
+    func:      { mc: 0, mr: 1 },
+    keyvault:  { mc: 1, mr: 1 },
+    postgres:  { mc: 0, mr: 2 },
+    blob:      { mc: 1, mr: 2 },
+    reqapp:    { mc: 0, mr: 3 },
+    automate:  { mc: 1, mr: 3 },
+  };
+
   function nodePos(n) {
-    const cols  = 6;
-    const colW  = W / (cols + 0.5);
-    const rowH  = H / 3;
+    if (window.innerWidth <= 640) {
+      const m    = MOBILE_LAYOUT[n.id] || { mc: 0, mr: 0 };
+      const colW = W / 2.4;
+      const rowH = H / 4.8;
+      return {
+        x: colW * (m.mc + 0.7),
+        y: H * 0.08 + m.mr * rowH,
+      };
+    }
+    const cols = 6;
+    const colW = W / (cols + 0.5);
+    const rowH = H / 3;
     return {
       x: colW * (n.col + 0.75),
       y: H * 0.28 + n.row * rowH,
@@ -1040,7 +1078,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       const { x, y } = nodePos(n);
       const isHovered  = hoveredId === n.id;
       const isSelected = selectedId === n.id;
-      const NW = 130, NH = 44;
+      const isMob = window.innerWidth <= 640;
+      const NW = isMob ? 105 : 130, NH = isMob ? 38 : 44;
 
       // Glow
       if (isHovered || isSelected) {
@@ -1077,9 +1116,11 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   }
 
   function getHitNode(mx, my) {
+    const isMob = window.innerWidth <= 640;
+    const hw = isMob ? 54 : 68, hh = isMob ? 21 : 26;
     return NODES.find(n => {
       const { x, y } = nodePos(n);
-      return Math.abs(mx - x) < 68 && Math.abs(my - y) < 26;
+      return Math.abs(mx - x) < hw && Math.abs(my - y) < hh;
     });
   }
 
@@ -1096,8 +1137,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
 
   canvas.addEventListener('mousemove', e => {
     const r  = canvas.getBoundingClientRect();
-    const mx = (e.clientX - r.left) * (canvas.width / r.width);
-    const my = (e.clientY - r.top)  * (canvas.height / r.height);
+    const mx = e.clientX - r.left;
+    const my = e.clientY - r.top;
     const n  = getHitNode(mx, my);
     hoveredId = n ? n.id : null;
     canvas.style.cursor = n ? 'pointer' : 'default';
@@ -1105,8 +1146,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
 
   canvas.addEventListener('click', e => {
     const r  = canvas.getBoundingClientRect();
-    const mx = (e.clientX - r.left) * (canvas.width / r.width);
-    const my = (e.clientY - r.top)  * (canvas.height / r.height);
+    const mx = e.clientX - r.left;
+    const my = e.clientY - r.top;
     const n  = getHitNode(mx, my);
     if (n) showPanel(n);
   });
@@ -1120,8 +1161,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   canvas.addEventListener('touchend', e => {
     const r  = canvas.getBoundingClientRect();
     const t  = e.changedTouches[0];
-    const mx = (t.clientX - r.left) * (canvas.width / r.width);
-    const my = (t.clientY - r.top)  * (canvas.height / r.height);
+    const mx = t.clientX - r.left;
+    const my = t.clientY - r.top;
     const n  = getHitNode(mx, my);
     if (n) showPanel(n);
   });
@@ -1144,6 +1185,13 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   const canvas  = document.getElementById('radarCanvas');
   if (!canvas) return;
   const ctx     = canvas.getContext('2d');
+  const dpr     = window.devicePixelRatio || 1;
+  const LOGICAL = 500;
+  canvas.width  = LOGICAL * dpr;
+  canvas.height = LOGICAL * dpr;
+  canvas.style.width  = LOGICAL + 'px';
+  canvas.style.height = LOGICAL + 'px';
+  ctx.scale(dpr, dpr);
   const legend  = document.getElementById('radarLegend');
   const tooltip = document.getElementById('radarTooltip');
 
@@ -1183,7 +1231,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   }
 
   function draw() {
-    const W = canvas.width, H = canvas.height;
+    const W = LOGICAL, H = LOGICAL;
     const cx = W / 2, cy = H / 2;
     const maxR = Math.min(W, H) * 0.30;
     const prog = Math.min(animProg, 1);
@@ -1301,13 +1349,11 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
 
   // Hover hit-test on axis labels
   canvas.addEventListener('mousemove', e => {
-    const rect   = canvas.getBoundingClientRect();
-    const scaleX = canvas.width  / rect.width;
-    const scaleY = canvas.height / rect.height;
-    const mx = (e.clientX - rect.left) * scaleX;
-    const my = (e.clientY - rect.top)  * scaleY;
-    const cx = canvas.width / 2, cy = canvas.height / 2;
-    const maxR = Math.min(canvas.width, canvas.height) * 0.30;
+    const rect = canvas.getBoundingClientRect();
+    const mx   = e.clientX - rect.left;
+    const my   = e.clientY - rect.top;
+    const cx   = LOGICAL / 2, cy = LOGICAL / 2;
+    const maxR = LOGICAL * 0.30;
 
     hoveredAxis = null;
     AXES.forEach((ax, i) => {
@@ -1486,5 +1532,312 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+  });
+})();
+
+/* ============================================================
+   PROJECT CARD THUMBNAIL CANVASES
+   6 unique abstract visualizations — DPR-aware, looping animations
+   ============================================================ */
+(function initCardThumbs() {
+  const dpr = window.devicePixelRatio || 1;
+
+  document.querySelectorAll('.card-thumb').forEach(canvas => {
+    const type = canvas.dataset.thumb;
+    const logW = canvas.parentElement.offsetWidth + 48;
+    const logH = 130;
+    canvas.width  = logW * dpr;
+    canvas.height = logH * dpr;
+    canvas.style.width  = logW + 'px';
+    canvas.style.height = logH + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    const W = logW, H = logH;
+
+    const CYAN   = '#38bdf8';
+    const PURPLE = '#a855f7';
+    const TEAL   = '#06b6d4';
+    const BG     = '#060b16';
+
+    if (type === 'embedding') {
+      // Dot-cloud / embedding space — dots slowly drift & cluster
+      const N = 70;
+      const clusters = [
+        { x: W * 0.22, y: H * 0.50 },
+        { x: W * 0.54, y: H * 0.35 },
+        { x: W * 0.80, y: H * 0.62 },
+      ];
+      const dots = Array.from({ length: N }, (_, i) => {
+        const c = clusters[i % clusters.length];
+        return {
+          x: c.x + (Math.random() - 0.5) * 60,
+          y: c.y + (Math.random() - 0.5) * 46,
+          vx: (Math.random() - 0.5) * 0.22,
+          vy: (Math.random() - 0.5) * 0.18,
+          r: 1.8 + Math.random() * 1.8,
+          color: Math.random() > 0.5 ? CYAN : PURPLE,
+          phase: Math.random() * Math.PI * 2,
+        };
+      });
+      let t = 0;
+      (function loop() {
+        t += 0.008;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+        clusters.forEach((c, i) => {
+          const grad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, 46);
+          grad.addColorStop(0, (i === 0 ? CYAN : PURPLE) + '16'); grad.addColorStop(1, 'transparent');
+          ctx.beginPath(); ctx.arc(c.x, c.y, 46, 0, Math.PI * 2); ctx.fillStyle = grad; ctx.fill();
+        });
+        dots.forEach(d => {
+          d.x += d.vx + Math.sin(t + d.phase) * 0.10;
+          d.y += d.vy + Math.cos(t + d.phase) * 0.08;
+          if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+          if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+          ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+          ctx.fillStyle = d.color + 'cc'; ctx.fill();
+        });
+        ctx.font = '9px "JetBrains Mono", monospace';
+        ctx.fillStyle = 'rgba(56,189,248,0.30)'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.fillText('EMBEDDING SPACE', 10, 8);
+        requestAnimationFrame(loop);
+      })();
+
+    } else if (type === 'spectrum') {
+      // Mini NMR spectrum waveform
+      const PEAKS_S = [
+        { ppm: 7.4, amp: 0.52, w: 0.12, color: PURPLE },
+        { ppm: 5.1, amp: 0.32, w: 0.15, color: CYAN },
+        { ppm: 3.7, amp: 0.78, w: 0.10, color: CYAN },
+        { ppm: 2.9, amp: 0.58, w: 0.08, color: PURPLE },
+        { ppm: 1.9, amp: 0.44, w: 0.12, color: TEAL },
+        { ppm: 1.2, amp: 0.68, w: 0.09, color: CYAN },
+      ];
+      function lorentz(x, c, w, a) { return a / (1 + Math.pow((x - c) / w, 2)); }
+      function ppmX(p) { return W - (p / 9) * W; }
+      let ts = 0;
+      (function loop() {
+        ts += 0.010;
+        ctx.clearRect(0, 0, W, H); ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+        const BY = H * 0.74, CH = H * 0.58;
+        ctx.beginPath(); ctx.strokeStyle = CYAN + '15'; ctx.lineWidth = 0.7;
+        ctx.moveTo(0, BY); ctx.lineTo(W, BY); ctx.stroke();
+        ctx.beginPath(); ctx.strokeStyle = CYAN + '12'; ctx.lineWidth = 0.6;
+        for (let x = 0; x < W; x += 2) {
+          const n = (Math.sin(x * 0.1 + ts) + Math.sin(x * 0.3 + ts * 1.3)) * 1.4;
+          x === 0 ? ctx.moveTo(x, BY - n) : ctx.lineTo(x, BY - n);
+        }
+        ctx.stroke();
+        PEAKS_S.forEach((pk, idx) => {
+          const la = pk.amp * (1 + 0.04 * Math.sin(ts * 2 + idx));
+          const cxp = ppmX(pk.ppm);
+          const pts = [];
+          const sp = pk.w * (W / 9) * 14;
+          for (let dx = -sp; dx <= sp; dx += 2) {
+            const sx = cxp + dx, pv = 9 - (sx / W) * 9;
+            pts.push({ x: sx, y: BY - lorentz(pv, pk.ppm, pk.w, la) * CH });
+          }
+          const grad = ctx.createLinearGradient(0, BY - la * CH, 0, BY);
+          grad.addColorStop(0, pk.color + '28'); grad.addColorStop(1, pk.color + '00');
+          ctx.beginPath(); ctx.moveTo(pts[0].x, BY);
+          pts.forEach(p => ctx.lineTo(p.x, p.y));
+          ctx.lineTo(pts[pts.length-1].x, BY); ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+          ctx.beginPath(); pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+          ctx.strokeStyle = pk.color + '75'; ctx.lineWidth = 1; ctx.stroke();
+        });
+        ctx.font = '9px "JetBrains Mono", monospace';
+        ctx.fillStyle = 'rgba(56,189,248,0.30)'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.fillText('NMR SIGNAL', 10, 8);
+        requestAnimationFrame(loop);
+      })();
+
+    } else if (type === 'realtime') {
+      // Scrolling real-time multi-channel chart
+      const CHANNELS = [
+        { color: CYAN,   label: 'Acquisition', phase: 0 },
+        { color: PURPLE, label: 'QC Score',    phase: 1.5 },
+        { color: TEAL,   label: 'Lock Signal', phase: 3.0 },
+      ];
+      const history = CHANNELS.map(() => []);
+      const MAX_PTS = 80;
+      let tr = 0, blinkPhase = 0;
+      (function loop() {
+        tr += 0.04; blinkPhase += 0.06;
+        CHANNELS.forEach((ch, i) => {
+          const v = 0.3 + 0.25 * Math.sin(tr + ch.phase) + 0.06 * Math.sin(tr * 3.1 + i);
+          history[i].push(v);
+          if (history[i].length > MAX_PTS) history[i].shift();
+        });
+        ctx.clearRect(0, 0, W, H); ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+        const PAD = 14, cW = W - PAD * 2, cH = (H - 26) / CHANNELS.length;
+        CHANNELS.forEach((ch, i) => {
+          const yBase = 13 + i * cH + cH * 0.5;
+          const pts = history[i];
+          if (pts.length < 2) return;
+          ctx.beginPath();
+          pts.forEach((v, j) => {
+            const x = PAD + (j / (MAX_PTS - 1)) * cW, y = yBase - (v - 0.5) * cH * 0.78;
+            j === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          });
+          ctx.strokeStyle = ch.color + 'aa'; ctx.lineWidth = 1.1; ctx.stroke();
+          const grad = ctx.createLinearGradient(0, yBase - cH * 0.4, 0, yBase + cH * 0.4);
+          grad.addColorStop(0, ch.color + '20'); grad.addColorStop(1, ch.color + '00');
+          ctx.lineTo(PAD + cW, yBase); ctx.lineTo(PAD, yBase); ctx.closePath();
+          ctx.fillStyle = grad; ctx.fill();
+          ctx.font = '8px "JetBrains Mono", monospace';
+          ctx.fillStyle = ch.color + '70'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          ctx.fillText(ch.label, PAD, 13 + i * cH + 5);
+        });
+        if (Math.sin(blinkPhase) > 0) {
+          ctx.beginPath(); ctx.arc(W - 22, 10, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#22c55e'; ctx.fill();
+        }
+        ctx.font = '8px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#22c55e70'; ctx.textAlign = 'right'; ctx.textBaseline = 'top';
+        ctx.fillText('LIVE', W - 8, 6);
+        requestAnimationFrame(loop);
+      })();
+
+    } else if (type === 'neural') {
+      // Layered neural network diagram with animated pulses
+      const LAYERS = [4, 5, 3, 1];
+      const COLORS = [CYAN, TEAL, PURPLE, PURPLE];
+      const layerX = LAYERS.map((_, i) => W * (0.10 + i * 0.26));
+      function nodeY(layer, node) {
+        const n = LAYERS[layer], spacing = Math.min(H / (n + 1), 26);
+        return H / 2 + (node - (n - 1) / 2) * spacing;
+      }
+      const pulses = [];
+      setInterval(() => {
+        const fromL = Math.floor(Math.random() * (LAYERS.length - 1));
+        const fromN = Math.floor(Math.random() * LAYERS[fromL]);
+        const toN   = Math.floor(Math.random() * LAYERS[fromL + 1]);
+        pulses.push({ l: fromL, fn: fromN, tn: toN, t: 0 });
+        if (pulses.length > 14) pulses.shift();
+      }, 260);
+      (function loop() {
+        ctx.clearRect(0, 0, W, H); ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+        for (let l = 0; l < LAYERS.length - 1; l++) {
+          for (let a = 0; a < LAYERS[l]; a++) {
+            for (let b = 0; b < LAYERS[l + 1]; b++) {
+              ctx.beginPath();
+              ctx.moveTo(layerX[l], nodeY(l, a)); ctx.lineTo(layerX[l + 1], nodeY(l + 1, b));
+              ctx.strokeStyle = 'rgba(56,189,248,0.06)'; ctx.lineWidth = 0.6; ctx.stroke();
+            }
+          }
+        }
+        pulses.forEach(p => {
+          p.t = Math.min(p.t + 0.032, 1);
+          const sx = layerX[p.l], sy = nodeY(p.l, p.fn);
+          const ex = layerX[p.l + 1], ey = nodeY(p.l + 1, p.tn);
+          const px = sx + (ex - sx) * p.t, py = sy + (ey - sy) * p.t;
+          const grad = ctx.createRadialGradient(px, py, 0, px, py, 5);
+          grad.addColorStop(0, CYAN + 'cc'); grad.addColorStop(1, 'transparent');
+          ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fillStyle = grad; ctx.fill();
+        });
+        LAYERS.forEach((n, l) => {
+          for (let i = 0; i < n; i++) {
+            const x = layerX[l], y = nodeY(l, i);
+            ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = COLORS[l] + '2a'; ctx.fill();
+            ctx.strokeStyle = COLORS[l] + '99'; ctx.lineWidth = 1; ctx.stroke();
+          }
+        });
+        const labels = ['Input', 'Hidden', 'Hidden', 'Out'];
+        ctx.font = '8px "JetBrains Mono", monospace'; ctx.textAlign = 'center';
+        LAYERS.forEach((_, l) => {
+          ctx.fillStyle = COLORS[l] + '50'; ctx.fillText(labels[l], layerX[l], H - 5);
+        });
+        ctx.fillStyle = 'rgba(56,189,248,0.30)'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.fillText('NEURAL NETWORK', 10, 8);
+        requestAnimationFrame(loop);
+      })();
+
+    } else if (type === 'pipeline') {
+      // ETL pipeline: sources → transform → targets with animated particles
+      const SOURCES = [{ label: 'Excel', y: H*0.25 }, { label: 'PPT', y: H*0.5 }, { label: 'Docs', y: H*0.75 }];
+      const TARGETS = [{ label: 'HDFS', y: H*0.35 }, { label: 'Hive', y: H*0.65 }];
+      const TX = W * 0.5, TY = H * 0.5;
+      const particles2 = [];
+      setInterval(() => {
+        const s = SOURCES[Math.floor(Math.random() * SOURCES.length)];
+        particles2.push({ sx: W*0.13, sy: s.y, ex: TX - 30, ey: TY, t: 0, col: CYAN });
+        const tg = TARGETS[Math.floor(Math.random() * TARGETS.length)];
+        particles2.push({ sx: TX + 30, sy: TY, ex: W*0.87, ey: tg.y, t: 0, col: PURPLE });
+        if (particles2.length > 22) particles2.splice(0, 2);
+      }, 340);
+      function drawBox(ctx, x, y, w, h, color, label) {
+        const rx = x - w/2, ry = y - h/2;
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(rx, ry, w, h, 4); else ctx.rect(rx, ry, w, h);
+        ctx.fillStyle = color + '1a'; ctx.fill();
+        ctx.strokeStyle = color + '60'; ctx.lineWidth = 0.8; ctx.stroke();
+        ctx.font = '8px "JetBrains Mono", monospace';
+        ctx.fillStyle = color + 'bb'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(label, x, y);
+      }
+      (function loop() {
+        ctx.clearRect(0, 0, W, H); ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+        SOURCES.forEach(s => {
+          ctx.beginPath(); ctx.moveTo(W*0.13, s.y); ctx.lineTo(TX - 30, TY);
+          ctx.strokeStyle = CYAN + '1a'; ctx.lineWidth = 0.7; ctx.stroke();
+        });
+        TARGETS.forEach(tg => {
+          ctx.beginPath(); ctx.moveTo(TX + 30, TY); ctx.lineTo(W*0.87, tg.y);
+          ctx.strokeStyle = PURPLE + '1a'; ctx.lineWidth = 0.7; ctx.stroke();
+        });
+        particles2.forEach(p => {
+          p.t = Math.min(p.t + 0.026, 1);
+          ctx.beginPath(); ctx.arc(p.sx + (p.ex-p.sx)*p.t, p.sy + (p.ey-p.sy)*p.t, 2.2, 0, Math.PI*2);
+          ctx.fillStyle = p.col + 'cc'; ctx.fill();
+        });
+        SOURCES.forEach(s => drawBox(ctx, W*0.13, s.y, 42, 19, CYAN, s.label));
+        drawBox(ctx, TX, TY, 58, 32, TEAL, 'Transform');
+        TARGETS.forEach(tg => drawBox(ctx, W*0.87, tg.y, 42, 19, PURPLE, tg.label));
+        ctx.fillStyle = 'rgba(56,189,248,0.30)'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.font = '9px "JetBrains Mono", monospace'; ctx.fillText('ETL PIPELINE', 10, 8);
+        requestAnimationFrame(loop);
+      })();
+
+    } else if (type === 'barchart') {
+      // Animated bar chart — 6 bars with gentle breathing
+      const BARS = [
+        { label: 'A', target: 0.72, color: CYAN   },
+        { label: 'B', target: 0.55, color: PURPLE },
+        { label: 'C', target: 0.88, color: TEAL   },
+        { label: 'D', target: 0.63, color: CYAN   },
+        { label: 'E', target: 0.80, color: PURPLE },
+        { label: 'F', target: 0.48, color: TEAL   },
+      ];
+      let tb = 0;
+      (function loop() {
+        tb += 0.012;
+        ctx.clearRect(0, 0, W, H); ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+        const PL=14, PR=14, PT=20, PB=22;
+        const cW = W-PL-PR, cH = H-PT-PB;
+        const barW = cW / (BARS.length * 1.6), gap = cW / BARS.length;
+        [0.25, 0.5, 0.75, 1.0].forEach(r => {
+          const y = PT + cH * (1 - r);
+          ctx.beginPath(); ctx.moveTo(PL, y); ctx.lineTo(PL + cW, y);
+          ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 0.5; ctx.stroke();
+        });
+        BARS.forEach((b, i) => {
+          const liveH = b.target * (1 + 0.03 * Math.sin(tb * 1.8 + i * 0.9));
+          const barH  = cH * Math.min(liveH, 1);
+          const x = PL + gap * i + gap / 2 - barW / 2, y = PT + cH - barH;
+          const grad = ctx.createLinearGradient(0, y, 0, y + barH);
+          grad.addColorStop(0, b.color + 'cc'); grad.addColorStop(1, b.color + '33');
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(x, y, barW, barH, [3,3,0,0]); else ctx.rect(x, y, barW, barH);
+          ctx.fillStyle = grad; ctx.fill();
+          ctx.font = '8px "JetBrains Mono", monospace';
+          ctx.fillStyle = b.color + '88'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+          ctx.fillText(b.label, x + barW / 2, PT + cH + 4);
+        });
+        ctx.fillStyle = 'rgba(56,189,248,0.30)'; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.font = '9px "JetBrains Mono", monospace'; ctx.fillText('DASHBOARD METRICS', 10, 8);
+        requestAnimationFrame(loop);
+      })();
+    }
   });
 })();

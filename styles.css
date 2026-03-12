@@ -346,6 +346,55 @@ body {
   background: var(--border);
 }
 
+/* "Now" ticker strip */
+.hero-now {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  opacity: 0;
+}
+
+.now-label {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.now-track {
+  overflow: hidden;
+  flex: 1;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.now-items {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  white-space: nowrap;
+  animation: nowScroll 22s linear infinite;
+  font-size: 12px;
+  color: var(--t3);
+}
+
+.now-items em { color: var(--t2); font-style: normal; }
+
+.now-sep {
+  color: rgba(56,189,248,0.35);
+  flex-shrink: 0;
+}
+
+@keyframes nowScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* CTA */
 .hero-actions {
   display: flex;
@@ -1114,6 +1163,7 @@ footer {
 .hero-role,
 .hero-desc,
 .hero-stats,
+.hero-now,
 .hero-actions {
   transform: translateY(20px);
 }
@@ -1414,6 +1464,17 @@ footer {
   transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
   will-change: transform;
   overflow: hidden;
+}
+
+/* Card thumbnail canvas */
+.card-thumb {
+  display: block;
+  width: calc(100% + 48px);
+  height: 130px;
+  margin: -26px -24px 20px;
+  background: #060b16;
+  border-radius: var(--r) var(--r) 0 0;
+  flex-shrink: 0;
 }
 
 /* Mouse-tracked spotlight glow */
