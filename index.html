@@ -735,5 +735,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
+  <!-- pretext: reflow-free text measurement for animated heading reveals + bullet expand -->
+  <script type="module">
+    import { prepare, layout, prepareWithSegments, layoutWithLines }
+      from 'https://cdn.jsdelivr.net/npm/@chenglou/pretext/dist/layout.js';
+    window.__pretext = { prepare, layout, prepareWithSegments, layoutWithLines };
+    window.dispatchEvent(new CustomEvent('pretextReady'));
+  </script>
 </body>
 </html>

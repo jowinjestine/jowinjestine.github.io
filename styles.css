@@ -752,6 +752,42 @@ section { padding: var(--sec-pad) 0; }
 
 .tl-bullets strong { color: var(--t1); }
 
+/* Bullet expand/collapse (Feature 2 — pretext-powered) */
+.bullets-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: linear-gradient(to bottom, transparent, var(--card));
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.tl-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-family: var(--mono);
+  font-weight: 500;
+  color: var(--blue);
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity var(--dur);
+}
+.tl-expand-btn:hover { opacity: 1; }
+
+/* Word-reveal spans (Feature 1 — pretext-powered) */
+.reveal-word {
+  display: inline-block;
+}
+
 .tl-tags {
   display: flex;
   flex-wrap: wrap;

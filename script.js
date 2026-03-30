@@ -6,6 +6,14 @@
 gsap.registerPlugin(ScrollTrigger);
 
 /* ============================================================
+   PRETEXT BRIDGE — fires callback once pretext module is ready
+   ============================================================ */
+function withPretext(fn) {
+  if (window.__pretext) fn(window.__pretext);
+  else window.addEventListener('pretextReady', () => fn(window.__pretext), { once: true });
+}
+
+/* ============================================================
    HERO CANVAS — NMR Metabolomics Spectral Visualization
    ============================================================ */
 (function initHeroCanvas() {
@@ -353,11 +361,17 @@ heroTl
    SCROLL-TRIGGERED ANIMATIONS
    ============================================================ */
 
-// Section headers
+// Section headers — tag chip + subtitle fade; h2 is handled by initHeadingReveal (pretext)
 gsap.utils.toArray('.section-header').forEach(el => {
-  gsap.from(el, {
+  const tag = el.querySelector('.section-tag');
+  const sub = el.querySelector('.section-sub');
+  if (tag) gsap.from(tag, {
     scrollTrigger: { trigger: el, start: 'top 82%', once: true },
-    opacity: 0, y: 32, duration: 0.65, ease: 'power3.out'
+    opacity: 0, y: 16, duration: 0.5, ease: 'power3.out',
+  });
+  if (sub) gsap.from(sub, {
+    scrollTrigger: { trigger: el, start: 'top 82%', once: true },
+    opacity: 0, y: 16, duration: 0.5, ease: 'power3.out', delay: 0.25,
   });
 });
 
@@ -964,6 +978,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
 
   let W, H;
   const particles = [];
+  // Per-node NH overrides — populated by pretext once module is ready
+  const nodeSizes = {};
   let hoveredId = null;
   let selectedId = null;
 
@@ -1079,7 +1095,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       const isHovered  = hoveredId === n.id;
       const isSelected = selectedId === n.id;
       const isMob = window.innerWidth <= 640;
-      const NW = isMob ? 105 : 130, NH = isMob ? 38 : 44;
+      const NW = isMob ? 105 : 130;
+      const NH = isMob ? 38 : (nodeSizes[n.id] ?? 44);
 
       // Glow
       if (isHovered || isSelected) {
@@ -1170,6 +1187,15 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   resize();
   draw();
   window.addEventListener('resize', resize);
+
+  // Measure node sub-labels with pretext — expands NH if label wraps
+  withPretext(({ prepare, layout }) => {
+    NODES.forEach(n => {
+      const innerW = 130 - 18; // NW - horizontal padding
+      const { lineCount } = layout(prepare(n.sub, '9px "JetBrains Mono", monospace'), innerW, 12);
+      nodeSizes[n.id] = lineCount > 1 ? 58 : 44;
+    });
+  });
 
   // Scroll reveal
   gsap.from('.arch-wrap', {
@@ -1839,5 +1865,134 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         requestAnimationFrame(loop);
       })();
     }
+  });
+})();
+
+/* ============================================================
+   FEATURE 1: WORD-BY-WORD HEADING REVEAL (powered by pretext)
+   Measurement deferred into onEnter so offsetWidth is valid.
+   pretext maps each word to its line — L→R stagger per line
+   with a gap between lines. Zero DOM reflows at init time.
+   ============================================================ */
+(function initHeadingReveal() {
+  withPretext(({ prepareWithSegments, layoutWithLines }) => {
+    document.querySelectorAll('.section-header h2').forEach(el => {
+      // Pre-extract text now (no layout needed for textContent)
+      const clone = el.cloneNode(true);
+      clone.querySelectorAll('br').forEach(br => br.replaceWith(' '));
+      const rawText = clone.textContent.trim().replace(/\s+/g, ' ');
+      const words = rawText.split(' ').filter(Boolean);
+      if (words.length === 0) return;
+
+      // Hide heading until scroll entry (replaces old section-header block fade)
+      gsap.set(el, { opacity: 0 });
+
+      ScrollTrigger.create({
+        trigger: el,
+        start: 'top 87%',
+        once: true,
+        onEnter() {
+          // Layout is now valid — el is in/near viewport
+          const cs        = getComputedStyle(el);
+          const font      = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+          const lineHeight = parseFloat(cs.lineHeight);
+          const maxWidth  = el.offsetWidth;
+
+          const WORD_DT = 0.072, LINE_GAP = 0.20;
+          let wordDelays = words.map((_, i) => i * WORD_DT); // safe default
+
+          if (maxWidth > 0) {
+            try {
+              const prepared = prepareWithSegments(rawText, font);
+              const { lines } = layoutWithLines(prepared, maxWidth, lineHeight);
+              wordDelays = [];
+              let delay = 0, cursor = 0;
+              lines.forEach((line, li) => {
+                if (li > 0) delay += LINE_GAP;
+                const n = line.text.trim().split(/\s+/).filter(Boolean).length;
+                for (let w = 0; w < n; w++) {
+                  wordDelays[cursor++] = delay;
+                  delay += WORD_DT;
+                }
+              });
+              // Fallback for any overflow words
+              for (let i = cursor; i < words.length; i++) {
+                wordDelays[i] = delay; delay += WORD_DT;
+              }
+            } catch (_) { /* keep sequential default */ }
+          }
+
+          // Swap h2 text for per-word spans, then animate
+          el.innerHTML = words.map(w => `<span class="reveal-word">${w}</span>`).join(' ');
+          const spans  = Array.from(el.querySelectorAll('.reveal-word'));
+          gsap.set(el,    { opacity: 1 });
+          gsap.set(spans, { opacity: 0, y: 22 });
+          spans.forEach((span, i) => {
+            gsap.to(span, {
+              opacity: 1, y: 0, duration: 0.55, ease: 'power3.out',
+              delay: wordDelays[i] ?? i * WORD_DT,
+            });
+          });
+        },
+      });
+    });
+  });
+})();
+
+/* ============================================================
+   FEATURE 2: EXPERIENCE BULLET EXPAND/COLLAPSE (powered by pretext)
+   pretext measures total bullet height without reflow — gives
+   GSAP the exact pixel target for a smooth height animation.
+   ============================================================ */
+(function initBulletExpand() {
+  withPretext(({ prepare, layout }) => {
+    const FONT       = '14px Inter';
+    const LINE_H     = 14 * 1.65;   // 23.1px — matches .tl-bullets li line-height
+    const PAD_V      = 10;          // 5px top + 5px bottom per li
+    const COLLAPSED  = 42;          // px — shows first bullet (~1 line + padding)
+
+    document.querySelectorAll('.tl-card').forEach(card => {
+      const list  = card.querySelector('.tl-bullets');
+      if (!list) return;
+      const items = Array.from(list.querySelectorAll('li'));
+      if (items.length <= 2) return; // not worth collapsing
+
+      // Measure full expanded height with pretext — zero DOM reflow
+      const textW = list.offsetWidth - 22; // subtract → indent
+      let fullH = 0;
+      items.forEach(li => {
+        const { lineCount } = layout(prepare(li.textContent.trim(), FONT), textW, LINE_H);
+        fullH += lineCount * LINE_H + PAD_V;
+      });
+
+      // Apply collapsed state
+      gsap.set(list, { height: COLLAPSED, overflow: 'hidden' });
+
+      // Fade overlay at the bottom of collapsed list
+      const fade = document.createElement('div');
+      fade.className = 'bullets-fade';
+      list.style.position = 'relative';
+      list.appendChild(fade);
+
+      // Toggle button
+      const btn = document.createElement('button');
+      btn.className  = 'tl-expand-btn';
+      btn.textContent = 'Show all →';
+      list.after(btn);
+
+      let expanded = false;
+      btn.addEventListener('click', () => {
+        expanded = !expanded;
+        if (expanded) {
+          gsap.to(list, { height: fullH, duration: 0.42, ease: 'power3.out' });
+          gsap.to(fade, { opacity: 0, duration: 0.25 });
+          btn.textContent = 'Show less ↑';
+        } else {
+          gsap.to(list, { height: COLLAPSED, duration: 0.32, ease: 'power3.in' });
+          gsap.to(fade, { opacity: 1, duration: 0.2, delay: 0.12 });
+          btn.textContent = 'Show all →';
+        }
+      });
+    });
   });
 })();
