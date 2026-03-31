@@ -287,10 +287,11 @@ document.querySelectorAll('.mobile-link').forEach(link => {
   const el    = document.getElementById('typewriter');
   const words = [
     'data pipelines',
-    'clinical systems',
-    'analytics platforms',
-    'biotech infrastructure',
+    'fintech systems',
     'scalable architectures',
+    'analytics platforms',
+    'production-grade APIs',
+    'cloud infrastructure',
   ];
   let wi       = 0;
   let ci       = 0;
@@ -634,8 +635,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '  ps aux              — running processes' },
         { t: 'out', v: '  matrix              — ?' },
         { t: 'out', v: '  fun --facts         — things you didn\'t know about me' },
-        { t: 'out', v: '  coffee              — brew a cup' },
         { t: 'out', v: '  jowin.vibe()        — current state of mind' },
+        { t: 'out', v: '  f1                  — race weekend mode' },
         { t: 'out', v: '  clear               — clear terminal' },
         { t: 'out', v: '  exit                — close terminal' },
         { t: 'blank', v: '' },
@@ -652,7 +653,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '  "specialization": ["Metabolomics Pipelines", "NMR/MS Data Engineering", "HIPAA-Compliant Cloud Systems"],' },
         { t: 'out', v: '  "education":      ["MS Business Analytics — UConn", "BE Computer Engineering — Mumbai"],' },
         { t: 'out', v: '  "published":      "iScience, Cell Press 2025 (kidney transplant metabolomics)",' },
-        { t: 'out', v: '  "open_to":        "Data Engineering · ML Engineering · Big Tech · Hedge Funds",' },
+        { t: 'out', v: '  "open_to":        "Fintech · Big Tech · Quant · ML Engineering",' },
         { t: 'out', v: '  "email":          "jowinjestine@gmail.com",' },
         { t: 'out', v: '  "fun":            "run fun --facts for the real story"' },
         { t: 'out', v: '}' },
@@ -760,7 +761,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '    "NMR deep learning QC model — 35% accuracy gain, 72% review reduction",' },
         { t: 'out', v: '    "NLP incident router — 30% → 87% accuracy at Cigna"' },
         { t: 'out', v: '  ],' },
-        { t: 'out', v: '  "open_to": ["Big Tech","Hedge Fund","Biotech","Quant Research"]' },
+        { t: 'out', v: '  "open_to": ["Fintech", "Big Tech", "Quant Research", "ML Engineering"]' },
         { t: 'out', v: '}' },
         { t: 'blank', v: '' },
       ];
@@ -820,24 +821,13 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       return [
         { t: 'out', v: 'fun_facts.json → Jowin Jestine' },
         { t: 'blank', v: '' },
-        { t: 'out', v: '  [0] Grew up in Mumbai 🇮🇳 — now surviving Boston winters ❄️' },
-        { t: 'out', v: '  [1] Coffee consumed per week: ~14 cups (unaudited, not HIPAA-regulated)' },
-        { t: 'out', v: '  [2] Can explain what NMR metabolomics is at a dinner party. Tries not to.' },
-        { t: 'out', v: '  [3] Favourite metabolite: Lactate — it works hard under pressure, just like me' },
+        { t: 'out', v: '  [0] Grew up in Mumbai 🇮🇳 — tinkering with PCs before writing a single line of code' },
+        { t: 'out', v: '  [1] Has watched every F1 season since childhood. Current WCC standings memorised 🏎️' },
+        { t: 'out', v: '  [2] CS2 grinder — prefers playing rifler, refuses to eco-drop' },
+        { t: 'out', v: '  [3] Built multiple custom PCs from scratch. Still browsing PCPartPicker at midnight' },
         { t: 'out', v: '  [4] Published in Cell Press (iScience) before 30 🎓' },
-        { t: 'out', v: '  [5] Still misses Mumbai street food. The quest for good dosa in Boston continues 🥲' },
-        { t: 'out', v: '  [6] Weekend sport: watching cricket at 4am EST for India matches 🏏' },
-        { t: 'blank', v: '' },
-      ];
-    },
-    coffee() {
-      return [
-        { t: 'out', v: '$ brew jowin --strength=double-shot --no-decaf --no-sugar' },
-        { t: 'out', v: 'Brewing...' },
-        { t: 'out', v: '  [████████████████████] 100%' },
-        { t: 'out', v: '' },
-        { t: 'out', v: '☕ Ready. Black. No sugar. Fuel for production deployments.' },
-        { t: 'dim', v: '   Estimated caffeine half-life: 5.7 hours. Next cup: ~3pm.' },
+        { t: 'out', v: '  [5] Target: Fintech or Big Tech data engineering. This biotech run was the training arc.' },
+        { t: 'out', v: '  [6] Still misses Mumbai street food. Dosa quest in Boston is ongoing 🥲' },
         { t: 'blank', v: '' },
       ];
     },
@@ -845,13 +835,26 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       return [
         { t: 'out', v: ">>> jowin.vibe()" },
         { t: 'out', v: '{' },
-        { t: 'out', v: "  mood:        'building things that matter'," },
-        { t: 'out', v: "  music:       'lo-fi + Malayalam classics depending on the mood'," },
-        { t: 'out', v: "  fuel:        'coffee (black, always)'," },
-        { t: 'out', v: "  current_tab: 'probably an Azure docs page'," },
-        { t: 'out', v: "  side_quest:  'finding the best biriyani in Boston'," },
-        { t: 'out', v: "  energy:      '██████████ 89% — post-gym boost'" },
+        { t: 'out', v: "  mood:        'shipping things that scale'," },
+        { t: 'out', v: "  currently:   'deep in an Azure Functions refactor'," },
+        { t: 'out', v: "  music:       'Malayalam classics to lo-fi, depending on the vibe'," },
+        { t: 'out', v: "  after_work:  'CS2 ranked grind or F1 highlight reel'," },
+        { t: 'out', v: "  current_tab: 'PCPartPicker + Azure docs (two monitors)'," },
+        { t: 'out', v: "  goal:        'Fintech or Big Tech data engineering role'," },
+        { t: 'out', v: "  energy:      '██████████ 91% — post-gym, no excuses'" },
         { t: 'out', v: '}' },
+        { t: 'blank', v: '' },
+      ];
+    },
+    'f1'() {
+      return [
+        { t: 'out', v: '$ cat ~/interests/f1.log' },
+        { t: 'blank', v: '' },
+        { t: 'out', v: 'Formula 1 — season tracker' },
+        { t: 'out', v: '  Status:     Race weekend mode 🏎️' },
+        { t: 'out', v: '  Stance:     Data tells the story, strategy wins the race' },
+        { t: 'out', v: '  Opinion:    DRS is a necessary evil. Tyre deg makes it interesting.' },
+        { t: 'out', v: '  Hot take:   The data behind F1 telemetry is genuinely world-class engineering.' },
         { t: 'blank', v: '' },
       ];
     },
