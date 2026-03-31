@@ -737,9 +737,9 @@
   <script src="script.js"></script>
   <!-- pretext: reflow-free text measurement for animated heading reveals + bullet expand -->
   <script type="module">
-    import { prepare, layout, prepareWithSegments, layoutWithLines }
+    import { prepare, layout, prepareWithSegments, layoutWithLines, walkLineRanges, layoutNextLine }
       from 'https://cdn.jsdelivr.net/npm/@chenglou/pretext/dist/layout.js';
-    window.__pretext = { prepare, layout, prepareWithSegments, layoutWithLines };
+    window.__pretext = { prepare, layout, prepareWithSegments, layoutWithLines, walkLineRanges, layoutNextLine };
     window.dispatchEvent(new CustomEvent('pretextReady'));
   </script>
 </body>

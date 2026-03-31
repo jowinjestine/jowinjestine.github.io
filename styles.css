@@ -1978,3 +1978,73 @@ footer {
   .modal-card { padding: 28px 20px 36px; max-height: 92vh; }
   .modal-arch { gap: 4px; }
 }
+
+/* ============================================================
+   PRETEXT FEATURES — streaming abstract, scan-line bullets,
+   redaction bars, canvas tooltip (no extra DOM for tooltip)
+   ============================================================ */
+
+/* -- Streaming abstract (Feature 2) -- */
+.stream-line {
+  display: block;
+  position: relative;
+  line-height: inherit;
+  color: var(--t2);
+  font-size: inherit;
+}
+
+.stream-sweep {
+  display: block;
+  position: absolute;
+  bottom: 1px;
+  left: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, #38bdf8 20%, #38bdf8 80%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  border-radius: 1px;
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0.7;
+}
+
+.stream-sweep.stream-sweep-go {
+  transform: scaleX(1);
+}
+
+/* -- Scan-line bullets (Feature 3) -- */
+.scan-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #38bdf8 30%, #06b6d4 70%, transparent);
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+}
+
+.tl-bullets li.scan-dim {
+  color: rgba(148, 163, 184, 0.18);
+  transition: color 0.35s ease;
+}
+
+.tl-bullets li.scan-lit {
+  color: var(--t2);
+  transition: color 0.35s ease;
+}
+
+/* -- Redaction bars (Feature 4) -- */
+.redact-bar {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 110%;
+  transform: translateY(-50%);
+  background: #080d1a;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+}

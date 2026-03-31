@@ -982,6 +982,23 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   const nodeSizes = {};
   let hoveredId = null;
   let selectedId = null;
+  // Tooltip text cache: nodeId -> string[]
+  const tooltipCache = {};
+
+  function getTooltipLines(n) {
+    if (tooltipCache[n.id]) return tooltipCache[n.id];
+    const shortDesc = n.info.why.split('. ')[0] + '.';
+    tooltipCache[n.id] = [shortDesc]; // fallback: single unwrapped line
+    if (window.__pretext) {
+      try {
+        const { prepare, layoutWithLines } = window.__pretext;
+        const prep = prepare(shortDesc, '10px "Inter", sans-serif');
+        const { lines } = layoutWithLines(prep, 176, 15);
+        if (lines && lines.length) tooltipCache[n.id] = lines.map(l => l.text);
+      } catch (_) {}
+    }
+    return tooltipCache[n.id];
+  }
 
   function resize() {
     const dpr      = window.devicePixelRatio || 1;
@@ -1128,6 +1145,54 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       ctx.fillStyle = isSelected ? '#38bdf8' : '#64748b';
       ctx.fillText(n.sub, x, y + 11);
     });
+
+    // Canvas glassmorphism tooltip on hover (powered by pretext layoutWithLines)
+    if (hoveredId && !selectedId) {
+      const n = NODES.find(x => x.id === hoveredId);
+      if (n) {
+        const { x, y } = nodePos(n);
+        const TW = 202, PAD = 12;
+        const wrappedLines = getTooltipLines(n);
+        const TH = PAD + 16 + wrappedLines.length * 15 + PAD;
+        let tx = x + 74, ty = y - TH / 2;
+        if (tx + TW > W - 4) tx = x - TW - 74;
+        if (ty < 4) ty = 4;
+        if (ty + TH > H - 4) ty = H - TH - 4;
+
+        // Glass box
+        ctx.save();
+        drawRoundRect(tx, ty, TW, TH, 10);
+        ctx.fillStyle = 'rgba(5,10,28,0.92)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(56,189,248,0.38)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        // Cyan top accent bar
+        ctx.beginPath();
+        ctx.moveTo(tx + 10, ty + 1.5);
+        ctx.lineTo(tx + TW - 10, ty + 1.5);
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+
+        // Title line
+        ctx.font = '600 11px "Inter", sans-serif';
+        ctx.fillStyle = '#38bdf8';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        const titleShort = n.info.title.replace(/\s*\([^)]*\)$/, '');
+        ctx.fillText(titleShort, tx + PAD, ty + PAD);
+
+        // Body: pretext-wrapped description lines
+        ctx.font = '10px "Inter", sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        wrappedLines.forEach((line, i) => {
+          ctx.fillText(line, tx + PAD, ty + PAD + 17 + i * 15);
+        });
+        ctx.textBaseline = 'alphabetic';
+      }
+    }
 
     requestAnimationFrame(draw);
   }
@@ -1934,6 +1999,180 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
             });
           });
         },
+      });
+    });
+  });
+})();
+
+/* ============================================================
+   FEATURE 2: STREAMING ABSTRACT REVEAL (powered by pretext)
+   layoutWithLines gives exact per-line text + width. Characters
+   stream in line by line; each finished line gets a cyan
+   underline sweep — like an AI reading the text live.
+   ============================================================ */
+(function initAbstractStream() {
+  const el = document.querySelector('.pub-abstract');
+  if (!el) return;
+  const rawText = el.textContent.trim();
+
+  // Wrap ScrollTrigger creation inside withPretext so both are guaranteed ready
+  withPretext(({ prepareWithSegments, layoutWithLines }) => {
+    gsap.set(el, { opacity: 0 });
+
+    ScrollTrigger.create({
+      trigger: el, start: 'top 88%', once: true,
+      onEnter() {
+        // Measurement here: element is in/near viewport so offsetWidth is valid
+        const cs       = getComputedStyle(el);
+        const font     = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        const lh       = parseFloat(cs.lineHeight);
+        const maxWidth = el.offsetWidth;
+        if (!maxWidth) { gsap.set(el, { opacity: 1 }); return; }
+
+        // layoutWithLines returns exact per-line { text, width } — no DOM reflow
+        const prepared = prepareWithSegments(rawText, font);
+        const { lines } = layoutWithLines(prepared, maxWidth, lh);
+        if (!lines || !lines.length) { gsap.set(el, { opacity: 1 }); return; }
+
+        // Build DOM: one <span class="stream-line"> per line
+        gsap.set(el, { opacity: 1 });
+        el.innerHTML = '';
+        const lineEls = lines.map(() => {
+          const span = document.createElement('span');
+          span.className = 'stream-line';
+          el.appendChild(span);
+          return span;
+        });
+
+        // Stream line by line, character by character
+        let lineIdx = 0;
+        let charIdx = 0;
+        function tick() {
+          if (lineIdx >= lines.length) return;
+          const line = lines[lineIdx];
+          charIdx = Math.min(charIdx + 4, line.text.length);
+          if (charIdx >= line.text.length) {
+            // Line complete — finalise text and sweep cyan underline
+            lineEls[lineIdx].textContent = line.text;
+            const sweep = document.createElement('span');
+            sweep.className = 'stream-sweep';
+            sweep.style.width = Math.ceil(line.width) + 'px';
+            lineEls[lineIdx].appendChild(sweep);
+            requestAnimationFrame(() => sweep.classList.add('stream-sweep-go'));
+            lineIdx++;
+            charIdx = 0;
+          } else {
+            lineEls[lineIdx].textContent = line.text.slice(0, charIdx) + '█';
+          }
+          setTimeout(tick, 22);
+        }
+        tick();
+      },
+    });
+  });
+})();
+
+/* ============================================================
+   FEATURE 3: SCAN-LINE BULLET REVEAL (powered by pretext)
+   walkLineRanges measures exact line count of each experience
+   bullet so the cyan scan bar timing is pixel-perfect.
+   ============================================================ */
+(function initBulletScanLine() {
+  withPretext(({ prepare, walkLineRanges }) => {
+    document.querySelectorAll('.tl-card').forEach(card => {
+      const bulletList = card.querySelector('.tl-bullets');
+      if (!bulletList) return;
+      const bullets = Array.from(bulletList.querySelectorAll('li'));
+      if (!bullets.length) return;
+
+      bullets.forEach(li => li.classList.add('scan-dim'));
+
+      const scanBar = document.createElement('div');
+      scanBar.className = 'scan-bar';
+      bulletList.style.position = 'relative';
+      bulletList.appendChild(scanBar);
+
+      ScrollTrigger.create({
+        trigger: card, start: 'top 80%', once: true,
+        onEnter() {
+          const cs      = getComputedStyle(bullets[0]);
+          const font    = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+          const maxW    = bulletList.offsetWidth - 28;
+          const lineH   = parseFloat(cs.lineHeight) || 22;
+
+          // walkLineRanges counts exact wrapped lines per bullet
+          let cumY = 0;
+          const meta = bullets.map(li => {
+            let lineCount = 0;
+            try {
+              const prep = prepare(li.textContent.trim(), font);
+              walkLineRanges(prep, maxW, () => { lineCount++; });
+            } catch (_) {}
+            lineCount = Math.max(lineCount, 1);
+            const h = lineCount * lineH + 12;
+            const midY = cumY + h / 2;
+            cumY += h;
+            return { li, midY };
+          });
+
+          const totalH = bulletList.offsetHeight || cumY;
+
+          const tl = gsap.timeline();
+          tl.fromTo(scanBar,
+            { top: -2, opacity: 1 },
+            {
+              top: totalH + 2, duration: 1.4, ease: 'linear',
+              onUpdate() {
+                const barY = gsap.getProperty(scanBar, 'top');
+                meta.forEach(m => {
+                  if (+barY >= m.midY && !m.li.classList.contains('scan-lit')) {
+                    m.li.classList.remove('scan-dim');
+                    m.li.classList.add('scan-lit');
+                  }
+                });
+              },
+            },
+          );
+          tl.to(scanBar, { opacity: 0, duration: 0.25 });
+        },
+      });
+    });
+  });
+})();
+
+/* ============================================================
+   FEATURE 4: REDACTION BAR HERO STAT REVEAL (powered by pretext)
+   layoutWithLines .width gives exact pixel width of each stat
+   label — redaction bars are sized precisely, then wipe away.
+   ============================================================ */
+(function initRedactionReveal() {
+  withPretext(({ prepare, layoutWithLines }) => {
+    document.querySelectorAll('.stat-label').forEach((label, i) => {
+      const cs   = getComputedStyle(label);
+      const font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+      const lh   = parseFloat(cs.lineHeight) || 18;
+      const text = label.textContent;
+
+      let barW = label.offsetWidth || 90;
+      try {
+        const prep       = prepare(text, font);
+        const { lines }  = layoutWithLines(prep, Infinity, lh);
+        if (lines && lines[0]) barW = lines[0].width + 8;
+      } catch (_) {}
+
+      label.style.position = 'relative';
+      const bar = document.createElement('span');
+      bar.className = 'redact-bar';
+      bar.style.width = barW + 'px';
+      label.appendChild(bar);
+
+      gsap.to(bar, {
+        scaleX: 0,
+        transformOrigin: 'right center',
+        duration: 0.55,
+        ease: 'power2.inOut',
+        delay: 2.6 + i * 0.5,
+        onComplete() { bar.style.display = 'none'; },
       });
     });
   });
