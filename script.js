@@ -351,6 +351,7 @@ const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.2 });
 
 heroTl
   .to('.hero-name',    { opacity: 1, y: 0, duration: 0.6  })
+  .to('.hero-journey', { opacity: 1, y: 0, duration: 0.45 }, '-=0.2')
   .to('.hero-role',    { opacity: 1, y: 0, duration: 0.5  }, '-=0.25')
   .to('.hero-desc',    { opacity: 1, y: 0, duration: 0.5  }, '-=0.2' )
   .to('.hero-stats',   { opacity: 1, y: 0, duration: 0.45 }, '-=0.15')
@@ -632,6 +633,9 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '  nmr --scan          — NMR spectral analysis' },
         { t: 'out', v: '  ps aux              — running processes' },
         { t: 'out', v: '  matrix              — ?' },
+        { t: 'out', v: '  fun --facts         — things you didn\'t know about me' },
+        { t: 'out', v: '  coffee              — brew a cup' },
+        { t: 'out', v: '  jowin.vibe()        — current state of mind' },
         { t: 'out', v: '  clear               — clear terminal' },
         { t: 'out', v: '  exit                — close terminal' },
         { t: 'blank', v: '' },
@@ -643,11 +647,14 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '  "name":           "Jowin Jestine",' },
         { t: 'out', v: '  "title":          "Data Engineer III",' },
         { t: 'out', v: '  "company":        "Olaris, Inc. (Biotech · Clinical Diagnostics)",' },
+        { t: 'out', v: '  "origin":         "Mumbai, India 🇮🇳  →  Boston, MA 🇺🇸",' },
         { t: 'out', v: '  "location":       "Boston, MA",' },
         { t: 'out', v: '  "specialization": ["Metabolomics Pipelines", "NMR/MS Data Engineering", "HIPAA-Compliant Cloud Systems"],' },
         { t: 'out', v: '  "education":      ["MS Business Analytics — UConn", "BE Computer Engineering — Mumbai"],' },
+        { t: 'out', v: '  "published":      "iScience, Cell Press 2025 (kidney transplant metabolomics)",' },
         { t: 'out', v: '  "open_to":        "Data Engineering · ML Engineering · Big Tech · Hedge Funds",' },
-        { t: 'out', v: '  "email":          "jowinjestine@gmail.com"' },
+        { t: 'out', v: '  "email":          "jowinjestine@gmail.com",' },
+        { t: 'out', v: '  "fun":            "run fun --facts for the real story"' },
         { t: 'out', v: '}' },
         { t: 'blank', v: '' },
       ];
@@ -806,6 +813,45 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       return [
         { t: 'out', v: 'Opening Jowin Jestine - Resume.pdf...' },
         { t: 'dim', v: '✓ Download initiated — check your downloads folder' },
+        { t: 'blank', v: '' },
+      ];
+    },
+    'fun --facts'() {
+      return [
+        { t: 'out', v: 'fun_facts.json → Jowin Jestine' },
+        { t: 'blank', v: '' },
+        { t: 'out', v: '  [0] Grew up in Mumbai 🇮🇳 — now surviving Boston winters ❄️' },
+        { t: 'out', v: '  [1] Coffee consumed per week: ~14 cups (unaudited, not HIPAA-regulated)' },
+        { t: 'out', v: '  [2] Can explain what NMR metabolomics is at a dinner party. Tries not to.' },
+        { t: 'out', v: '  [3] Favourite metabolite: Lactate — it works hard under pressure, just like me' },
+        { t: 'out', v: '  [4] Published in Cell Press (iScience) before 30 🎓' },
+        { t: 'out', v: '  [5] Still misses Mumbai street food. The quest for good dosa in Boston continues 🥲' },
+        { t: 'out', v: '  [6] Weekend sport: watching cricket at 4am EST for India matches 🏏' },
+        { t: 'blank', v: '' },
+      ];
+    },
+    coffee() {
+      return [
+        { t: 'out', v: '$ brew jowin --strength=double-shot --no-decaf --no-sugar' },
+        { t: 'out', v: 'Brewing...' },
+        { t: 'out', v: '  [████████████████████] 100%' },
+        { t: 'out', v: '' },
+        { t: 'out', v: '☕ Ready. Black. No sugar. Fuel for production deployments.' },
+        { t: 'dim', v: '   Estimated caffeine half-life: 5.7 hours. Next cup: ~3pm.' },
+        { t: 'blank', v: '' },
+      ];
+    },
+    'jowin.vibe()'() {
+      return [
+        { t: 'out', v: ">>> jowin.vibe()" },
+        { t: 'out', v: '{' },
+        { t: 'out', v: "  mood:        'building things that matter'," },
+        { t: 'out', v: "  music:       'lo-fi + Malayalam classics depending on the mood'," },
+        { t: 'out', v: "  fuel:        'coffee (black, always)'," },
+        { t: 'out', v: "  current_tab: 'probably an Azure docs page'," },
+        { t: 'out', v: "  side_quest:  'finding the best biriyani in Boston'," },
+        { t: 'out', v: "  energy:      '██████████ 89% — post-gym boost'" },
+        { t: 'out', v: '}' },
         { t: 'blank', v: '' },
       ];
     },
