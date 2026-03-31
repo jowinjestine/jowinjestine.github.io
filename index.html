@@ -30,6 +30,7 @@
   <!-- Custom cursor -->
   <div class="c-dot" id="cDot"></div>
   <div class="c-ring" id="cRing"></div>
+  <div class="mouse-glow" id="mouseGlow"></div>
 
   <!-- Scroll progress -->
   <div class="scroll-progress" id="scrollProgress"></div>
@@ -44,6 +45,8 @@
       <li><a href="#architecture">Architecture</a></li>
       <li><a href="#skills-radar">Skills Radar</a></li>
       <li><a href="#publications">Publications</a></li>
+      <li><a href="#philosophy">Philosophy</a></li>
+      <li><a href="#exploring">Exploring</a></li>
       <li><a href="#skills">Tools</a></li>
       <li><a href="#contact" class="nav-cta">Contact</a></li>
     </ul>
@@ -60,6 +63,8 @@
     <a href="#architecture" class="mobile-link">Architecture</a>
     <a href="#skills-radar" class="mobile-link">Skills Radar</a>
     <a href="#publications" class="mobile-link">Publications</a>
+    <a href="#philosophy" class="mobile-link">Philosophy</a>
+    <a href="#exploring" class="mobile-link">Exploring</a>
     <a href="#skills" class="mobile-link">Tools</a>
     <a href="#contact" class="mobile-link">Contact</a>
   </div>
@@ -165,6 +170,26 @@
     </div>
   </section>
 
+  <!-- ============ LOGO STRIP ============ -->
+  <div class="logo-strip" aria-label="Companies and institutions">
+    <div class="container">
+      <p class="logo-strip-label">Experience &amp; Affiliations</p>
+      <div class="logo-strip-track">
+        <span class="logo-item">Olaris, Inc.</span>
+        <span class="logo-sep">·</span>
+        <span class="logo-item">Boehringer Ingelheim</span>
+        <span class="logo-sep">·</span>
+        <span class="logo-item">Cigna</span>
+        <span class="logo-sep">·</span>
+        <span class="logo-item">University of Connecticut</span>
+        <span class="logo-sep">·</span>
+        <span class="logo-item logo-item-highlight">Cell Press · iScience</span>
+        <span class="logo-sep">·</span>
+        <span class="logo-item">University of Mumbai</span>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ ABOUT ============ -->
   <section id="about">
     <div class="container">
@@ -230,6 +255,18 @@
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ IMPACT TIMELINE ============ -->
+  <section id="impact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Career Trajectory</span>
+        <h2>Scale of Impact<br/>Over Time</h2>
+        <p class="section-sub">Every role added a new dimension — scope, scale, and complexity growing year over year.</p>
+      </div>
+      <canvas id="impactCanvas" height="220"></canvas>
     </div>
   </section>
 
@@ -517,6 +554,43 @@
     </div>
   </section>
 
+  <!-- ============ EXPLORING ============ -->
+  <section id="exploring">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Currently Exploring</span>
+        <h2>What's Next</h2>
+        <p class="section-sub">The best engineers are always in motion. Here's what I'm digging into outside of work.</p>
+      </div>
+      <div class="exploring-grid">
+        <div class="explore-card">
+          <div class="explore-icon">🤖</div>
+          <h3>Reinforcement Learning</h3>
+          <p>Studying RL for optimization problems — particularly how reward shaping maps to real-world data pipeline scheduling and resource allocation at scale.</p>
+          <div class="explore-status"><span class="explore-dot"></span> Actively reading</div>
+        </div>
+        <div class="explore-card">
+          <div class="explore-icon">👁️</div>
+          <h3>Computer Vision &amp; OpenCV</h3>
+          <p>Deep-diving OpenCV and modern CV architectures. Exploring applications in biomedical imaging and how vision models can complement metabolomics data.</p>
+          <div class="explore-status"><span class="explore-dot"></span> Experimenting</div>
+        </div>
+        <div class="explore-card">
+          <div class="explore-icon">⚡</div>
+          <h3>Real-Time Data at Microsecond Latency</h3>
+          <p>Exploring how trading infrastructure handles ultra-low-latency data ingestion — from LMAX Disruptor patterns to event sourcing at financial-grade throughput.</p>
+          <div class="explore-status"><span class="explore-dot"></span> Deep dive</div>
+        </div>
+        <div class="explore-card">
+          <div class="explore-icon">🧠</div>
+          <h3>LLMs for Structured Data</h3>
+          <p>Experimenting with LangChain and fine-tuned models for clinical NLP — extracting structured insights from free-text clinical notes at production scale.</p>
+          <div class="explore-status"><span class="explore-dot"></span> Building</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ SKILLS ============ -->
   <section id="skills">
     <div class="container">
@@ -628,6 +702,26 @@
     </div>
   </section>
 
+  <!-- ============ GITHUB ============ -->
+  <section id="github-activity">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Open Source</span>
+        <h2>GitHub Activity</h2>
+        <p class="section-sub">Live contribution data from <a href="https://github.com/jowinjestine" target="_blank" rel="noopener" class="arch-jc-link">github.com/jowinjestine ↗</a></p>
+      </div>
+      <div class="github-wrap">
+        <canvas id="githubHeatmap"></canvas>
+        <div class="github-stats" id="githubStats">
+          <div class="gh-stat"><span class="gh-stat-val" id="ghTotalCommits">—</span><span class="gh-stat-lbl">Contributions</span></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="ghStreak">—</span><span class="gh-stat-lbl">Day Streak</span></div>
+          <div class="gh-stat"><span class="gh-stat-val" id="ghRepos">—</span><span class="gh-stat-lbl">Public Repos</span></div>
+        </div>
+        <p class="github-note">Past 52 weeks of contribution activity</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ PUBLICATIONS ============ -->
   <section id="publications">
     <div class="container">
@@ -657,6 +751,11 @@
             <span class="pm-lbl">Accuracy</span>
           </div>
         </div>
+        <div class="pub-auc-wrap">
+          <p class="pub-auc-title">AUC Comparison — myOLARIS-KTdx vs Serum Creatinine (gold standard)</p>
+          <canvas id="aucChart" height="90"></canvas>
+          <p class="pub-auc-note">Higher AUC = better diagnostic discrimination. Serum creatinine is the current clinical gold standard.</p>
+        </div>
         <div class="pub-footer">
           <a href="https://doi.org/10.1016/j.isci.2025.113331" target="_blank" rel="noopener" class="pub-doi-link">
             <span>DOI: 10.1016/j.isci.2025.113331</span>
@@ -667,6 +766,46 @@
       </div>
     </div>
   </section>
+
+  <!-- ============ PHILOSOPHY ============ -->
+  <section id="philosophy">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Engineering Principles</span>
+        <h2>How I Think About<br/>Data Systems</h2>
+      </div>
+      <div class="philosophy-grid">
+        <div class="phil-card phil-featured">
+          <div class="phil-quote-mark">"</div>
+          <blockquote class="phil-quote">
+            Data systems should be built to handle all current scenarios — but also designed with the flexibility to understand how processes and data change over time. Redesign should be almost frictionless.
+          </blockquote>
+          <cite class="phil-cite">— Jowin Jestine</cite>
+        </div>
+        <div class="phil-card">
+          <span class="phil-icon">🔒</span>
+          <h3>Audit logs are a feature, not overhead</h3>
+          <p>In regulated systems, the ability to trace every state change isn't optional — it's the product. Every write is a commitment, every read is a contract.</p>
+        </div>
+        <div class="phil-card">
+          <span class="phil-icon">📐</span>
+          <h3>Data contracts at the boundary, flexibility inside</h3>
+          <p>Define strict schemas at ingestion and output boundaries. Keep the transformation layer adaptable. When upstream sources change, only the boundary layer needs to move.</p>
+        </div>
+        <div class="phil-card">
+          <span class="phil-icon">⚡</span>
+          <h3>Correctness first, then performance</h3>
+          <p>A fast wrong answer is worse than a slow right one — especially in clinical or financial data. Optimize once correctness is provable and observable.</p>
+        </div>
+        <div class="phil-card">
+          <span class="phil-icon">🔭</span>
+          <h3>Observability is not monitoring</h3>
+          <p>Monitoring tells you when something is broken. Observability tells you why, and what changed. I build systems I can reason about at 2am without the runbook.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <!-- ============ EDUCATION ============ -->
   <section id="education">

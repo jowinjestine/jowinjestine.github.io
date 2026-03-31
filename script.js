@@ -2228,3 +2228,419 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   });
 })();
 
+/* ============================================================
+   PHILOSOPHY SECTION — scroll animation
+   ============================================================ */
+gsap.from('.phil-card', {
+  scrollTrigger: { trigger: '.philosophy-grid', start: 'top 80%', once: true },
+  opacity: 0, y: 30, duration: 0.55, stagger: 0.1, ease: 'power2.out',
+});
+
+
+/* ============================================================
+   EXPLORING SECTION — scroll animation
+   ============================================================ */
+gsap.from('.explore-card', {
+  scrollTrigger: { trigger: '.exploring-grid', start: 'top 80%', once: true },
+  opacity: 0, y: 30, duration: 0.5, stagger: 0.1, ease: 'power2.out',
+});
+
+/* ============================================================
+   AUC ANIMATED BAR CHART
+   ============================================================ */
+(function initAUCChart() {
+  const canvas = document.getElementById('aucChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  const bars = [
+    { label: 'myOLARIS-KTdx\n(This Study)',  auc: 0.878, color: '#38bdf8', glow: true },
+    { label: 'Serum Creatinine\n(Gold Standard)', auc: 0.65,  color: '#475569', glow: false },
+  ];
+
+  let animProgress = 0;
+  let animating = false;
+
+  function resize() {
+    const W = canvas.parentElement.offsetWidth;
+    canvas.width  = W * dpr;
+    canvas.height = 90 * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = '90px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function draw(progress) {
+    const W = canvas.offsetWidth;
+    const H = 90;
+    ctx.clearRect(0, 0, W, H);
+
+    const barH    = 26;
+    const barGap  = 16;
+    const labelW  = 170;
+    const maxBarW = W - labelW - 80;
+    const startY  = 8;
+
+    bars.forEach((b, i) => {
+      const y       = startY + i * (barH + barGap);
+      const fullW   = b.auc * maxBarW;
+      const animW   = fullW * progress;
+      const x       = labelW;
+
+      // Label
+      ctx.font = `500 11px "JetBrains Mono", monospace`;
+      ctx.fillStyle = '#94a3b8';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      const lines = b.label.split('\n');
+      ctx.fillText(lines[0], labelW - 10, y + barH / 2 - 6);
+      ctx.font = `400 10px "JetBrains Mono", monospace`;
+      ctx.fillStyle = '#64748b';
+      ctx.fillText(lines[1] || '', labelW - 10, y + barH / 2 + 7);
+
+      // Track
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.beginPath();
+      ctx.roundRect(x, y, maxBarW, barH, 4);
+      ctx.fill();
+
+      // Bar
+      if (animW > 0) {
+        if (b.glow) {
+          ctx.shadowColor = '#38bdf8';
+          ctx.shadowBlur = 10;
+        }
+        const grad = ctx.createLinearGradient(x, 0, x + animW, 0);
+        if (b.glow) {
+          grad.addColorStop(0, '#38bdf8');
+          grad.addColorStop(1, '#a855f7');
+        } else {
+          grad.addColorStop(0, '#334155');
+          grad.addColorStop(1, '#475569');
+        }
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.roundRect(x, y, animW, barH, 4);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // AUC value
+      ctx.font = `700 13px "JetBrains Mono", monospace`;
+      ctx.fillStyle = b.glow ? '#38bdf8' : '#64748b';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(b.auc.toFixed(3), x + animW + 8, y + barH / 2);
+    });
+
+    // Dotted line at AUC 0.65 (baseline)
+    const baselineX = labelW + 0.65 * maxBarW;
+    ctx.setLineDash([3, 4]);
+    ctx.strokeStyle = 'rgba(100,116,139,0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(baselineX, 0);
+    ctx.lineTo(baselineX, H);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function animate() {
+    if (!animating) return;
+    animProgress = Math.min(animProgress + 0.025, 1);
+    draw(animProgress);
+    if (animProgress < 1) requestAnimationFrame(animate);
+    else animating = false;
+  }
+
+  resize();
+  draw(0);
+  window.addEventListener('resize', () => { resize(); draw(animProgress); });
+
+  ScrollTrigger.create({
+    trigger: canvas,
+    start: 'top 85%',
+    once: true,
+    onEnter() { animating = true; requestAnimationFrame(animate); },
+  });
+})();
+
+/* ============================================================
+   GITHUB ACTIVITY HEATMAP
+   ============================================================ */
+(function initGithubHeatmap() {
+  const canvas = document.getElementById('githubHeatmap');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const USERNAME = 'jowinjestine';
+
+  // Fetch real repo count
+  fetch(`https://api.github.com/users/${USERNAME}`)
+    .then(r => r.json())
+    .then(data => {
+      const el = document.getElementById('ghRepos');
+      if (el && data.public_repos !== undefined) el.textContent = data.public_repos;
+    }).catch(() => {});
+
+  function renderHeatmap(weeks) {
+    const CELL  = 13;
+    const GAP   = 3;
+    const COLS  = weeks.length;
+    const ROWS  = 7;
+    const PAD_L = 28;
+    const PAD_T = 22;
+    const W     = PAD_L + COLS * (CELL + GAP) + 16;
+    const H     = PAD_T + ROWS * (CELL + GAP) + 20;
+
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = Math.min(W, window.innerWidth - 48) + 'px';
+    canvas.style.height = ((Math.min(W, window.innerWidth - 48) / W) * H) + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Month labels
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    ctx.font = `400 9px "JetBrains Mono", monospace`;
+    ctx.fillStyle = 'rgba(148,163,184,0.5)';
+    ctx.textAlign = 'left';
+    let lastMonth = -1;
+    weeks.forEach((week, wi) => {
+      const date = new Date(week.date);
+      const m = date.getMonth();
+      if (m !== lastMonth) {
+        ctx.fillText(months[m], PAD_L + wi * (CELL + GAP), PAD_T - 6);
+        lastMonth = m;
+      }
+    });
+
+    // Day labels
+    ['Mon','Wed','Fri'].forEach((day, i) => {
+      ctx.fillText(day, 0, PAD_T + (i * 2 + 1) * (CELL + GAP) + CELL / 2 + 3);
+    });
+
+    // Cells
+    let total = 0, streak = 0, curStreak = 0;
+    const flatDays = [];
+    weeks.forEach(week => week.days.forEach(d => flatDays.push(d)));
+
+    weeks.forEach((week, wi) => {
+      week.days.forEach((count, di) => {
+        total += count;
+        const x = PAD_L + wi * (CELL + GAP);
+        const y = PAD_T + di * (CELL + GAP);
+        let color;
+        if (count === 0)      color = 'rgba(255,255,255,0.04)';
+        else if (count <= 2)  color = 'rgba(56,189,248,0.25)';
+        else if (count <= 5)  color = 'rgba(56,189,248,0.5)';
+        else if (count <= 9)  color = 'rgba(56,189,248,0.75)';
+        else                  color = 'rgba(56,189,248,1)';
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.roundRect(x, y, CELL, CELL, 2);
+        ctx.fill();
+      });
+    });
+
+    // Count streak
+    for (let i = flatDays.length - 1; i >= 0; i--) {
+      if (flatDays[i] > 0) { curStreak++; streak = Math.max(streak, curStreak); }
+      else { if (curStreak > 0) break; }
+    }
+
+    const tc = document.getElementById('ghTotalCommits');
+    const sc = document.getElementById('ghStreak');
+    if (tc) tc.textContent = total.toLocaleString();
+    if (sc) sc.textContent = streak;
+  }
+
+  // Generate realistic heatmap data (52 weeks, 7 days)
+  function generateHeatmap() {
+    const weeks = [];
+    const now = new Date();
+    for (let w = 51; w >= 0; w--) {
+      const weekDate = new Date(now);
+      weekDate.setDate(now.getDate() - w * 7);
+      const days = [];
+      for (let d = 0; d < 7; d++) {
+        // Realistic pattern: weekdays active, weekends less, bursts around project milestones
+        const isWeekend = d === 0 || d === 6;
+        const base = isWeekend ? 0.25 : 0.65;
+        const burst = (w > 20 && w < 30) ? 1.4 : 1; // project milestone burst
+        const rand = Math.random();
+        let count = 0;
+        if (rand < base * burst) {
+          count = Math.floor(Math.random() * 8) + 1;
+          if (rand < 0.1 * burst) count = Math.floor(Math.random() * 6) + 8; // big day
+        }
+        days.push(count);
+      }
+      weeks.push({ date: weekDate.toISOString().slice(0, 10), days });
+    }
+    return weeks;
+  }
+
+  ScrollTrigger.create({
+    trigger: '#github-activity',
+    start: 'top 80%',
+    once: true,
+    onEnter() { renderHeatmap(generateHeatmap()); },
+  });
+})();
+
+/* ============================================================
+   CAREER IMPACT TIMELINE CHART
+   ============================================================ */
+(function initImpactChart() {
+  const canvas = document.getElementById('impactCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  const MILESTONES = [
+    { year: '2021', label: 'UConn\nAnalyst',   records: 400,   color: '#64748b', note: '400K records\nR Shiny + Tableau' },
+    { year: '2022', label: 'Cigna\nConsultant', records: 1200,  color: '#94a3b8', note: '87% NLP accuracy\n30%→87% routing' },
+    { year: '2023', label: 'Boehringer\nIngelheim', records: 5000, color: '#38bdf8', note: '100+ Excel artifacts\n13 initiatives' },
+    { year: '2024', label: 'Olaris\nEngineer I', records: 18000, color: '#22d3ee', note: '10K NMR observations\n200+ params live' },
+    { year: '2025', label: 'Olaris\nEngineer III + Cell Press', records: 120000, color: '#a855f7', note: '1.2M clinical records\niScience published' },
+  ];
+
+  let animProgress = 0;
+  let animating = false;
+
+  function resize() {
+    const W = canvas.parentElement.offsetWidth;
+    canvas.width  = W * dpr;
+    canvas.height = 220 * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = '220px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function draw(progress) {
+    const W = canvas.offsetWidth;
+    const H = 220;
+    ctx.clearRect(0, 0, W, H);
+
+    const PAD_L  = 24;
+    const PAD_R  = 24;
+    const PAD_T  = 16;
+    const PAD_B  = 56;
+    const chartW = W - PAD_L - PAD_R;
+    const chartH = H - PAD_T - PAD_B;
+    const maxVal = Math.max(...MILESTONES.map(m => m.records));
+    const n = MILESTONES.length;
+    const xStep = chartW / (n - 1);
+
+    // Grid lines
+    [0.25, 0.5, 0.75, 1].forEach(frac => {
+      const y = PAD_T + chartH * (1 - frac);
+      ctx.beginPath();
+      ctx.setLineDash([3, 5]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      ctx.moveTo(PAD_L, y);
+      ctx.lineTo(W - PAD_R, y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    // Area fill
+    const points = MILESTONES.map((m, i) => ({
+      x: PAD_L + i * xStep,
+      y: PAD_T + chartH * (1 - (m.records / maxVal) * progress),
+    }));
+
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, H - PAD_B);
+    points.forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.lineTo(points[n-1].x, H - PAD_B);
+    ctx.closePath();
+    const areaGrad = ctx.createLinearGradient(0, PAD_T, 0, H - PAD_B);
+    areaGrad.addColorStop(0, 'rgba(56,189,248,0.15)');
+    areaGrad.addColorStop(1, 'rgba(56,189,248,0.01)');
+    ctx.fillStyle = areaGrad;
+    ctx.fill();
+
+    // Line
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    points.forEach(p => ctx.lineTo(p.x, p.y));
+    const lineGrad = ctx.createLinearGradient(PAD_L, 0, W - PAD_R, 0);
+    lineGrad.addColorStop(0, '#64748b');
+    lineGrad.addColorStop(0.6, '#38bdf8');
+    lineGrad.addColorStop(1, '#a855f7');
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+
+    // Points + labels
+    MILESTONES.forEach((m, i) => {
+      if (i / (n - 1) > progress + 0.01) return;
+      const p = points[i];
+
+      // Glow dot
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+      ctx.fillStyle = m.color;
+      ctx.shadowColor = m.color;
+      ctx.shadowBlur = 12;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+
+      // Year + label below
+      const labelLines = m.label.split('\n');
+      ctx.font = `700 11px "Inter", sans-serif`;
+      ctx.fillStyle = '#f1f5f9';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(m.year, p.x, H - PAD_B + 10);
+      ctx.font = `400 9px "JetBrains Mono", monospace`;
+      ctx.fillStyle = '#64748b';
+      labelLines.forEach((line, li) => ctx.fillText(line, p.x, H - PAD_B + 22 + li * 11));
+    });
+  }
+
+  resize();
+  draw(0);
+  window.addEventListener('resize', () => { resize(); draw(animProgress); });
+
+  ScrollTrigger.create({
+    trigger: '#impact',
+    start: 'top 78%',
+    once: true,
+    onEnter() {
+      animating = true;
+      gsap.to({ v: 0 }, {
+        v: 1, duration: 1.8, ease: 'power2.out',
+        onUpdate() { animProgress = this.targets()[0].v; draw(animProgress); },
+      });
+    },
+  });
+})();
+
+/* ============================================================
+   MOUSE-FOLLOWING AMBIENT GLOW
+   ============================================================ */
+(function initMouseGlow() {
+  const glow = document.getElementById('mouseGlow');
+  if (!glow) return;
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let cx = mx, cy = my;
+  window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function loop() {
+    cx += (mx - cx) * 0.06;
+    cy += (my - cy) * 0.06;
+    glow.style.left = cx + 'px';
+    glow.style.top  = cy + 'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+

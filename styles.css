@@ -913,6 +913,198 @@ section { padding: var(--sec-pad) 0; }
 .chip.c2:hover { box-shadow: 0 4px 14px rgba(168,85,247,0.2); }
 
 /* ============================================================
+   LOGO STRIP
+   ============================================================ */
+.logo-strip {
+  padding: 20px 0 24px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,0.015);
+}
+
+.logo-strip-label {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--t3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 14px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+.logo-strip-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 0;
+}
+
+.logo-item {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t3);
+  padding: 0 18px;
+  letter-spacing: 0.01em;
+  transition: color var(--dur);
+}
+
+.logo-item:hover { color: var(--t1); }
+
+.logo-item-highlight {
+  color: var(--blue);
+  opacity: 0.85;
+}
+
+.logo-item-highlight:hover { opacity: 1; color: var(--blue); }
+
+.logo-sep {
+  color: var(--border);
+  font-size: 16px;
+}
+
+/* ============================================================
+   IMPACT TIMELINE
+   ============================================================ */
+#impact { padding: var(--sec-pad) 0; }
+
+#impactCanvas {
+  width: 100%;
+  display: block;
+  border-radius: var(--r);
+}
+
+/* ============================================================
+   EXPLORING
+   ============================================================ */
+#exploring { padding: var(--sec-pad) 0; }
+
+.exploring-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.explore-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px;
+  transition: border-color var(--dur), transform var(--dur), box-shadow var(--dur);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.explore-card:hover {
+  border-color: rgba(168,85,247,0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.explore-icon {
+  font-size: 28px;
+}
+
+.explore-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--t1);
+  line-height: 1.4;
+}
+
+.explore-card p {
+  font-size: 13px;
+  color: var(--t3);
+  line-height: 1.7;
+  flex: 1;
+}
+
+.explore-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--blue);
+  margin-top: 4px;
+}
+
+.explore-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.8); }
+}
+
+@media (max-width: 640px) {
+  .exploring-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   GITHUB HEATMAP
+   ============================================================ */
+#github-activity { padding: var(--sec-pad) 0; }
+
+.github-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+#githubHeatmap {
+  width: 100%;
+  max-width: 900px;
+  display: block;
+  border-radius: var(--r-sm);
+}
+
+.github-stats {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+}
+
+.gh-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.gh-stat-val {
+  font-size: 28px;
+  font-weight: 800;
+  font-family: var(--mono);
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gh-stat-lbl {
+  font-size: 12px;
+  color: var(--t3);
+  font-family: var(--mono);
+}
+
+.github-note {
+  font-size: 11px;
+  color: var(--t3);
+  font-family: var(--mono);
+  opacity: 0.6;
+}
+
+/* ============================================================
    PUBLICATIONS
    ============================================================ */
 #publications { background: var(--bg2); }
@@ -1030,6 +1222,132 @@ section { padding: var(--sec-pad) 0; }
   color: var(--t3);
   font-style: italic;
 }
+
+/* AUC Chart */
+.pub-auc-wrap {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.pub-auc-title {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--t3);
+  margin-bottom: 14px;
+  letter-spacing: 0.02em;
+}
+
+#aucChart {
+  width: 100%;
+  display: block;
+  border-radius: 6px;
+}
+
+.pub-auc-note {
+  font-size: 11px;
+  color: var(--t3);
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ============================================================
+   PHILOSOPHY
+   ============================================================ */
+#philosophy { padding: var(--sec-pad) 0; }
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 16px;
+}
+
+.phil-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 32px;
+  transition: border-color var(--dur), transform var(--dur), box-shadow var(--dur);
+}
+
+.phil-card:hover {
+  border-color: rgba(56,189,248,0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+
+.phil-featured {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, rgba(56,189,248,0.07), rgba(168,85,247,0.07));
+  border-color: rgba(56,189,248,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.phil-featured::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(56,189,248,0.04), transparent);
+  pointer-events: none;
+}
+
+.phil-quote-mark {
+  font-size: 96px;
+  line-height: 0.6;
+  font-family: Georgia, serif;
+  color: var(--blue);
+  opacity: 0.25;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.phil-quote {
+  font-size: clamp(17px, 2vw, 21px);
+  font-weight: 500;
+  color: var(--t1);
+  line-height: 1.65;
+  font-style: normal;
+  border: none;
+  padding: 0;
+  margin: 0 0 16px;
+  max-width: 820px;
+}
+
+.phil-cite {
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--blue);
+  font-style: normal;
+  opacity: 0.8;
+}
+
+.phil-icon {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.phil-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--t1);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.phil-card p {
+  font-size: 14px;
+  color: var(--t3);
+  line-height: 1.7;
+}
+
+@media (max-width: 640px) {
+  .philosophy-grid { grid-template-columns: 1fr; }
+  .phil-featured   { grid-column: 1; }
+}
+
 
 /* ============================================================
    EDUCATION
@@ -2118,4 +2436,20 @@ footer {
   border-radius: 2px;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Mouse ambient glow */
+.mouse-glow {
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56,189,248,0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+  top: 50%;
+  left: 50%;
+  will-change: transform;
 }
