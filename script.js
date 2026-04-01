@@ -1625,14 +1625,49 @@ CREATE TABLE qc_predictions (
     'nmr-monitoring': {
       title: 'Live NMR Monitoring System',
       cat: '⚙️ Data Engineering · Real-time Systems',
-      problem: 'NMR instrument QC parameters (temperature, shimming, B0 field) drifted silently during overnight runs, resulting in unusable data that was only discovered after 8-12 hour batches completed — wasting expensive instrument time.',
-      arch: ['NMR Instrument', 'FastAPI Listener', 'PostgreSQL', 'MS Teams Alert'],
+      problem: 'NMR instrument QC parameters (temperature, shimming, B0 field) drifted silently during overnight runs. Failures were only discovered after 8-12 hour batches completed — expensive instrument time wasted, clinical reporting delayed.',
+      arch: ['NMR Instrument\n(Bruker)', 'FastAPI\nEvent Listener', 'Mage AI\nOrchestrator', 'PostgreSQL\n(HIPAA)', 'MS Teams\nAlert'],
       bars: [
         { label: 'Parameters Monitored', value: 80, display: '200+' },
         { label: 'Alert Response Time', value: 90, display: '<200ms' },
-        { label: 'Instrument Uptime', value: 99, display: '99.9%' },
+        { label: 'Instrument Uptime Gain', value: 99, display: '99.9%' },
       ],
       stack: ['FastAPI', 'Mage AI', 'PostgreSQL', 'Docker', 'MS Teams API', 'Python'],
+      decisions: [
+        { title: 'FastAPI event listener over cron polling', body: 'The previous approach polled every 30 seconds via a scheduled script — meaning drift could go undetected for up to 30s. A FastAPI listener triggered on new folder events gives sub-200ms detection. It also decouples detection from the schedule, so any new acquisition triggers evaluation immediately regardless of timing.' },
+        { title: 'PostgreSQL over flat-file logging', body: 'The initial prototype logged QC metrics to CSVs. With 200+ parameters across multiple acquisitions, answering "was temperature stable during this overnight batch?" required loading and scanning every file. PostgreSQL with indexed session + parameter queries makes this instantaneous, and opens the door to trend-based alerting across sessions.' },
+        { title: 'Per-parameter thresholds with cooldowns, not global alerts', body: 'B0 field drift tolerance is completely different from temperature tolerance. A single global threshold caused alert fatigue on normal variation in some parameters while missing meaningful drift in others. Each parameter has its own configurable upper/lower threshold and a cooldown period to prevent alert storms on transient spikes.' },
+      ],
+      schema: `-- Instrument session tracking
+CREATE TABLE instrument_sessions (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  folder_name   TEXT NOT NULL,
+  instrument_id INT  NOT NULL,
+  started_at    TIMESTAMPTZ,
+  status        TEXT DEFAULT 'ACTIVE'   -- ACTIVE, COMPLETE, FLAGGED
+);
+
+-- Per-observation QC log
+CREATE TABLE qc_observations (
+  id             UUID PRIMARY KEY,
+  session_id     UUID REFERENCES instrument_sessions(id),
+  parameter_name TEXT NOT NULL,         -- e.g. 'B0_FIELD', 'TEMPERATURE'
+  observed_value NUMERIC,
+  threshold_low  NUMERIC,
+  threshold_high NUMERIC,
+  is_breach      BOOLEAN DEFAULT FALSE,
+  observed_at    TIMESTAMPTZ DEFAULT now()
+);
+
+-- Alert audit log
+CREATE TABLE alerts_sent (
+  id             UUID PRIMARY KEY,
+  session_id     UUID REFERENCES instrument_sessions(id),
+  parameter_name TEXT,
+  channel        TEXT DEFAULT 'MS_TEAMS',
+  sent_at        TIMESTAMPTZ DEFAULT now()
+);`,
+      lesson: 'Real-time monitoring only works if the alert is actually actionable. We spent as much engineering time on alert fatigue reduction — per-parameter thresholds, cooldown periods, grouped notifications — as on the detection logic itself. An alert the team learns to ignore is worse than no alert. It erodes trust in the system.',
     },
     'it-routing': {
       title: 'IT Incident Routing Neural Net',
@@ -1693,6 +1728,65 @@ CREATE TABLE routing_predictions (
         { label: 'Stakeholder Adoption', value: 90, display: '90%+' },
       ],
       stack: ['R Shiny', 'Tableau', 'SQL', 'SAS', 'R', 'PostgreSQL'],
+    },
+
+    'journal-club': {
+      title: 'Olaris Journal Club — Architecture Write-up',
+      cat: '📝 Technical Writing · Systems Communication',
+      problem: 'Olaris\'s HIPAA-compliant clinical infrastructure is technically complex and largely invisible to the outside world. The architecture decisions — why certain cloud services, how HIPAA boundaries shape the data flow, what the intake-to-report pipeline actually looks like — lived only in engineers\' heads and internal documents.',
+      arch: ['Lab Partner\nSystem', 'Order Intake\n+ HIPAA Boundary', 'Azure Functions\nOrchestration', 'Clinical Data\nPlatform', 'Report\nDelivery'],
+      bars: [
+        { label: 'Published deep-dives', value: 100, display: '1st post live' },
+        { label: 'Engineering transparency', value: 85, display: 'External visibility' },
+        { label: 'Audience mix', value: 70, display: 'Technical + Clinical' },
+      ],
+      stack: ['Azure Functions', 'HIPAA Architecture', 'PostgreSQL', 'Technical Writing', 'LinkedIn'],
+      decisions: [
+        { title: 'Architecture-first storytelling', body: 'Start with the data flow diagram, then explain the decisions. Readers understand the "what" before the "why". When you lead with the constraints (HIPAA, Azure boundary, clinical data rules), the architectural choices stop looking arbitrary and start looking necessary.' },
+        { title: 'HIPAA as a design constraint, not a compliance footnote', body: 'Most engineering write-ups treat compliance as a checkbox at the end. The Olaris Journal Club post showed how HIPAA boundaries actively shaped the architecture — which services could touch which data, why certain integrations weren\'t possible, how the data flow was structured around the regulatory boundary rather than around engineering convenience.' },
+        { title: 'Write for a mixed audience without losing technical depth', body: 'The audience included data engineers, clinical stakeholders, and potential collaborators. The post preserved real technical detail (specific Azure services, actual data flow steps) while avoiding jargon that would lose non-engineers. No dumbing down — just intentional framing.' },
+      ],
+      lesson: 'Technical writing that shows real tradeoffs and constraints builds more credibility than posts that make everything look clean. HIPAA compliance wasn\'t a limitation to obscure — it was the most architecturally interesting part of the system. Leaning into the constraint made the write-up more useful for the audience and more honest about the actual engineering.',
+    },
+
+    'id-system': {
+      title: 'Global Sample Traceability System',
+      cat: '🗂️ System Design · Data Architecture · Clinical Infrastructure',
+      problem: 'Clinical and research workflows used disconnected identifier schemes across multiple platforms. As operational exceptions accumulated — pooled samples, derived aliquots, delayed metadata, collaborator corrections, reruns — names started carrying more meaning than IDs. The classic early failure mode: a system that appears to work until it silently degrades.',
+      arch: ['External\nSources', 'ID Registry\n+ Assignment', 'Inventory\n+ Parent-Child', 'NMR\nPipeline', 'Processed\nData Store', 'DS Processing\n+ Audit Log'],
+      bars: [
+        { label: 'Entity types standardised', value: 100, display: '7 entity types' },
+        { label: 'Workflows unified', value: 90, display: 'Product + Research' },
+        { label: 'Traceability chain', value: 95, display: 'Full lifecycle' },
+      ],
+      stack: ['PostgreSQL', 'Azure ADLS Gen2', 'Python', 'FastAPI', 'YAML', 'System Design'],
+      decisions: [
+        { title: 'IDs as system of record — names as convenience only', body: 'Lab teams relied on name fields to carry operational meaning: no enforcement, manual entry, inconsistent spelling across systems. Formal IDs with structured database relationships give traceability that doesn\'t degrade with scale. Names can remain for readability; formal traceability is driven by IDs and relationships in the database.' },
+        { title: 'Parent-child graph model over linear chain', body: 'A simple linear chain (patient → order → sample → aliquot) breaks immediately for pooled materials, derived aliquots, and research samples without a patient record. A parent-child relationship model at the inventory level handles all cases — including pools, splits, reruns, and collaborator samples — without requiring the lab team to change how they think about their work.' },
+        { title: 'Full architecture designed before phased delivery', body: 'Building the ID registry without inventory system alignment would cause drift: samples physically handled before IDs exist, aliquots without durable parent links, corrections requiring manual interpretation. The architecture was designed in full upfront — covering all 7 entity types and the parent-child relationship model — even though delivery was phased across 6 phases.' },
+      ],
+      schema: `-- Unified entity registry (sanitized)
+CREATE TABLE entities (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  global_id    TEXT UNIQUE NOT NULL,  -- standardized format per entity type
+  entity_type  TEXT NOT NULL,         -- PATIENT, SAMPLE, ALIQUOT, SPECTRUM ...
+  parent_id    UUID REFERENCES entities(id),
+  workflow     TEXT CHECK (workflow IN ('PRODUCT','RESEARCH')),
+  status       TEXT DEFAULT 'ACTIVE', -- ACTIVE, RETIRED, MERGED
+  created_at   TIMESTAMPTZ DEFAULT now()
+);
+
+-- Immutable correction audit log
+CREATE TABLE id_corrections (
+  id           UUID PRIMARY KEY,
+  entity_id    UUID NOT NULL REFERENCES entities(id),
+  action       TEXT NOT NULL,         -- RETIRED, MERGED, SUPERSEDED
+  reason       TEXT NOT NULL,
+  performed_by TEXT NOT NULL,
+  approved_by  TEXT,
+  created_at   TIMESTAMPTZ DEFAULT now()
+);`,
+      lesson: 'A rigid ID system looks fine at first, then slowly breaks. The failure mode is never a crash — it\'s that names start carrying more meaning than IDs, workarounds become standard practice, and traceability becomes partial instead of guaranteed. The goal was not to solve every edge case immediately. It was to design an architecture flexible enough that future exceptions could be absorbed without breaking the core traceability model.',
     },
   };
 
