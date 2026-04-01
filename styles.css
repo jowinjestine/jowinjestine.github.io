@@ -620,10 +620,12 @@ section { padding: var(--sec-pad) 0; }
 .about-body p strong { color: var(--t1); }
 
 .about-pills {
-  margin-top: 32px;
+  margin-top: 28px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .about-pill {
@@ -2308,6 +2310,78 @@ footer {
   width: 0%;
   transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
 }
+
+/* Design decisions */
+.modal-decisions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-decision {
+  padding: 13px 16px;
+  background: rgba(56, 189, 248, 0.04);
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-left: 3px solid rgba(56, 189, 248, 0.45);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+
+.modal-decision-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 5px;
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+
+.modal-decision-body {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.65;
+}
+
+/* Schema / data model */
+.modal-schema-badge {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--t3);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 2px 8px;
+  margin-left: 8px;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.modal-schema {
+  background: rgba(0,0,0,0.38);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.modal-schema code {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: rgba(148,163,184,0.9);
+  line-height: 1.65;
+  white-space: pre;
+}
+
+/* Key engineering insight */
+.modal-lesson {
+  background: rgba(168,85,247,0.05);
+  border: 1px solid rgba(168,85,247,0.18);
+  border-radius: var(--r-sm);
+  padding: 18px 20px;
+}
+
+.modal-lesson h4 { color: #c084fc !important; border-color: rgba(168,85,247,0.2) !important; }
+.modal-lesson p  { font-size: 13.5px; line-height: 1.7; color: var(--t2); }
 
 @media (max-width: 640px) {
   .modal-card { padding: 28px 20px 36px; max-height: 92vh; }

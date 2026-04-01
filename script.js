@@ -339,9 +339,12 @@ ScrollTrigger.create({
   start: 'top 80%',
   once: true,
   onEnter: () => {
+    window.__heroCounterFired = true;
     document.querySelectorAll('.stat-num').forEach(el => {
       animateCount(el, parseInt(el.dataset.target, 10));
     });
+    // Fire redaction wipe after counter finishes (1600ms counter + 300ms buffer)
+    setTimeout(() => { if (window.__fireRedaction) window.__fireRedaction(); }, 1900);
   }
 });
 
@@ -1545,25 +1548,79 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       title: 'AI Metabolite Search Engine',
       cat: '🤖 Machine Learning · Semantic Search',
       problem: 'The existing metabolite lookup was keyword-based, requiring exact name matches. Analysts spent 20+ minutes per session navigating 100K+ compounds across two diagnostic platforms (NMR and LC-MS), with no cross-platform search.',
-      arch: ['Raw Query', 'Sentence Transformer', 'FAISS Index', 'Ranked Results'],
+      arch: ['Raw Query', 'Sentence Transformer\n(all-MiniLM-L6-v2)', 'FAISS Index\n(100K vectors)', 'MMR Re-ranking', 'Top-K Results'],
       bars: [
         { label: 'Retrieval Time Reduction', value: 70, display: '70%' },
-        { label: 'Metabolite Coverage', value: 94, display: '100K+ metabolites' },
+        { label: 'Metabolite Coverage', value: 94, display: '100K+ compounds' },
         { label: 'Cross-Platform Accuracy', value: 94, display: '94%' },
       ],
       stack: ['Python', 'Azure', 'FastAPI', 'FAISS', 'Sentence-Transformers', 'PostgreSQL'],
+      decisions: [
+        { title: 'FAISS over Pinecone', body: 'HIPAA compliance required all data to stay within our Azure tenant. Pinecone would have sent embeddings to a third-party cloud — not viable. FAISS runs fully on-premise, indexes 100K vectors in under 2 seconds, and costs $0.' },
+        { title: 'Sentence Transformers over OpenAI embeddings', body: 'OpenAI API calls would leak compound identifiers and query patterns outside our security perimeter. all-MiniLM-L6-v2 runs locally, inference time under 10ms per query, and performed near-equivalently on our domain after fine-tuning on biomedical text.' },
+        { title: 'MMR re-ranking over pure cosine similarity', body: 'Cosine similarity alone returned redundant results — querying "creatinine" surfaced 8 creatinine variants before any chemically distinct alternatives. Maximal Marginal Relevance re-ranking balances relevance vs. diversity, giving analysts actionable cross-platform results on the first page.' },
+      ],
+      schema: `-- Metabolite index (sanitized)
+CREATE TABLE metabolites (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name        TEXT NOT NULL,
+  formula     TEXT,
+  hmdb_id     VARCHAR(12),        -- HMDB0000001 format
+  platform    TEXT CHECK (platform IN ('NMR','LC-MS','BOTH')),
+  embedding   VECTOR(384),        -- FAISS-synced via pgvector
+  updated_at  TIMESTAMPTZ DEFAULT now()
+);
+
+-- HIPAA-required query audit log
+CREATE TABLE search_log (
+  id           UUID PRIMARY KEY,
+  query_hash   TEXT NOT NULL,     -- SHA-256, never raw text
+  result_count INT,
+  latency_ms   INT,
+  user_role    TEXT,
+  created_at   TIMESTAMPTZ DEFAULT now()
+);`,
+      lesson: 'Never trust keyword search for scientific data. Synonyms, abbreviations, and structural aliases mean the same compound has 15+ valid names. Semantic search cut "no results" queries from 34% to under 3% — without any new data, just better retrieval.',
     },
     'nmr-quality': {
-      title: 'NMR Signal Quality Model',
+      title: 'NMR Signal Quality Classifier',
       cat: '🧠 Deep Learning · Signal Processing',
-      problem: 'NMR instrument data contains noise artifacts, shimming errors, and baseline distortions that require expert manual review. With 200+ daily acquisitions, analyst bottleneck was causing 48-hour delays in clinical reporting.',
-      arch: ['Raw FID Data', 'Feature Extraction', 'Deep Classifier', 'QC Report'],
+      problem: 'NMR instrument data contains noise artifacts, shimming errors, and baseline distortions requiring expert manual review. With 200+ daily acquisitions, analyst bottleneck was causing 48-hour delays in clinical reporting.',
+      arch: ['Raw FID (.fid)', 'nmrglue: FFT +\nPhase Correction', 'Baseline Correction\n+ Windowing', '1D CNN\nClassifier', 'QC Pass/Fail\n+ Confidence'],
       bars: [
         { label: 'Accuracy Gain vs Baseline', value: 35, display: '+35%' },
         { label: 'Manual Review Reduction', value: 72, display: '72%' },
-        { label: 'Training Observations', value: 87, display: '10K+' },
+        { label: 'Training Observations', value: 87, display: '10K+ spectra' },
       ],
-      stack: ['Python', 'Deep Learning', 'nmrglue', 'scikit-learn', 'NumPy', 'NMR'],
+      stack: ['Python', 'nmrglue', 'scikit-learn', 'NumPy', 'PyTorch', 'PostgreSQL'],
+      decisions: [
+        { title: '1D CNN over Random Forest', body: 'NMR spectra are sequential signals — a shimming artifact at 4.7 ppm correlates with neighbouring peaks. Random Forest treated each frequency bin as independent, missing this locality entirely. A 1D CNN with kernel size 7 captured local correlations and added 23% accuracy over the RF baseline.' },
+        { title: 'Confidence threshold at 0.82, not 0.5', body: 'In clinical diagnostics, a false-negative (bad spectrum labeled as good) is catastrophic. We calibrated the threshold to 0.82 to push uncertain samples to manual review rather than auto-approve. This held the false-negative rate below 0.4% across the full test set.' },
+        { title: 'Synthetic augmentation for class imbalance', body: 'Failing spectra represent only ~8% of acquisitions. Rather than over-sample real failures (risking data leakage), we generated synthetic noise artifacts using domain knowledge of shimming error patterns. This produced a balanced training set without contaminating validation data.' },
+      ],
+      schema: `-- NMR acquisition tracking (sanitized)
+CREATE TABLE nmr_acquisitions (
+  id              UUID PRIMARY KEY,
+  sample_id       UUID NOT NULL,
+  instrument_id   INT  NOT NULL,
+  fid_path        TEXT,           -- Azure Blob Storage URI
+  qc_status       TEXT CHECK (qc_status IN ('PASS','FAIL','REVIEW')),
+  qc_confidence   NUMERIC(4,3),   -- 0.000 – 1.000
+  review_required BOOLEAN DEFAULT FALSE,
+  acquired_at     TIMESTAMPTZ,
+  processed_at    TIMESTAMPTZ
+);
+
+CREATE TABLE qc_predictions (
+  id              UUID PRIMARY KEY,
+  acquisition_id  UUID REFERENCES nmr_acquisitions(id),
+  model_version   TEXT NOT NULL,  -- e.g. 'v2.3.1'
+  prediction      TEXT NOT NULL,
+  confidence      NUMERIC(4,3),
+  processing_ms   INT,
+  created_at      TIMESTAMPTZ DEFAULT now()
+);`,
+      lesson: 'Threshold calibration matters more than model architecture. A model with 88% accuracy but poorly calibrated confidence is dangerous in clinical settings. We spent 30% of the project on calibration and failure-mode analysis — not on the model itself. The right answer was often "route to human", not "guess".',
     },
     'nmr-monitoring': {
       title: 'Live NMR Monitoring System',
@@ -1579,15 +1636,39 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
     },
     'it-routing': {
       title: 'IT Incident Routing Neural Net',
-      cat: '🔤 NLP · TensorFlow',
-      problem: 'Cigna\'s IT service desk received 500+ daily ServiceNow incidents routed manually to teams. Manual routing accuracy was 30%, causing SLA breaches and 40% of tickets requiring re-assignment, wasting ~$2M/yr in labor.',
-      arch: ['Raw Ticket', 'NLP Preprocessing', 'TF Classifier', 'Auto-Route'],
+      cat: '🔤 NLP · Production ML · Scale',
+      problem: 'Cigna\'s IT service desk received 500+ daily ServiceNow incidents routed manually to teams. Manual routing accuracy was 30%, causing SLA breaches and 40% of tickets requiring re-assignment — ~$2M/yr in wasted labor.',
+      arch: ['ServiceNow Ticket', 'NLP Preprocessing\n+ Tokenization', 'BERT Fine-tuned\nClassifier', 'Confidence\nFilter', 'Auto-Route\nor Escalate'],
       bars: [
         { label: 'Routing Accuracy', value: 87, display: '87%' },
         { label: 'Mis-route Reduction', value: 85, display: '85%' },
         { label: 'Recall', value: 96, display: '96%' },
       ],
-      stack: ['TensorFlow', 'NLP', 'Python', 'ServiceNow API', 'NLTK', 'Keras'],
+      stack: ['TensorFlow', 'Python', 'ServiceNow API', 'NLTK', 'Keras', 'SQL Server'],
+      decisions: [
+        { title: 'Fine-tuned BERT over vanilla LSTM', body: 'IT incident descriptions contain highly domain-specific jargon ("P2 SAML federation issue on Citrix Gateway"). A vanilla LSTM had no pre-trained context for these terms. Fine-tuning BERT on 6 months of historical tickets gave the model domain vocabulary from day 1 — a 19% accuracy gain over LSTM.' },
+        { title: 'Confidence filter before auto-routing', body: 'Auto-routing a high-confidence wrong ticket is worse than no routing at all. We added a confidence threshold (>0.78) — tickets below that go to a triage queue for human review. This maintained 87% accuracy at high confidence while keeping false-route rate under 2%.' },
+        { title: 'Active learning re-training loop', body: 'Each human correction on a mis-routed ticket was fed back into a weekly re-training pipeline. After 90 days, accuracy improved from 81% to 87% without any additional manual labeling effort. The system learned from its own mistakes at zero marginal cost.' },
+      ],
+      schema: `-- Incident routing (sanitized, adapted from ServiceNow)
+CREATE TABLE incidents (
+  id            BIGINT PRIMARY KEY,
+  short_desc    TEXT NOT NULL,    -- raw ticket text
+  description   TEXT,
+  priority      TINYINT,         -- 1 Critical → 4 Low
+  actual_team   VARCHAR(64),     -- ground truth post-resolution
+  created_at    DATETIME
+);
+
+CREATE TABLE routing_predictions (
+  incident_id   BIGINT REFERENCES incidents(id),
+  model_version VARCHAR(20),
+  predicted_team VARCHAR(64),
+  confidence    DECIMAL(5,4),
+  was_correct   BIT,             -- set after ticket resolution
+  routed_at     DATETIME DEFAULT GETDATE()
+);`,
+      lesson: 'The biggest accuracy gains came from data quality, not model complexity. Normalizing team names (17 inconsistent spellings of "Infrastructure Network") and cleaning 3 years of mislabeled historical data improved training accuracy by 12% before any model changes. Garbage in, garbage out — still holds at scale.',
     },
     'data-migration': {
       title: 'Biotech Research Data Migration',
@@ -1618,6 +1699,31 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   function openModal(id) {
     const p = PROJECTS[id];
     if (!p) return;
+
+    const decisionsHtml = p.decisions ? `
+      <div class="modal-section">
+        <h4>Design Decisions</h4>
+        <div class="modal-decisions">
+          ${p.decisions.map(d => `
+            <div class="modal-decision">
+              <div class="modal-decision-title">${d.title}</div>
+              <div class="modal-decision-body">${d.body}</div>
+            </div>`).join('')}
+        </div>
+      </div>` : '';
+
+    const schemaHtml = p.schema ? `
+      <div class="modal-section">
+        <h4>Data Model <span class="modal-schema-badge">sanitized</span></h4>
+        <pre class="modal-schema"><code>${p.schema}</code></pre>
+      </div>` : '';
+
+    const lessonHtml = p.lesson ? `
+      <div class="modal-section modal-lesson">
+        <h4>Key Engineering Insight</h4>
+        <p>${p.lesson}</p>
+      </div>` : '';
+
     card.innerHTML = `
       <span class="modal-cat">${p.cat}</span>
       <h2 class="modal-title">${p.title}</h2>
@@ -1628,7 +1734,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       <div class="modal-section">
         <h4>Architecture</h4>
         <div class="modal-arch">
-          ${p.arch.map((a,i) => `<div class="modal-arch-node">${a}</div>${i < p.arch.length-1 ? '<span class="modal-arch-arrow">→</span>' : ''}`).join('')}
+          ${p.arch.map((a,i) => `<div class="modal-arch-node">${a.replace(/\n/g,'<br><small>')}</div>${i < p.arch.length-1 ? '<span class="modal-arch-arrow">→</span>' : ''}`).join('')}
         </div>
       </div>
       <div class="modal-section">
@@ -1641,10 +1747,13 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
             </div>`).join('')}
         </div>
       </div>
+      ${decisionsHtml}
+      ${schemaHtml}
       <div class="modal-section">
         <h4>Tech Stack</h4>
         <div class="tl-tags" style="gap:8px">${p.stack.map(s => `<span>${s}</span>`).join('')}</div>
-      </div>`;
+      </div>
+      ${lessonHtml}`;
 
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
@@ -2197,7 +2306,9 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
    ============================================================ */
 (function initRedactionReveal() {
   withPretext(({ prepare, layoutWithLines }) => {
-    document.querySelectorAll('.stat-label').forEach((label, i) => {
+    const bars = [];
+
+    document.querySelectorAll('.stat-label').forEach((label) => {
       const cs   = getComputedStyle(label);
       const font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
       const lh   = parseFloat(cs.lineHeight) || 18;
@@ -2215,16 +2326,27 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       bar.className = 'redact-bar';
       bar.style.width = barW + 'px';
       label.appendChild(bar);
-
-      gsap.to(bar, {
-        scaleX: 0,
-        transformOrigin: 'right center',
-        duration: 0.55,
-        ease: 'power2.inOut',
-        delay: 2.6 + i * 0.5,
-        onComplete() { bar.style.display = 'none'; },
-      });
+      bars.push(bar);
     });
+
+    // Called by the counter ScrollTrigger after the count animation finishes
+    window.__fireRedaction = function () {
+      bars.forEach((bar, i) => {
+        gsap.to(bar, {
+          scaleX: 0,
+          transformOrigin: 'right center',
+          duration: 0.55,
+          ease: 'power2.inOut',
+          delay: i * 0.45,            // stagger relative to wipe start, not page load
+          onComplete() { bar.style.display = 'none'; },
+        });
+      });
+    };
+
+    // Edge case: if the counter ScrollTrigger already fired before pretext loaded
+    if (window.__heroCounterFired) {
+      setTimeout(window.__fireRedaction, 1900);
+    }
   });
 })();
 
