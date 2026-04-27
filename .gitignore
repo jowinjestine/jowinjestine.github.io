@@ -1,1 +1,15 @@
 .claude/
+
+# Local working artifacts (this repo deploys publicly via GitHub Pages —
+# anything committed lands at jowinjestine.github.io/<file>)
+ROADMAP.md
+JIRA_IMPORT.csv
+JIRA_IMPORT_GUIDE.md
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/

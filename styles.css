@@ -26,8 +26,9 @@
   --grad: linear-gradient(135deg, var(--blue), var(--purple));
 
   /* Type */
-  --sans: 'Inter', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --sans:    'Inter', system-ui, sans-serif;
+  --mono:    'JetBrains Mono', ui-monospace, monospace;
+  --display: 'Bricolage Grotesque', 'Inter', system-ui, sans-serif;
 
   /* Spacing */
   --max-w: 1100px;
@@ -255,10 +256,12 @@ body {
 
 .hero-title {
   display: block;
+  font-family: var(--display);
   font-size: clamp(52px, 9vw, 104px);
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: -3px;
-  line-height: 1.02;
+  line-height: 1.0;
+  font-variation-settings: 'wdth' 88, 'opsz' 96;
 }
 
 /* Journey trail */
@@ -546,10 +549,12 @@ section { padding: var(--sec-pad) 0; }
 }
 
 .section-header h2 {
+  font-family: var(--display);
   font-size: clamp(32px, 4.5vw, 52px);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -1.5px;
-  line-height: 1.1;
+  line-height: 1.05;
+  font-variation-settings: 'wdth' 92, 'opsz' 64;
 }
 
 /* ============================================================
