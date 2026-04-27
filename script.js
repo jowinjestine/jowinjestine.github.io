@@ -1544,6 +1544,72 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   const closeBtn  = document.getElementById('modalClose');
 
   const PROJECTS = {
+    'f1-predictor': {
+      title: 'F1 Race Position Predictor',
+      cat: '🤖 Machine Learning · End-to-End ML · Cloud Deployment',
+      statusNote: 'Build in progress · ETA May 2026 — case study reflects current architecture and design decisions; final metrics land on completion.',
+      statusKind: 'in-progress',
+      problem: 'F1 race outcomes are driven by a tangle of signals — qualifying pace, tyre strategy, lap-by-lap car balance, weather, driver form, circuit characteristics. Casual pre-race predictions hover around 25-35% top-3 accuracy. The goal: build a real ML system that predicts the full grid (positions 1-20) with calibrated probabilities, deployed as a FastAPI service on Cloud Run, with SHAP explanations for every prediction. Not a one-off notebook — a production-grade pipeline.',
+      arch: ['FastF1 + Jolpica\nIngestion', 'Feature Engineering\n(lap + race level)', 'Four-Model Stack\n(A · B · C · D)', 'XGBoost + Optuna\nTuning · MLflow', 'FastAPI on\nCloud Run', 'SHAP\nExplainability'],
+      bars: [
+        { label: 'Training Data',       value: 100, display: '2018-2025 · 165K laps' },
+        { label: 'Models Evaluated',    value: 95,  display: '38 across 4 architectures' },
+        { label: 'Evaluation Coverage', value: 100, display: '13 metrics · per-fold CV' },
+      ],
+      stack: ['Python', 'XGBoost', 'LightGBM', 'CatBoost', 'PyTorch', 'FastAPI', 'GCP Cloud Run', 'BigQuery', 'MLflow', 'SHAP', 'Optuna', 'FastF1'],
+      decisions: [
+        {
+          title: 'Four-model stack over a single monolithic predictor',
+          body: 'A single model would conflate two very different problems — pre-race outcome (qualifying, grid, form) and in-race dynamics (lap times, tyre wear, gaps). I split into four: <strong>Model A</strong> (lap-level WITH tyre data, 2019-2024), <strong>Model B</strong> (lap-level WITHOUT tyre data, 2018-2025 — handles the missing 2018/2025 tyre coverage), <strong>Model C</strong> (pre-race outcome from grid + qualifying + season form), and <strong>Model D</strong> (calibrated stacking meta over A/B/C). Each base model owns one signal cleanly. The meta-model gracefully handles the missing-base-model case (e.g. 2025 has no Model A predictions).'
+        },
+        {
+          title: 'Calibrated probabilities, not point predictions',
+          body: '"Verstappen finishes P3" is brittle and unfalsifiable race-by-race. P(P1) = 0.42, P(P3) = 0.18, ... across all 20 positions is a real probabilistic forecast — scoreable with log-loss, Brier, and ECE every weekend. Model D wraps the chosen classifier with isotonic calibration via <code>CalibratedClassifierCV</code>, so output probabilities reflect actual frequencies. Raw XGBoost probabilities were wildly over-confident — a 0.9 prediction was right ~67% of the time; calibration brought it to ~88%.'
+        },
+        {
+          title: 'Temporal CV — leave-one-season-out, never random k-fold',
+          body: 'Random k-fold leaks the future into training: a 2024 race in the validation fold can train on 2025 data. F1 is non-stationary — regulations change, drivers move, teams improve. Model A uses 5-fold leave-one-season-out (2019-2023, 2024 held out). Models B and C use expanding-window CV (train on years 1..N-1, predict year N). Across-season generalization is the only honest signal for a sport that is fundamentally a moving target.'
+        },
+        {
+          title: 'Optuna only on top-3 candidates, not all 38',
+          body: 'Tuning 38 candidates with Optuna at 50 trials each = 1,900 training runs — multiple days on CPU. Instead: train all 38 with sensible defaults to screen, then run Optuna only on the top-3 per architecture. Total compute under 6 hours and avoids over-fitting the validation set. Diminishing returns past the top-3 anyway.'
+        },
+        {
+          title: 'JIRA-driven engineering, not weekend hackery',
+          body: 'The whole project is broken into 9 JIRA tasks (epic SCRUM-1) with explicit estimates, due dates, and acceptance criteria. PRs are scoped per feature — 4-8 per epic — with conventional commits and CI (ruff + mypy strict + pytest ≥ 70% coverage). The discipline of breaking ML work into shippable units is the difference between a notebook and a portfolio piece.'
+        },
+      ],
+      schema: `-- Race-level features (Model C training table, BigQuery)
+CREATE TABLE features_race (
+  race_id              STRING NOT NULL,        -- e.g. '2024_BAH'
+  driver_id            STRING NOT NULL,        -- e.g. 'verstappen_max'
+  season               INT64  NOT NULL,
+  round                INT64  NOT NULL,
+
+  -- Qualifying signal
+  qual_position        INT64,
+  qual_time_q3         FLOAT64,
+  delta_to_pole        FLOAT64,                -- Q3 best vs pole (sec)
+
+  -- Grid + season form
+  grid_position        INT64,
+  season_avg_finish    FLOAT64,                -- expanding within-season
+  career_wins_circuit  INT64,
+  team_constructor_pos INT64,
+
+  -- Circuit + weather
+  circuit_type         STRING,                 -- street, permanent, hybrid
+  air_temp_c           FLOAT64,
+  precip_mm            FLOAT64,
+
+  -- Target
+  finish_position      INT64,
+
+  PRIMARY KEY (race_id, driver_id) NOT ENFORCED
+)
+PARTITION BY RANGE_BUCKET(season, GENERATE_ARRAY(2018, 2030, 1));`,
+      lesson: 'In sports prediction the temptation is to chase model complexity. The biggest accuracy gains came from the boring decisions: temporal CV (caught a 6-point MAE inflation that random k-fold was hiding), feature isolation per model (Model B without tyre features beat the combined model on 2025 data), and probability calibration (turned a 67%-correct "0.9" prediction into an 88%-correct one). The model is only as good as the evaluation harness around it — and most of the engineering went into building that harness.',
+    },
     'metabolite-search': {
       title: 'AI Metabolite Search Engine',
       cat: '🤖 Machine Learning · Semantic Search',
@@ -1818,9 +1884,13 @@ CREATE TABLE id_corrections (
         <p>${p.lesson}</p>
       </div>` : '';
 
+    const statusHtml = p.statusNote ? `
+      <div class="modal-status-banner ${p.statusKind || ''}">${p.statusNote}</div>` : '';
+
     card.innerHTML = `
       <span class="modal-cat">${p.cat}</span>
       <h2 class="modal-title">${p.title}</h2>
+      ${statusHtml}
       <div class="modal-section">
         <h4>Problem</h4>
         <p>${p.problem}</p>
