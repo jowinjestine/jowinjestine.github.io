@@ -1,0 +1,86 @@
+name: Refresh repo stats
+
+# Rebuilds stats.json nightly with commit count + last-commit-date for the
+# 2026 Builds repos. Output is read by the "live builds" strip in index.html.
+# Resilient to missing repos: marks them as not-yet-available rather than failing.
+
+on:
+  schedule:
+    - cron: '17 4 * * *'   # 04:17 UTC daily — off-peak, randomized minute
+  workflow_dispatch:        # also runnable on demand
+
+permissions:
+  contents: write           # so the bot can push stats.json back to main
+
+concurrency:
+  group: refresh-stats
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch repo stats via GraphQL
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          fetch_repo() {
+            local repo="$1"
+            local result commits last_date
+
+            result=$(gh api graphql \
+              -f query='
+                query($owner:String!, $name:String!) {
+                  repository(owner: $owner, name: $name) {
+                    defaultBranchRef {
+                      target {
+                        ... on Commit {
+                          history { totalCount }
+                          committedDate
+                        }
+                      }
+                    }
+                  }
+                }' \
+              -f owner=jowinjestine \
+              -f name="$repo" 2>/dev/null) || result='{"data":{"repository":null}}'
+
+            commits=$(echo "$result" | jq -r '.data.repository.defaultBranchRef.target.history.totalCount // 0')
+            last_date=$(echo "$result" | jq -r '.data.repository.defaultBranchRef.target.committedDate // "null"')
+
+            if [ "$last_date" = "null" ] || [ -z "$last_date" ]; then
+              jq -n --arg n "$repo" '{name:$n, commits:0, lastCommitAt:null, available:false}'
+            else
+              jq -n --arg n "$repo" --argjson c "$commits" --arg d "$last_date" \
+                '{name:$n, commits:$c, lastCommitAt:$d, available:true}'
+            fi
+          }
+
+          F1_PRED=$(fetch_repo "f1-race-predictor")
+          F1_LAKE=$(fetch_repo "f1-data-lakehouse")
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          jq -n \
+            --argjson f1pred "$F1_PRED" \
+            --argjson f1lake "$F1_LAKE" \
+            --arg now "$NOW" \
+            '{generatedAt: $now, repos: [$f1pred, $f1lake]}' > stats.json
+
+          echo "--- stats.json ---"
+          cat stats.json
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats.json
+          if git diff --staged --quiet; then
+            echo "stats.json unchanged — nothing to commit."
+          else
+            git commit -m "chore(stats): refresh repo stats [skip ci]"
+            git push
+          fi

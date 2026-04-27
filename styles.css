@@ -2641,3 +2641,85 @@ footer {
   color: #c084fc;
 }
 .modal-status-banner.planned::before { background: #c084fc; }
+
+/* ============================================================
+   LIVE BUILDS STRIP — populated from stats.json
+   ============================================================ */
+.live-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px 24px;
+  padding: 14px 22px;
+  margin: 6px 0 28px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(56,189,248,0.12);
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.live-strip-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  flex-shrink: 0;
+}
+.live-strip-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74,222,128,0.55);
+  animation: live-pulse 1.8s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.85); }
+}
+.live-strip-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  flex: 1;
+  min-width: 0;
+}
+.live-strip-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--t2);
+}
+.live-strip-item-name {
+  color: var(--t1);
+  font-weight: 600;
+}
+.live-strip-item-count {
+  color: var(--blue);
+}
+.live-strip-item-when {
+  color: var(--t3);
+  font-size: 11px;
+}
+.live-strip-item-pending {
+  color: var(--t3);
+  font-style: italic;
+}
+a.live-strip-item {
+  text-decoration: none;
+  transition: opacity var(--dur);
+}
+a.live-strip-item:hover { opacity: 0.78; }
+.live-strip-stamp {
+  font-size: 10px;
+  color: var(--t3);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .live-strip { padding: 12px 16px; gap: 8px 12px; }
+  .live-strip-items { gap: 4px 14px; font-size: 11px; }
+}

@@ -1,0 +1,7 @@
+{
+  "generatedAt": "2026-04-27T00:00:00Z",
+  "repos": [
+    { "name": "f1-race-predictor", "commits": 0, "lastCommitAt": null, "available": false },
+    { "name": "f1-data-lakehouse", "commits": 0, "lastCommitAt": null, "available": false }
+  ]
+}

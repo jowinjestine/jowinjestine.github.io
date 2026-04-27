@@ -1950,6 +1950,67 @@ CREATE TABLE id_corrections (
 })();
 
 /* ============================================================
+   LIVE BUILDS STRIP — fetches stats.json (rebuilt nightly by
+   .github/workflows/stats.yml). Graceful fallback on error.
+   ============================================================ */
+(function initLiveStrip() {
+  const root = document.getElementById('liveStrip');
+  if (!root) return;
+  const itemsEl = document.getElementById('liveStripItems');
+  const stampEl = document.getElementById('liveStripStamp');
+
+  const REPO_LABELS = {
+    'f1-race-predictor': 'F1 Predictor',
+    'f1-data-lakehouse': 'F1 Lakehouse',
+  };
+  const REPO_OWNER = 'jowinjestine';
+
+  const fmtRel = iso => {
+    if (!iso) return null;
+    const ms = Date.now() - new Date(iso).getTime();
+    if (ms < 0) return 'just now';
+    const h = ms / 3.6e6;
+    if (h < 1)  return 'just now';
+    if (h < 24) return Math.round(h) + 'h ago';
+    const d = h / 24;
+    if (d < 14) return Math.round(d) + 'd ago';
+    if (d < 60) return Math.round(d / 7) + 'w ago';
+    return Math.round(d / 30) + 'mo ago';
+  };
+
+  const escape = s => String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[c]));
+
+  fetch('stats.json', { cache: 'no-cache' })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data || !Array.isArray(data.repos) || data.repos.length === 0) {
+        root.style.display = 'none';
+        return;
+      }
+      itemsEl.innerHTML = data.repos.map(r => {
+        const name = REPO_LABELS[r.name] || r.name;
+        const safeName = escape(name);
+        const repoUrl = `https://github.com/${REPO_OWNER}/${encodeURIComponent(r.name)}`;
+        if (!r.available || !r.lastCommitAt) {
+          return `<span class="live-strip-item live-strip-item-pending">${safeName}: not yet started</span>`;
+        }
+        const rel = fmtRel(r.lastCommitAt);
+        return `<a class="live-strip-item" href="${repoUrl}" target="_blank" rel="noopener">
+          <span class="live-strip-item-name">${safeName}</span>
+          <span class="live-strip-item-count">${r.commits} commits</span>
+          <span class="live-strip-item-when">· last push ${escape(rel)}</span>
+        </a>`;
+      }).join('');
+      if (data.generatedAt) {
+        stampEl.textContent = `refreshed ${fmtRel(data.generatedAt)}`;
+      }
+    })
+    .catch(() => { root.style.display = 'none'; });
+})();
+
+/* ============================================================
    PROJECT CARD THUMBNAIL CANVASES
    6 unique abstract visualizations — DPR-aware, looping animations
    ============================================================ */
