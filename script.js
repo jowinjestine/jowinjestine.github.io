@@ -193,3 +193,23 @@
     })
     .catch(() => { /* the page reads fine without these */ });
 })();
+
+/* Figures animate only once they are on screen. The class stays, so looping
+   demonstrations keep running while the reader is looking at them. */
+(function figuresInView() {
+  const figs = document.querySelectorAll('.fig');
+  if (!figs.length) return;
+  if (!('IntersectionObserver' in window)) {
+    figs.forEach(f => f.classList.add('play'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add('play');
+        io.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.3 });
+  figs.forEach(f => io.observe(f));
+})();

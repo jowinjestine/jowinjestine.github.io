@@ -452,3 +452,196 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
   .case { border-left: none; padding-left: 0; }
   a { text-decoration: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FIGURES
+   Diagrams drawn in the same ink as the type: hairline boxes, no fills
+   beyond a faint lift off the paper, and colour only where it carries a
+   meaning already established elsewhere on the page (green in spec, amber
+   needs attention). Numbered and captioned, the way a paper does it.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.fig {
+  margin: 2rem 0 2.25rem;
+  overflow-x: auto;          /* narrow screens scroll the diagram, not the page */
+  padding-bottom: 0.25rem;
+}
+.fig svg { display: block; width: 100%; height: auto; }
+
+.fig figcaption,
+.spectrum-figure figcaption {
+  max-width: 42rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.fig figcaption b,
+.spectrum-figure figcaption b {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Boxes */
+.fig .b { fill: var(--card); stroke: var(--ink); stroke-width: 1; }
+.fig .b.ok { stroke: var(--ok); }
+.fig .b.wait { stroke: var(--wait); }
+
+/* Labels inside a figure. Monospace is allowed here and nowhere else:
+   these are readings and edge annotations, not interface furniture. */
+.fig .t {
+  font: 500 12px var(--sans);
+  fill: var(--ink);
+  text-anchor: middle;
+}
+.fig .l {
+  font: 400 10.5px var(--mono);
+  fill: var(--ink-3);
+  text-anchor: middle;
+}
+.fig .l.ls { text-anchor: start; }
+.fig .l.le { text-anchor: end; }
+
+/* Edges */
+.fig .e {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  marker-end: url(#ar);
+}
+.fig .e.dash { stroke: var(--ink-3); stroke-dasharray: 4 3; }
+.fig .e.ok { stroke: var(--ok); }
+.fig .e.wait { stroke: var(--wait); }
+
+/* Scales and bands */
+.fig .ax { stroke: var(--rule); stroke-width: 1; fill: none; }
+.fig .mid { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 3 3; }
+.fig .band { stroke-width: 1; fill-opacity: 0.09; }
+.fig .band.ok { stroke: var(--ok); fill: var(--ok); }
+.fig .band.wait { stroke: var(--wait); fill: var(--wait); }
+.fig .band.rev { stroke: var(--ink-3); fill: var(--ink-3); }
+.fig .track { fill: none; stroke: var(--rule); stroke-width: 1; }
+.fig .fill { fill: var(--accent); }
+
+@media print {
+  .fig { overflow: visible; }
+  .fig svg { min-width: 0 !important; }
+}
+
+/* ── The hook: the sentence that should make you open the case study ───── */
+.hook {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--ink);
+  max-width: 38rem;
+  margin: 1.1rem 0 0;
+  padding-left: 1.05rem;
+  border-left: 2px solid var(--accent);
+}
+.entry .fig { margin: 1.6rem 0 1.4rem; }
+.entry details { margin-top: 1.5rem; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FIGURE MOTION
+   Each animation demonstrates the mechanism its figure describes: an event
+   is dropped and later recovered, a reading crosses a reference range, an
+   order is withdrawn part-way. Nothing here is ambient. Animations start
+   when the figure is scrolled into view and never run under reduced motion.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.fig .pkt, .fig .recon, .fig .walk, .fig .rd, .fig .ord { opacity: 0; }
+.fig .pkt, .fig .walk, .fig .rd.in, .fig .ord.done { fill: var(--accent); }
+.fig .recon { fill: var(--ok); }
+.fig .rd.out, .fig .ord.killed { fill: var(--wait); }
+.fig .spc { fill: var(--ink); }
+.fig .spc.s1 { fill: var(--wait); }
+.fig .spc.s2 { fill: var(--ink-3); }
+.fig .spc.s3 { fill: var(--ok); }
+
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Figure 2 — events run the lossy lane; the middle one is lost, then the
+     reconciliation sweep walks the poll route and re-enters the queue. */
+  @keyframes f2run  { from { transform: translateX(0); } to { transform: translateX(556px); } }
+  @keyframes f2fade { 0%, 4% { opacity: 1; } 12%, 100% { opacity: 0; } }
+  @keyframes f2hold { 0%, 4% { opacity: 0; } 8%, 94% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes f2recon {
+    0%   { transform: translate(0, 0);         opacity: 0; }
+    8%   { opacity: 1; }
+    28%  { transform: translate(0, 118px); }
+    58%  { transform: translate(328px, 118px); }
+    88%  { transform: translate(328px, 2px);   opacity: 1; }
+    100% { transform: translate(328px, 2px);   opacity: 0; }
+  }
+  .fig.play .f2 .pkt   { animation: f2run 5s linear infinite, f2hold 5s linear infinite; }
+  .fig.play .f2 .lost  { animation: f2run 5s linear infinite, f2fade 5s linear infinite; }
+  .fig.play .f2 .recon { animation: f2recon 5s 1.9s linear infinite; }
+
+  /* Figure 3 — a traversal walks patient to processed spectrum. */
+  @keyframes f3walk {
+    0%   { transform: translate(0, 0);          opacity: 0; }
+    6%   { opacity: 1; }
+    60%  { transform: translate(498px, 0); }
+    70%  { transform: translate(557px, 0); }
+    88%  { transform: translate(557px, 58px);   opacity: 1; }
+    100% { transform: translate(557px, 58px);   opacity: 0; }
+  }
+  .fig.play .f3 .walk { animation: f3walk 5.6s 0.3s linear infinite; }
+
+  /* Figure 4 — one reading inside its range, one outside. Both recorded. */
+  @keyframes f4in {
+    0%   { transform: translate(0, 0);           opacity: 0; }
+    8%   { opacity: 1; }
+    45%  { transform: translate(308px, 0); }
+    58%  { transform: translate(342px, 0); }
+    72%  { transform: translate(342px, -64px); }
+    88%  { transform: translate(376px, -64px);   opacity: 1; }
+    100% { transform: translate(376px, -64px);   opacity: 0; }
+  }
+  @keyframes f4out {
+    0%   { transform: translate(0, 0);           opacity: 0; }
+    8%   { opacity: 1; }
+    45%  { transform: translate(308px, 0); }
+    58%  { transform: translate(342px, 0); }
+    72%  { transform: translate(342px, 64px); }
+    88%  { transform: translate(376px, 64px);    opacity: 1; }
+    100% { transform: translate(376px, 64px);    opacity: 0; }
+  }
+  .fig.play .f4 .in  { animation: f4in 5.2s linear infinite; }
+  .fig.play .f4 .out { animation: f4out 5.2s 2.6s linear infinite; }
+
+  /* Figure 5 — one order reaches a report; one is withdrawn on the way. */
+  @keyframes f5done {
+    0%   { transform: translateX(0);      opacity: 0; }
+    8%   { opacity: 1; }
+    88%  { transform: translateX(368px);  opacity: 1; }
+    100% { transform: translateX(368px);  opacity: 0; }
+  }
+  @keyframes f5kill {
+    0%   { transform: translate(0, 0);          opacity: 0; }
+    10%  { opacity: 1; }
+    40%  { transform: translate(102px, 0); }
+    78%  { transform: translate(102px, 89px);   opacity: 1; }
+    100% { transform: translate(102px, 89px);   opacity: 0; }
+  }
+  .fig.play .f5 .done   { animation: f5done 5.4s linear infinite; }
+  .fig.play .f5 .killed { animation: f5kill 5.4s 2.7s linear infinite; }
+
+  /* Figure 6 — spectra arrive and settle into the band they belong to. */
+  @keyframes f6drop {
+    0%   { transform: translateY(-30px); opacity: 0; }
+    45%  { opacity: 1; }
+    70%  { transform: translateY(3px); }
+    100% { transform: translateY(0);     opacity: 1; }
+  }
+  .fig.play .f6 .spc { animation: f6drop 0.85s cubic-bezier(.3,.9,.35,1) both; }
+
+  /* Figure 7 — the bar grows to the published value. */
+  .fig .grow { transform-box: fill-box; transform-origin: left center; }
+  @keyframes f7grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .fig.play .grow { animation: f7grow 1.15s cubic-bezier(.25,.9,.3,1) both; }
+}

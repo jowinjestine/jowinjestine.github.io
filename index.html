@@ -19,11 +19,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=2" />
+<link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
 
 <a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <defs>
+    <marker id="ar" viewBox="0 0 9 9" refX="8" refY="4.5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0.5,0.5 L8.5,4.5 L0.5,8.5 z" fill="context-stroke" stroke="none"/>
+    </marker>
+  </defs>
+</svg>
 
 <header class="masthead">
   <a class="wordmark" href="#top">Jowin&nbsp;Jestine</a>
@@ -62,7 +70,7 @@
       <canvas id="spectrum" width="1200" height="300" role="img"
               aria-label="A one-dimensional proton NMR spectrum of urine, showing labelled peaks for formate, histidine, creatinine, citrate, glutamine, alanine, lactate and branched-chain amino acids across a chemical shift axis from 9 to 0 parts per million."></canvas>
       <figcaption>
-        A 1D proton NMR spectrum of urine, which is the raw material almost everything below
+        <b>Figure 1.</b> A 1D proton NMR spectrum of urine, which is the raw material almost everything below
         is built on. Chemical shift runs high to low, left to right, by convention. Each peak
         is a metabolite; the job of the platform is to make sure the sample that produced this
         trace can still be tied back to a patient, an order and a report months later.
@@ -97,9 +105,14 @@
         vendor webhook that loses messages in production.
       </p>
       <p class="entry-meta"><span class="tag ok">In production</span> Azure Functions, Storage Queues, PostgreSQL, ADLS Gen2</p>
+      <p class="hook">The vendor&rsquo;s webhooks lose events in production. Nothing errors, so the database quietly stops matching the freezer.</p>
+      <figure class="fig">
+        <svg viewBox="0 0 760 240" role="img" style="min-width:560px" aria-label="Two independent paths write the same records. The dashed webhook is fast and unreliable; the scheduled reconciliation is slower and complete. Correctness comes from the second path, which is why losing events on the first one only delays a row."><rect class="b" x="4" y="40" width="100" height="44"/><text class="t" x="54" y="66">Lab notebook</text><rect class="b" x="168" y="40" width="100" height="44"/><text class="t" x="218" y="66">Receiver</text><rect class="b" x="332" y="40" width="100" height="44"/><text class="t" x="382" y="66">Queue</text><rect class="b" x="496" y="40" width="100" height="44"/><text class="t" x="546" y="66">Processor</text><rect class="b" x="660" y="40" width="100" height="44"/><text class="t" x="710" y="66">PostgreSQL</text><rect class="b" x="168" y="180" width="100" height="44"/><text class="t" x="218" y="206">Reconciler</text><rect class="b" x="496" y="180" width="100" height="44"/><text class="t" x="546" y="206">Object store</text><line class="e dash" x1="104" y1="62" x2="166" y2="62"/><text class="l" x="136" y="49">lossy</text><line class="e" x1="268" y1="62" x2="330" y2="62"/><text class="l" x="300" y="49">enqueue</text><line class="e" x1="432" y1="62" x2="494" y2="62"/><text class="l" x="464" y="49">dequeue</text><line class="e" x1="596" y1="62" x2="658" y2="62"/><text class="l" x="628" y="49">on change</text><polyline class="e" points="54,84 54,202 166,202"/><text class="l ls" x="62" y="140">scheduled poll</text><polyline class="e" points="268,202 382,202 382,86"/><text class="l" x="325" y="222">backfill missing</text><polyline class="e" points="546,84 546,178"/><text class="l ls" x="554" y="140">archive raw payload</text><g class="anim f2"><circle class="pkt p1" cx="104" cy="62" r="3.4" style="animation-delay:0s"/><circle class="pkt p2 lost" cx="104" cy="62" r="3.4" style="animation-delay:1.6s"/><circle class="pkt p3" cx="104" cy="62" r="3.4" style="animation-delay:3.2s"/><circle class="recon" cx="54" cy="84" r="3.4"/></g></svg>
+        <figcaption><b>Figure 2.</b> Two independent paths write the same records. The dashed webhook is fast and unreliable; the scheduled reconciliation is slower and complete. Correctness comes from the second path, which is why losing events on the first one only delays a row.</figcaption>
+      </figure>
 
       <details>
-        <summary><span>Read the case study</span></summary>
+        <summary><span>How it stops trusting the webhook</span></summary>
         <div class="case">
           <h4>The problem</h4>
           <p>
@@ -115,6 +128,8 @@
             does not. A system that is wrong but confident is worse than one that is
             visibly down.
           </p>
+
+          
 
           <h4>What I decided, and why</h4>
 
@@ -178,9 +193,14 @@
         link from patient to sample to spectrum to report.
       </p>
       <p class="entry-meta"><span class="tag wait">Moving into production</span> PostgreSQL, ADLS Gen2, Python, system design</p>
+      <p class="hook">When an identifier is missing, people put the meaning in the name field. That is the one field nobody can enforce.</p>
+      <figure class="fig">
+        <svg viewBox="0 0 760 190" role="img" style="min-width:560px" aria-label="Every edge is a recorded relationship rather than a naming convention. A pooled sample has two parents, a research sample has no patient, and a processed spectrum points back at the acquisition it came from. None of those cases needs a workaround."><rect class="b" x="6" y="24" width="118" height="42"/><text class="t" x="65" y="49">Patient</text><rect class="b" x="160" y="24" width="118" height="42"/><text class="t" x="219" y="49">Order</text><rect class="b" x="314" y="24" width="118" height="42"/><text class="t" x="373" y="49">Sample</text><rect class="b" x="468" y="24" width="118" height="42"/><text class="t" x="527" y="49">Aliquot</text><rect class="b" x="622" y="24" width="118" height="42"/><text class="t" x="681" y="49">Spectrum</text><rect class="b" x="160" y="124" width="118" height="42"/><text class="t" x="219" y="142">Research</text><text class="t" x="219" y="157">sample</text><rect class="b" x="314" y="124" width="118" height="42"/><text class="t" x="373" y="142">Pooled</text><text class="t" x="373" y="157">sample</text><rect class="b" x="622" y="124" width="118" height="42"/><text class="t" x="681" y="142">Processed</text><text class="t" x="681" y="157">spectrum</text><line class="e" x1="124" y1="45" x2="158" y2="45"/><line class="e" x1="278" y1="45" x2="312" y2="45"/><line class="e" x1="432" y1="45" x2="466" y2="45"/><line class="e" x1="586" y1="45" x2="620" y2="45"/><line class="e" x1="278" y1="145" x2="312" y2="145"/><polyline class="e" points="373,66 373,122"/><polyline class="e" points="681,66 681,122"/><text class="l" x="381" y="98">parent of</text><text class="l" x="689" y="98">derived from</text><g class="anim f3"><circle class="walk" cx="124" cy="45" r="3.4"/></g></svg>
+        <figcaption><b>Figure 3.</b> Every edge is a recorded relationship rather than a naming convention. A pooled sample has two parents, a research sample has no patient, and a processed spectrum points back at the acquisition it came from. None of those cases needs a workaround.</figcaption>
+      </figure>
 
       <details>
-        <summary><span>Read the case study</span></summary>
+        <summary><span>How the identifier model works</span></summary>
         <div class="case">
           <h4>The problem</h4>
           <p>
@@ -196,6 +216,8 @@
             crashes, workarounds become standard practice, and traceability quietly becomes
             partial instead of guaranteed.
           </p>
+
+          
 
           <h4>What I decided, and why</h4>
 
@@ -261,9 +283,14 @@
         discovered to be worthless in the morning.
       </p>
       <p class="entry-meta"><span class="tag ok">In production</span> Mage AI, PostgreSQL, FastAPI, Microsoft Teams</p>
+      <p class="hook">An overnight run can start degrading at two in the morning. Finding out at nine costs the whole night of instrument time.</p>
+      <figure class="fig">
+        <svg viewBox="0 0 760 226" role="img" style="min-width:560px" aria-label="Each parameter is judged against its own reference range, so normal variation in one reading cannot trigger the same alarm as meaningful drift in another. Both branches record; only one interrupts anybody."><rect class="b" x="6" y="88" width="118" height="44"/><text class="t" x="65" y="114">Acquisition</text><rect class="b" x="160" y="88" width="118" height="44"/><text class="t" x="219" y="114">Parse run</text><rect class="b" x="314" y="88" width="118" height="44"/><text class="t" x="373" y="114">Compare</text><rect class="b ok" x="500" y="24" width="250" height="44"/><text class="t" x="625" y="50">Within range: record only</text><rect class="b wait" x="500" y="152" width="250" height="44"/><text class="t" x="625" y="178">Outside range: record and alert</text><line class="e" x1="124" y1="110" x2="158" y2="110"/><line class="e" x1="278" y1="110" x2="312" y2="110"/><polyline class="e ok" points="432,110 466,110 466,46 498,46"/><polyline class="e wait" points="432,110 466,110 466,174 498,174"/><text class="l" x="373" y="152">against a reference</text><text class="l" x="373" y="166">range per parameter</text><text class="l" x="508" y="212">cooldown suppresses a repeat alert on the same parameter</text><g class="anim f4"><circle class="rd in" cx="124" cy="110" r="3.4"/><circle class="rd out" cx="124" cy="110" r="3.4"/></g></svg>
+        <figcaption><b>Figure 4.</b> Each parameter is judged against its own reference range, so normal variation in one reading cannot trigger the same alarm as meaningful drift in another. Both branches record; only one interrupts anybody.</figcaption>
+      </figure>
 
       <details>
-        <summary><span>Read the case study</span></summary>
+        <summary><span>How the thresholds are set</span></summary>
         <div class="case">
           <h4>The problem</h4>
           <p>
@@ -272,6 +299,8 @@
             finds out until the batch completes, the cost is instrument time that cannot be
             recovered and clinical reporting that slips.
           </p>
+
+          
 
           <h4>What I decided, and why</h4>
 
@@ -294,8 +323,8 @@
 
           <h5>Log to a database, not to files</h5>
           <p>
-            The first version wrote quality metrics to flat files, which answers "what is
-            happening now" and nothing else. Questions worth asking are comparative: was this
+            The first version wrote quality metrics to flat files, which answers “what is
+            happening now” and nothing else. Questions worth asking are comparative: was this
             parameter stable across the batch, is this instrument worse than it was last
             month. Those are queries, so the metrics belong in PostgreSQL, indexed by session
             and parameter.
@@ -335,9 +364,14 @@
         into a reportable result, without anyone reconciling a spreadsheet.
       </p>
       <p class="entry-meta"><span class="tag ok">In production</span> Azure Functions, API Management, Key Vault, Power Automate</p>
+      <p class="hook">Orders get cancelled. If that is someone editing a row, the audit trail is a story rather than a record.</p>
+      <figure class="fig">
+        <svg viewBox="0 0 760 204" role="img" style="min-width:560px" aria-label="Withdrawal and amendment are states with their own transitions, not an operator editing a row. An amended order returns to verification rather than skipping ahead, so the audit trail records what happened instead of describing it afterwards."><rect class="b" x="6" y="20" width="124" height="42"/><text class="t" x="68" y="45">Received</text><rect class="b" x="170" y="20" width="124" height="42"/><text class="t" x="232" y="45">Verified</text><rect class="b" x="334" y="20" width="124" height="42"/><text class="t" x="396" y="45">Accepted</text><rect class="b" x="498" y="20" width="124" height="42"/><text class="t" x="560" y="45">Reported</text><rect class="b wait" x="140" y="130" width="124" height="42"/><text class="t" x="202" y="155">Cancelled</text><rect class="b wait" x="380" y="130" width="124" height="42"/><text class="t" x="442" y="155">Amended</text><line class="e" x1="130" y1="41" x2="168" y2="41"/><line class="e" x1="294" y1="41" x2="332" y2="41"/><line class="e" x1="458" y1="41" x2="496" y2="41"/><polyline class="e wait" points="68,62 68,151 138,151"/><polyline class="e wait" points="232,62 232,128"/><polyline class="e wait" points="396,62 396,128"/><polyline class="e" points="380,151 314,151 314,80 252,80 252,64"/><text class="l" x="330" y="192">re-verified after amendment</text><g class="anim f5"><circle class="ord done" cx="130" cy="41" r="3.4"/><circle class="ord killed" cx="130" cy="41" r="3.4"/></g></svg>
+        <figcaption><b>Figure 5.</b> Withdrawal and amendment are states with their own transitions, not an operator editing a row. An amended order returns to verification rather than skipping ahead, so the audit trail records what happened instead of describing it afterwards.</figcaption>
+      </figure>
 
       <details>
-        <summary><span>Read the case study</span></summary>
+        <summary><span>How cancellation is modelled</span></summary>
         <div class="case">
           <h4>The problem</h4>
           <p>
@@ -346,6 +380,8 @@
             expectation attached, and every manual handoff is somewhere a mistake can enter
             without a trace.
           </p>
+
+          
 
           <h4>What I decided, and why</h4>
 
@@ -398,9 +434,10 @@
         immutable, serialised records of data-science output.
       </p>
       <p class="entry-meta"><span class="tag ok">In production</span> Bitbucket Pipelines, Docker, ADLS Gen2</p>
+      <p class="hook">Reproducibility by convention does not survive a busy quarter.</p>
 
       <details>
-        <summary><span>Read the case study</span></summary>
+        <summary><span>Why there is only one path to production</span></summary>
         <div class="case">
           <h4>The problem</h4>
           <p>
@@ -453,9 +490,10 @@
         cloud tenant.
       </p>
       <p class="entry-meta"><span class="tag ok">In production</span> Sentence Transformers, FAISS, FastAPI</p>
+      <p class="hook">One compound has fifteen valid names. Exact-match search turns a correct query into a silent dead end.</p>
 
       <details>
-        <summary><span>Read the case study</span></summary>
+        <summary><span>Why the index runs in our own tenant</span></summary>
         <div class="case">
           <h4>The problem</h4>
           <p>
@@ -501,9 +539,14 @@
         than guessing.
       </p>
       <p class="entry-meta"><span class="tag ok">In production</span> PyTorch, nmrglue, scikit-learn</p>
+      <p class="hook">A bad spectrum passed off as a good one is a clinical problem, not an accuracy statistic.</p>
+      <figure class="fig">
+        <svg viewBox="0 0 760 140" role="img" style="min-width:520px" aria-label="The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one."><line class="ax" x1="40" y1="86" x2="720" y2="86"/><rect class="band wait" x="40" y="58" width="260" height="28"/><text class="l" x="170" y="106">recorded as failing</text><rect class="band rev" x="300" y="58" width="170" height="28"/><text class="l" x="385" y="106">routed to a reviewer</text><rect class="band ok" x="470" y="58" width="250" height="28"/><text class="l" x="595" y="106">passes automatically</text><line class="mid" x1="380" y1="44" x2="380" y2="94"/><text class="l" x="380" y="36">the midpoint, where the boundary is not</text><text class="l ls" x="40" y="128">less confident</text><text class="l le" x="720" y="128">more confident</text><g class="anim f6"><circle class="spc s1" cx="180" cy="72" r="3.6" style="animation-delay:0.15s"/><circle class="spc s2" cx="392" cy="72" r="3.6" style="animation-delay:0.55s"/><circle class="spc s3" cx="600" cy="72" r="3.6" style="animation-delay:0.95s"/></g></svg>
+        <figcaption><b>Figure 6.</b> The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one.</figcaption>
+      </figure>
 
       <details>
-        <summary><span>Read the case study</span></summary>
+        <summary><span>How the operating point was chosen</span></summary>
         <div class="case">
           <h4>The problem</h4>
           <p>
@@ -512,6 +555,8 @@
             and dangerous in equal measure, because a bad spectrum passed off as good is a
             clinical problem, not an accuracy statistic.
           </p>
+
+          
 
           <h4>What I decided, and why</h4>
 
@@ -724,6 +769,11 @@
         metabolite signatures, validated against serum creatinine, which is the current
         clinical standard. I contributed to the data and analysis work behind it.
       </p>
+
+      <figure class="fig">
+        <svg viewBox="0 0 760 124" role="img" style="min-width:520px" aria-label="Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published."><rect class="track" x="70" y="52" width="630" height="18"/><rect class="fill grow" x="70" y="52" width="476.28" height="18"/><line class="ax" x1="70" y1="70" x2="70" y2="76"/><text class="l" x="70" y="90">0.5</text><line class="ax" x1="196" y1="70" x2="196" y2="76"/><text class="l" x="196" y="90">0.6</text><line class="ax" x1="322" y1="70" x2="322" y2="76"/><text class="l" x="322" y="90">0.7</text><line class="ax" x1="448" y1="70" x2="448" y2="76"/><text class="l" x="448" y="90">0.8</text><line class="ax" x1="574" y1="70" x2="574" y2="76"/><text class="l" x="574" y="90">0.9</text><line class="ax" x1="700" y1="70" x2="700" y2="76"/><text class="l" x="700" y="90">1.0</text><line class="mid" x1="546.28" y1="30" x2="546.28" y2="52"/><text class="t" x="546.28" y="24">0.878</text><text class="l ls" x="70" y="112">0.5 is no better than chance</text><text class="l le" x="700" y="112">1.0 is perfect separation</text></svg>
+        <figcaption><b>Figure 7.</b> Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published.</figcaption>
+      </figure>
       <dl class="pub-figures">
         <div><dt>Validation AUC</dt><dd>0.878</dd></div>
         <div><dt>Accuracy</dt><dd>86.4%</dd></div>
@@ -812,6 +862,6 @@
   <p>Built by hand in Boston. No framework, no build step, three files.</p>
 </footer>
 
-<script src="script.js?v=2"></script>
+<script src="script.js?v=4"></script>
 </body>
 </html>
