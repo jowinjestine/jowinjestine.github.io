@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=5" />
+<link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
 
@@ -50,7 +50,9 @@
   <section id="top" class="intro">
     <h1>I build the data platform a clinical lab runs on.</h1>
 
-    <p class="lede">
+    <div class="intro-body">
+      <div class="intro-text">
+      <p class="lede">
       I am a data engineer at <strong>Olaris</strong>, a metabolomics diagnostics company in
       Boston. In practice I own the platform: the Azure infrastructure, the ingestion
       pipelines, the deployment path, and the internal applications that the lab uses every
@@ -65,6 +67,11 @@
       when a result is corrected six weeks later, and when the person who built it is on
       holiday.
     </p>
+      </div>
+      <figure class="portrait">
+        <img src="images/jowin.jpg" width="560" height="560" alt="Jowin Jestine" />
+      </figure>
+    </div>
 
     <figure class="spectrum-figure">
       <canvas id="spectrum" width="1200" height="300" tabindex="0" role="img"
@@ -102,7 +109,7 @@
     </div>
 
     <div class="failures">
-      <p class="failures-lead">Every one of these has happened in production. Pick one and I will show you what it took to stop it.</p>
+      <p class="failures-lead">Eight things that have gone wrong in a production lab. Pick one and I will show you what it took to stop it happening again.</p>
       <ul class="failure-list">
         <li><button type="button" data-case="case-inventory">A vendor quietly stops delivering half your events.</button></li>
         <li><button type="button" data-case="case-identifiers">Two samples get pooled into one tube.</button></li>
@@ -113,6 +120,9 @@
         <li><button type="button" data-case="case-search">A correct search returns nothing at all.</button></li>
         <li><button type="button" data-case="case-quality">A bad spectrum looks completely fine.</button></li>
       </ul>
+      <p class="failures-foot">
+        <button type="button" class="show-all">Or read all eight</button>
+      </p>
     </div>
 
     <!-- 1 ─────────────────────────────── -->
@@ -201,6 +211,7 @@
           </p>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
 
     <!-- 2 ─────────────────────────────── -->
@@ -291,6 +302,7 @@
           </p>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
 
     <!-- 3 ─────────────────────────────── -->
@@ -372,6 +384,7 @@
           </p>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
 
     <!-- 4 ─────────────────────────────── -->
@@ -442,6 +455,7 @@
           </ul>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
 
     <!-- 5 ─────────────────────────────── -->
@@ -498,6 +512,7 @@
           </ul>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
 
     <article class="entry" id="case-processing">
@@ -588,6 +603,7 @@
           </p>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
 
     <!-- 6 ─────────────────────────────── -->
@@ -637,6 +653,7 @@
           </ul>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
 
     <!-- 7 ─────────────────────────────── -->
@@ -706,6 +723,7 @@
           </p>
         </div>
       </details>
+      <p class="entry-back"><button type="button" class="back-to-list">Back to the list</button></p>
     </article>
   </section>
 
@@ -720,6 +738,7 @@
       </p>
     </div>
 
+    <p class="group-label">Public repositories</p>
     <ul class="projects">
       <li>
         <h3>F1 race position predictor</h3>
@@ -772,8 +791,30 @@
           exists mainly so I can see when the model believes something absurd.
         </p>
         <p class="entry-meta"><span class="tag wait">Private repository</span></p>
-      </li>
 
+        <div class="gallery" aria-label="Screens from the F1 simulation engine">
+          <div class="gallery-track" id="g-f1sim" tabindex="0">
+            <figure>
+              <img src="images/f1sim-replay.jpg" width="1042" height="706" loading="lazy"
+                   alt="The race replay view: a circuit outline with cars on track, and a timing tower listing drivers with their gaps." />
+              <figcaption>Race replay, with the timing tower reading gaps lap by lap.</figcaption>
+            </figure>
+            <figure>
+              <img src="images/f1sim-explore.jpg" width="1040" height="702" loading="lazy"
+                   alt="The explorer view: exploration dimensions for driver skill and weather, nine total scenarios, and a progress bar running scenario two of nine." />
+              <figcaption>Choosing what to vary. Two axes here give nine scenarios, then it runs them.</figcaption>
+            </figure>
+          </div>
+          <p class="gallery-nav">
+            <button type="button" data-g="g-f1sim" data-dir="-1">Previous</button>
+            <button type="button" data-g="g-f1sim" data-dir="1">Next</button>
+          </p>
+        </div>
+      </li>
+    </ul>
+
+    <p class="group-label">Still private, because they are still ugly</p>
+    <ul class="projects">
       <li>
         <h3>NeuroGolf Lab</h3>
         <p>
@@ -985,6 +1026,6 @@
   <p>Built by hand in Boston. No framework, no build step, three files.</p>
 </footer>
 
-<script src="script.js?v=5"></script>
+<script src="script.js?v=8"></script>
 </body>
 </html>

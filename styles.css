@@ -772,3 +772,123 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
   }
   .fig.play .f10 .p { animation: f10row 4.8s linear infinite; }
 }
+
+/* ── The portrait, set like an author photo beside standing text ───────── */
+.intro-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: clamp(1.5rem, 4vw, 3.25rem);
+  align-items: start;
+}
+.portrait { margin: 0; }
+.portrait img {
+  display: block;
+  width: clamp(104px, 15vw, 168px);
+  height: auto;
+  border: 1px solid var(--rule);
+  filter: grayscale(0.12);
+}
+@media (max-width: 40rem) {
+  .intro-body { grid-template-columns: 1fr; }
+  .portrait img { width: 116px; }
+}
+
+/* ── Question-first work section ───────────────────────────────────────
+   The entries are hidden only once JavaScript confirms it can reveal them
+   again, so a reader without it still gets every case study. In this mode a
+   question opens the study directly, because two clicks for one intention
+   is one click too many. ──────────────────────────────────────────────── */
+#work.focus .entry { display: none; }
+#work.focus .entry.shown { display: block; }
+#work.focus .entry summary { display: none; }
+#work.focus .entry details { margin-top: 0; }
+#work:not(.focus) .entry-back { display: none; }
+
+.entry { scroll-margin-top: 92px; }
+.entry-back { margin-top: 1.9rem; }
+
+.failure-list button.active {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.failure-list button.active::before { background: var(--accent); }
+
+.failures-foot { margin: 1.3rem 0 0; }
+.show-all, .back-to-list {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: 400 0.92rem var(--sans);
+  color: var(--accent);
+  border-bottom: 1px solid var(--rule);
+  transition: border-color 0.15s;
+}
+.show-all:hover, .back-to-list:hover { border-bottom-color: var(--accent); }
+
+.group-label {
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  margin: 0 0 0.65rem;
+}
+.projects + .group-label { margin-top: clamp(2rem, 4vw, 3rem); }
+
+/* ── Project gallery: a scroll-snap strip, never an auto-rotating carousel
+      that moves while somebody is reading it. ─────────────────────────── */
+.gallery { margin: 1.5rem 0 0; }
+.gallery-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(100%, 34rem);
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding-bottom: 0.6rem;
+  scrollbar-width: thin;
+}
+.gallery-track:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.gallery-track figure { margin: 0; scroll-snap-align: start; }
+.gallery-track img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule);
+}
+.gallery-track figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+.gallery-nav { display: flex; gap: 1.4rem; margin: 0.9rem 0 0; }
+.gallery-nav button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: 400 0.88rem var(--sans);
+  color: var(--accent);
+  border-bottom: 1px solid var(--rule);
+  transition: border-color 0.15s, color 0.15s;
+}
+.gallery-nav button:hover { border-bottom-color: var(--accent); }
+.gallery-nav button[disabled] {
+  color: var(--ink-3);
+  cursor: default;
+  border-bottom-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-track { scroll-behavior: auto; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes revealEntry {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  #work.focus .entry.shown { animation: revealEntry 0.34s cubic-bezier(.25,.9,.3,1) both; }
+}
+
+/* A class-level display beats the browser's [hidden] rule, so say it again. */
+.gallery-nav[hidden] { display: none; }

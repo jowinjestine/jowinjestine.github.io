@@ -235,21 +235,109 @@
 })();
 
 
-/* ── The failure list opens the case study that answers it ───────────── */
-(function failureIndex() {
-  const buttons = document.querySelectorAll('.failure-list button[data-case]');
-  if (!buttons.length) return;
+/* ── Question-first work section ──────────────────────────────────────
+   The case studies start hidden, but only because this code is running and
+   can bring them back. Without JavaScript nothing is hidden at all. ──── */
+(function focusWork() {
+  const work = document.getElementById('work');
+  if (!work) return;
+  const buttons = Array.from(work.querySelectorAll('.failure-list button[data-case]'));
+  const entries = Array.from(work.querySelectorAll('.entry'));
+  if (!buttons.length || !entries.length) return;
+
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const how = still ? 'auto' : 'smooth';
+
+  work.classList.add('focus');
+  /* One click should reach the writing, so the disclosure is already open. */
+  for (const e of entries) {
+    for (const d of e.querySelectorAll('details')) d.open = true;
+  }
+
+  function setActive(id) {
+    for (const b of buttons) {
+      const on = b.dataset.case === id;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-expanded', on ? 'true' : 'false');
+    }
+  }
+
+  function reveal(id, scroll) {
+    let found = null;
+    for (const e of entries) {
+      const on = e.id === id;
+      e.classList.toggle('shown', on);
+      if (on) found = e;
+    }
+    setActive(id);
+    if (found && scroll) found.scrollIntoView({ behavior: how, block: 'start' });
+    return found;
+  }
+
+  function showAll() {
+    for (const e of entries) e.classList.add('shown');
+    setActive(null);
+    entries[0].scrollIntoView({ behavior: how, block: 'start' });
+  }
+
+  function collapse() {
+    for (const e of entries) e.classList.remove('shown');
+    setActive(null);
+    const list = work.querySelector('.failures');
+    if (list) list.scrollIntoView({ behavior: how, block: 'start' });
+  }
 
   for (const b of buttons) {
+    b.setAttribute('aria-controls', b.dataset.case);
+    b.setAttribute('aria-expanded', 'false');
+    b.addEventListener('click', () => reveal(b.dataset.case, true));
+  }
+  for (const b of work.querySelectorAll('.show-all')) b.addEventListener('click', showAll);
+  for (const b of work.querySelectorAll('.back-to-list')) b.addEventListener('click', collapse);
+
+  /* A link straight to a case study still works. */
+  const hash = location.hash.replace('#', '');
+  if (hash && entries.some(e => e.id === hash)) reveal(hash, false);
+  window.addEventListener('hashchange', () => {
+    const id = location.hash.replace('#', '');
+    if (entries.some(e => e.id === id)) reveal(id, true);
+  });
+})();
+
+
+/* ── Project gallery: one screen at a time, moved only on request ────── */
+(function gallery() {
+  const navs = document.querySelectorAll('.gallery-nav button[data-g]');
+  if (!navs.length) return;
+
+  function sync(track) {
+    const max = track.scrollWidth - track.clientWidth - 2;
+    const scrollable = track.scrollWidth > track.clientWidth + 2;
+    for (const b of document.querySelectorAll('.gallery-nav button[data-g="' + track.id + '"]')) {
+      const back = Number(b.dataset.dir) < 0;
+      b.disabled = back ? track.scrollLeft <= 2 : track.scrollLeft >= max;
+      /* At wide widths every screen fits at once, so the controls would be
+         two permanently dead buttons. Hide them until they mean something. */
+      const nav = b.closest('.gallery-nav');
+      if (nav) nav.hidden = !scrollable;
+    }
+  }
+
+  const tracks = new Set();
+  for (const b of navs) {
+    const track = document.getElementById(b.dataset.g);
+    if (!track) continue;
+    tracks.add(track);
     b.addEventListener('click', () => {
-      const entry = document.getElementById(b.dataset.case);
-      if (!entry) return;
-      const d = entry.querySelector('details');
-      if (d) d.open = true;
-      entry.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      entry.classList.add('landed');
-      setTimeout(() => entry.classList.remove('landed'), 1800);
+      const first = track.querySelector('figure');
+      const step = first ? first.getBoundingClientRect().width + 16 : track.clientWidth;
+      track.scrollBy({ left: step * Number(b.dataset.dir), behavior: 'smooth' });
     });
+  }
+  for (const t of tracks) {
+    sync(t);
+    t.addEventListener('scroll', () => sync(t), { passive: true });
+    window.addEventListener('resize', () => sync(t));
   }
 })();
 
