@@ -645,3 +645,130 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
   @keyframes f7grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   .fig.play .grow { animation: f7grow 1.15s cubic-bezier(.25,.9,.3,1) both; }
 }
+
+/* ── The failure list: an entry point that poses problems, not answers ── */
+.failures { margin: 0 0 clamp(2rem, 4vw, 3rem); }
+.failures-lead {
+  font-family: var(--display);
+  font-size: 1.16rem;
+  line-height: 1.45;
+  color: var(--ink);
+  max-width: 36rem;
+  margin-bottom: 1.2rem;
+}
+.failure-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+.failure-list li { border-bottom: 1px solid var(--rule); }
+.failure-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.95rem 2.2rem 0.95rem 1.5rem;
+  font: 400 0.99rem/1.45 var(--sans);
+  color: var(--ink-2);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.15s, background-color 0.15s;
+}
+.failure-list button::before {
+  content: '';
+  position: absolute;
+  left: 0.35rem;
+  top: 1.42em;
+  width: 5px;
+  height: 5px;
+  background: var(--wait);
+  transition: background-color 0.15s;
+}
+.failure-list button:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
+}
+.failure-list button:hover::before { background: var(--accent); }
+
+/* Where the reader lands after picking a failure */
+.entry.landed > h3 { color: var(--accent); }
+
+/* ── The spectrum readout ──────────────────────────────────────────────── */
+.readout {
+  min-height: 4.4rem;
+  margin-top: 0.9rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+  max-width: 46rem;
+}
+.readout p { margin: 0; max-width: none; }
+.readout-hint { font-size: 0.9rem; color: var(--ink-3); }
+.readout-name {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  color: var(--ink);
+  margin-right: 0.6rem;
+}
+.readout-ppm {
+  font: 400 0.82rem var(--mono);
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.readout-note {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.925rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+#spectrum { cursor: crosshair; }
+#spectrum:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+/* ── Motion for the three figures added later ──────────────────────────── */
+.fig .job, .fig .row { opacity: 0; fill: var(--accent); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Figure: spectra fan out across a pool of nodes, then converge. */
+  @keyframes f8job {
+    0%   { transform: translate(0, 0);          opacity: 0; }
+    8%   { opacity: 1; }
+    30%  { transform: translate(226px, 0); }
+    52%  { transform: translate(370px, 0); }
+    74%  { transform: translate(518px, 0); }
+    90%  { transform: translate(534px, 0);      opacity: 1; }
+    100% { transform: translate(534px, 0);      opacity: 0; }
+  }
+  .fig.play .f8 .t1 { animation: f8job 4.4s linear infinite; }
+  .fig.play .f8 .t2 { animation: f8job 4.4s 0.6s linear infinite; }
+  .fig.play .f8 .t3 { animation: f8job 4.4s 1.2s linear infinite; }
+
+  /* Figure: rows travel the medallion path and are never rewritten. */
+  @keyframes f9row {
+    0%   { transform: translate(0, 0);          opacity: 0; }
+    8%   { opacity: 1; }
+    28%  { transform: translate(44px, 18px); }
+    50%  { transform: translate(222px, 30px); }
+    70%  { transform: translate(382px, 30px); }
+    88%  { transform: translate(526px, 30px);   opacity: 1; }
+    100% { transform: translate(526px, 30px);   opacity: 0; }
+  }
+  .fig.play .f9 .a1 { animation: f9row 4.6s linear infinite; }
+  .fig.play .f9 .a2 { animation: f9row 4.6s 1.3s linear infinite; }
+
+  /* Figure: features fan into three views, then converge on one ensemble. */
+  @keyframes f10row {
+    0%   { transform: translate(0, 0);          opacity: 0; }
+    10%  { opacity: 1; }
+    34%  { transform: translate(46px, -21px); }
+    56%  { transform: translate(222px, -21px); }
+    78%  { transform: translate(392px, 21px); }
+    92%  { transform: translate(544px, 21px);   opacity: 1; }
+    100% { transform: translate(544px, 21px);   opacity: 0; }
+  }
+  .fig.play .f10 .p { animation: f10row 4.8s linear infinite; }
+}

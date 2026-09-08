@@ -1,10 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════════════
-   Two behaviours only: draw the spectrum, and fill in repo commit counts.
-   Everything else on this page is HTML and CSS on purpose.
+   Four behaviours: draw and explain the spectrum, jump to a case study
+   from the failure list, start figure animations when they come into view,
+   and fill in repo commit counts. Everything else here is HTML and CSS.
    ═══════════════════════════════════════════════════════════════════════ */
 
 (function spectrum() {
   const canvas = document.getElementById('spectrum');
+  const readout = document.getElementById('readout');
   if (!canvas || !canvas.getContext) return;
   const ctx = canvas.getContext('2d');
 
@@ -12,29 +14,42 @@
      4.7 ppm is where the water resonance is suppressed, which is why a
      urine spectrum has a hole in the middle rather than its tallest peak. */
   const PEAKS = [
-    { ppm: 8.46, h: 0.42, w: 0.010, label: 'Formate' },
-    { ppm: 7.83, h: 0.30, w: 0.012, label: 'Histidine' },
-    { ppm: 7.64, h: 0.38, w: 0.013, label: 'Hippurate' },
+    { ppm: 8.46, h: 0.42, w: 0.010, label: 'Formate',
+      note: 'A one-carbon metabolite, and the sharp singlet at the high-shift end of the spectrum.' },
+    { ppm: 7.83, h: 0.30, w: 0.012, label: 'Histidine',
+      note: 'An essential amino acid. Its aromatic protons sit in the crowded region between seven and eight.' },
+    { ppm: 7.64, h: 0.38, w: 0.013, label: 'Hippurate',
+      note: 'A co-metabolite of gut microbes and diet, and one of the most abundant signals in urine.' },
     { ppm: 7.55, h: 0.24, w: 0.011 },
     { ppm: 4.06, h: 0.34, w: 0.012 },
-    { ppm: 3.57, h: 0.46, w: 0.011, label: 'Glycine' },
-    { ppm: 3.04, h: 0.78, w: 0.010, label: 'Creatinine' },
-    { ppm: 2.67, h: 0.62, w: 0.012, label: 'Citrate' },
+    { ppm: 3.57, h: 0.46, w: 0.011, label: 'Glycine',
+      note: 'The simplest amino acid, and a single strong resonance.' },
+    { ppm: 3.04, h: 0.78, w: 0.010, label: 'Creatinine',
+      note: 'A muscle breakdown product, and the routine clinical reference for kidney function. It is the comparator in the published work further down this page.' },
+    { ppm: 2.67, h: 0.62, w: 0.012, label: 'Citrate',
+      note: 'An intermediate of the citric acid cycle. The coupled pair sits either side of 2.6.' },
     { ppm: 2.55, h: 0.54, w: 0.012 },
-    { ppm: 2.45, h: 0.36, w: 0.013, label: 'Glutamine' },
-    { ppm: 1.92, h: 0.44, w: 0.011, label: 'Acetate' },
-    { ppm: 1.48, h: 0.58, w: 0.010, label: 'Alanine' },
-    { ppm: 1.33, h: 1.00, w: 0.010, label: 'Lactate' },
-    { ppm: 0.95, h: 0.50, w: 0.014, label: 'Valine, leucine' },
+    { ppm: 2.45, h: 0.36, w: 0.013, label: 'Glutamine',
+      note: 'An amino acid whose multiplets overlap several neighbours, which is what makes this stretch hard to resolve.' },
+    { ppm: 1.92, h: 0.44, w: 0.011, label: 'Acetate',
+      note: 'A short-chain fatty acid, largely microbial in origin.' },
+    { ppm: 1.48, h: 0.58, w: 0.010, label: 'Alanine',
+      note: 'An amino acid, and a clean doublet.' },
+    { ppm: 1.33, h: 1.00, w: 0.010, label: 'Lactate',
+      note: 'Usually the tallest peak in this half of the spectrum, and a doublet.' },
+    { ppm: 0.95, h: 0.50, w: 0.014, label: 'Valine, leucine',
+      note: 'Branched-chain amino acids at the low-shift end, where the aliphatic signals sit.' },
   ];
+  const NAMED = PEAKS.filter(p => p.label);
 
   const PPM_HI = 9.2;
   const PPM_LO = 0.3;
   const INK = '#17191c';
   const RULE = '#d9dad4';
   const FAINT = '#6b7178';
+  const ACCENT = '#3a3486';
 
-  let W = 0, H = 0, dpr = 1;
+  let W = 0, H = 0, dpr = 1, progress = 0, active = -1;
   const PAD = { t: 34, r: 8, b: 30, l: 8 };
 
   const xOf = ppm => PAD.l + ((PPM_HI - ppm) / (PPM_HI - PPM_LO)) * (W - PAD.l - PAD.r);
@@ -62,14 +77,17 @@
     H = cssH;
   }
 
-  function draw(progress) {
+  const peakY = (p, base, plotH) =>
+    base - Math.min(intensityAt(p.ppm), 1.08) * plotH * 0.92;
+
+  function draw(t) {
+    progress = t;
     ctx.clearRect(0, 0, W, H);
 
     const base = H - PAD.b;
     const plotH = base - PAD.t;
-    const cut = PAD.l + (W - PAD.l - PAD.r) * progress;
+    const cut = PAD.l + (W - PAD.l - PAD.r) * t;
 
-    /* Axis: integer ticks, high shift on the left, as spectra are plotted. */
     ctx.strokeStyle = RULE;
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -93,15 +111,13 @@
     ctx.textAlign = 'right';
     ctx.fillText('ppm', W - PAD.r, base + 8);
 
-    /* The trace itself. */
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, 0, cut, H);
     ctx.clip();
 
     ctx.beginPath();
-    const step = 0.5;
-    for (let x = PAD.l; x <= W - PAD.r; x += step) {
+    for (let x = PAD.l; x <= W - PAD.r; x += 0.5) {
       const ppm = PPM_HI - ((x - PAD.l) / (W - PAD.l - PAD.r)) * (PPM_HI - PPM_LO);
       const y = base - Math.min(intensityAt(ppm), 1.08) * plotH * 0.92;
       if (x === PAD.l) ctx.moveTo(x, y);
@@ -112,40 +128,88 @@
     ctx.lineJoin = 'round';
     ctx.stroke();
 
-    /* Labels, with a leader line up from the peak. Peaks between roughly
-       1 and 3 ppm sit close together, so labels are lifted onto a second
-       row when a neighbour is too near to share one. */
-    ctx.font = '400 10.5px "Instrument Sans", system-ui, sans-serif';
+    /* Labels, lifted onto a second row where neighbours crowd. The active
+       peak is drawn in the accent with a marker on the trace. */
     ctx.textBaseline = 'alphabetic';
-
-    const labelled = PEAKS.filter(p => p.label).map(p => ({
-      p,
-      x: xOf(p.ppm),
-      peakY: base - Math.min(intensityAt(p.ppm), 1.08) * plotH * 0.92,
-      w: ctx.measureText(p.label).width,
+    ctx.font = '400 10.5px "Instrument Sans", system-ui, sans-serif';
+    const labelled = NAMED.map(p => ({
+      p, x: xOf(p.ppm), y: peakY(p, base, plotH), w: ctx.measureText(p.label).width,
     }));
-
     let prev = null;
     for (const L of labelled) {
-      const crowded = prev && (L.x - L.w / 2) < (prev.x + prev.w / 2 + 10);
-      L.row = crowded && prev.row === 0 ? 1 : 0;
+      L.row = prev && (L.x - L.w / 2) < (prev.x + prev.w / 2 + 10) && prev.row === 0 ? 1 : 0;
       prev = L;
     }
-
-    for (const L of labelled) {
+    for (let i = 0; i < labelled.length; i++) {
+      const L = labelled[i];
       if (L.x > cut) continue;
-      const labY = Math.max(13, L.peakY - 12 - L.row * 15);
-      ctx.strokeStyle = RULE;
+      const on = i === active;
+      const labY = Math.max(13, L.y - 12 - L.row * 15);
+      ctx.strokeStyle = on ? ACCENT : RULE;
+      ctx.lineWidth = on ? 1.4 : 1;
       ctx.beginPath();
-      ctx.moveTo(L.x, L.peakY - 3);
+      ctx.moveTo(L.x, L.y - 3);
       ctx.lineTo(L.x, labY + 3);
       ctx.stroke();
-      ctx.fillStyle = FAINT;
+      if (on) {
+        ctx.beginPath();
+        ctx.arc(L.x, L.y - 7, 3.4, 0, Math.PI * 2);
+        ctx.fillStyle = ACCENT;
+        ctx.fill();
+      }
+      ctx.fillStyle = on ? ACCENT : FAINT;
+      ctx.font = (on ? '500 ' : '400 ') + '10.5px "Instrument Sans", system-ui, sans-serif';
       ctx.textAlign = L.x > W - 80 ? 'right' : 'center';
       ctx.fillText(L.p.label, L.x, labY);
     }
     ctx.restore();
   }
+
+  /* ── The readout is the reason the canvas is interactive at all ─────── */
+  const HINT = '<p class="readout-hint">Point at a peak, or press the arrow keys, to see what it is.</p>';
+
+  function show(i) {
+    if (i === active) return;
+    active = i;
+    if (readout) {
+      if (i < 0) {
+        readout.innerHTML = HINT;
+      } else {
+        const p = NAMED[i];
+        readout.innerHTML =
+          '<p class="readout-body"><span class="readout-name">' + p.label + '</span>' +
+          '<span class="readout-ppm">' + p.ppm.toFixed(2) + ' ppm</span>' +
+          '<span class="readout-note">' + p.note + '</span></p>';
+      }
+    }
+    draw(progress || 1);
+  }
+
+  function nearest(clientX) {
+    const r = canvas.getBoundingClientRect();
+    const x = (clientX - r.left) * (W / r.width);
+    let best = -1, bestD = 34;
+    for (let i = 0; i < NAMED.length; i++) {
+      const d = Math.abs(xOf(NAMED[i].ppm) - x);
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+
+  canvas.addEventListener('pointermove', e => show(nearest(e.clientX)));
+  canvas.addEventListener('pointerleave', () => show(-1));
+  canvas.addEventListener('pointerdown', e => { canvas.focus(); show(nearest(e.clientX)); });
+  canvas.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      show(Math.min(NAMED.length - 1, active + 1));
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      show(active <= 0 ? 0 : active - 1);
+      e.preventDefault();
+    } else if (e.key === 'Escape') {
+      show(-1);
+    }
+  });
 
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -153,10 +217,8 @@
     measure();
     if (still) { draw(1); return; }
     const t0 = performance.now();
-    const dur = 1150;
     (function frame(now) {
-      const t = Math.min(1, (now - t0) / dur);
-      /* Ease out; an acquisition sweeps and settles. */
+      const t = Math.min(1, (now - t0) / 1150);
       draw(1 - Math.pow(1 - t, 3));
       if (t < 1) requestAnimationFrame(frame);
     })(t0);
@@ -172,30 +234,27 @@
   else run();
 })();
 
-(function repoStats() {
-  const slots = document.querySelectorAll('.repo-stat[data-repo]');
-  if (!slots.length) return;
 
-  fetch('stats.json', { cache: 'no-cache' })
-    .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
-    .then(data => {
-      const by = new Map((data.repos || []).map(r => [r.name, r]));
-      for (const slot of slots) {
-        const r = by.get(slot.dataset.repo);
-        if (!r || !r.available || !r.commits) continue;
-        const when = r.lastCommitAt
-          ? new Date(r.lastCommitAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
-          : null;
-        slot.textContent = when
-          ? `${r.commits} commits, last ${when}`
-          : `${r.commits} commits`;
-      }
-    })
-    .catch(() => { /* the page reads fine without these */ });
+/* ── The failure list opens the case study that answers it ───────────── */
+(function failureIndex() {
+  const buttons = document.querySelectorAll('.failure-list button[data-case]');
+  if (!buttons.length) return;
+
+  for (const b of buttons) {
+    b.addEventListener('click', () => {
+      const entry = document.getElementById(b.dataset.case);
+      if (!entry) return;
+      const d = entry.querySelector('details');
+      if (d) d.open = true;
+      entry.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      entry.classList.add('landed');
+      setTimeout(() => entry.classList.remove('landed'), 1800);
+    });
+  }
 })();
 
-/* Figures animate only once they are on screen. The class stays, so looping
-   demonstrations keep running while the reader is looking at them. */
+
+/* ── Figures animate only once they are on screen ────────────────────── */
 (function figuresInView() {
   const figs = document.querySelectorAll('.fig');
   if (!figs.length) return;
@@ -212,4 +271,26 @@
     }
   }, { threshold: 0.3 });
   figs.forEach(f => io.observe(f));
+})();
+
+
+/* ── Commit counts for the two public repositories ───────────────────── */
+(function repoStats() {
+  const slots = document.querySelectorAll('.repo-stat[data-repo]');
+  if (!slots.length) return;
+
+  fetch('stats.json', { cache: 'no-cache' })
+    .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then(data => {
+      const by = new Map((data.repos || []).map(r => [r.name, r]));
+      for (const slot of slots) {
+        const r = by.get(slot.dataset.repo);
+        if (!r || !r.available || !r.commits) continue;
+        const when = r.lastCommitAt
+          ? new Date(r.lastCommitAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
+          : null;
+        slot.textContent = when ? r.commits + ' commits, last ' + when : r.commits + ' commits';
+      }
+    })
+    .catch(() => { /* the page reads fine without these */ });
 })();

@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=4" />
+<link rel="stylesheet" href="styles.css?v=5" />
 </head>
 <body>
 
@@ -67,13 +67,18 @@
     </p>
 
     <figure class="spectrum-figure">
-      <canvas id="spectrum" width="1200" height="300" role="img"
-              aria-label="A one-dimensional proton NMR spectrum of urine, showing labelled peaks for formate, histidine, creatinine, citrate, glutamine, alanine, lactate and branched-chain amino acids across a chemical shift axis from 9 to 0 parts per million."></canvas>
+      <canvas id="spectrum" width="1200" height="300" tabindex="0" role="img"
+              aria-label="An interactive one-dimensional proton NMR spectrum of urine. Point at a peak, or use the left and right arrow keys, to read what each metabolite is."></canvas>
+      <div class="readout" id="readout" aria-live="polite">
+        <p class="readout-hint">Point at a peak, or press the arrow keys, to see what it is.</p>
+      </div>
       <figcaption>
-        <b>Figure 1.</b> A 1D proton NMR spectrum of urine, which is the raw material almost everything below
-        is built on. Chemical shift runs high to low, left to right, by convention. Each peak
-        is a metabolite; the job of the platform is to make sure the sample that produced this
-        trace can still be tied back to a patient, an order and a report months later.
+        <b>Figure 1.</b> A 1D proton NMR spectrum of urine, which is the raw material almost
+        everything below is built on. Chemical shift runs high to low, left to right, by
+        convention, and the gap in the middle is where the water resonance is suppressed.
+        Each peak is a metabolite. The job of the platform is to make sure the sample that
+        produced this trace can still be tied back to a patient, an order and a report
+        months later.
       </figcaption>
     </figure>
 
@@ -90,15 +95,28 @@
     <div class="section-head">
       <h2>Selected work</h2>
       <p>
-        These are systems I built and still own at Olaris. I have written them up as
-        decisions rather than achievements, because the decisions are the part that
-        transfers. Specific volumes, latencies and internal figures are left out on purpose;
-        everything here is about structure and reasoning.
+        These are systems I built and still own at Olaris, written up as decisions rather
+        than achievements, because the decisions are the part that transfers. Specific
+        volumes, latencies and internal figures are left out on purpose.
       </p>
     </div>
 
+    <div class="failures">
+      <p class="failures-lead">Every one of these has happened in production. Pick one and I will show you what it took to stop it.</p>
+      <ul class="failure-list">
+        <li><button type="button" data-case="case-inventory">A vendor quietly stops delivering half your events.</button></li>
+        <li><button type="button" data-case="case-identifiers">Two samples get pooled into one tube.</button></li>
+        <li><button type="button" data-case="case-monitoring">An overnight run starts degrading at two in the morning.</button></li>
+        <li><button type="button" data-case="case-intake">An order is cancelled after the sample has arrived.</button></li>
+        <li><button type="button" data-case="case-delivery">Nobody can prove which version of the code produced a result.</button></li>
+        <li><button type="button" data-case="case-processing">The same spectrum gets processed two slightly different ways.</button></li>
+        <li><button type="button" data-case="case-search">A correct search returns nothing at all.</button></li>
+        <li><button type="button" data-case="case-quality">A bad spectrum looks completely fine.</button></li>
+      </ul>
+    </div>
+
     <!-- 1 ─────────────────────────────── -->
-    <article class="entry">
+    <article class="entry" id="case-inventory">
       <h3>Sample inventory that does not trust the webhook</h3>
       <p class="entry-line">
         Keeping a PostgreSQL inventory in step with the lab's electronic notebook, given a
@@ -186,7 +204,7 @@
     </article>
 
     <!-- 2 ─────────────────────────────── -->
-    <article class="entry">
+    <article class="entry" id="case-identifiers">
       <h3>Identifiers that survive the exceptions</h3>
       <p class="entry-line">
         A traceability model where formal identifiers, not names typed by hand, carry the
@@ -276,7 +294,7 @@
     </article>
 
     <!-- 3 ─────────────────────────────── -->
-    <article class="entry">
+    <article class="entry" id="case-monitoring">
       <h3>Catching instrument drift while the instrument is still running</h3>
       <p class="entry-line">
         Monitoring NMR acquisition against reference rule sets, so an overnight batch is not
@@ -357,7 +375,7 @@
     </article>
 
     <!-- 4 ─────────────────────────────── -->
-    <article class="entry">
+    <article class="entry" id="case-intake">
       <h3>Clinical order intake, end to end</h3>
       <p class="entry-line">
         Taking an order from a lab partner through verification, cancellation and approval
@@ -427,7 +445,7 @@
     </article>
 
     <!-- 5 ─────────────────────────────── -->
-    <article class="entry">
+    <article class="entry" id="case-delivery">
       <h3>Making every change to a regulated app reviewable</h3>
       <p class="entry-line">
         Continuous delivery and a staging environment for clinical applications, plus
@@ -482,8 +500,98 @@
       </details>
     </article>
 
+    <article class="entry" id="case-processing">
+      <h3>Processing spectra without a person driving TopSpin</h3>
+      <p class="entry-line">
+        Automated phasing, baseline correction and calibration for NMR acquisitions, run in
+        parallel and audited per run.
+      </p>
+      <p class="entry-meta"><span class="tag ok">In production</span> Python, Jython, Bruker TopSpin, Azure Batch, azcopy</p>
+      <p class="hook">
+        Processing a spectrum by hand takes a trained person several minutes and no two
+        people do it identically. Multiply that by a run of samples.
+      </p>
+
+      <figure class="fig">
+        <svg viewBox="0 0 760 226" role="img" style="min-width:560px" aria-label="Raw acquisitions are synced off the spectrometer, then one processing task runs per spectrum across a pool of nodes. Each run writes its own audit record alongside the processed output, so a result can be traced to the code and the operator that produced it."><rect class="b" x="4" y="96" width="116" height="44"/><text class="t" x="62" y="122">Spectrometer</text><rect class="b" x="178" y="96" width="116" height="44"/><text class="t" x="236" y="122">Raw FID store</text><rect class="b" x="352" y="96" width="116" height="44"/><text class="t" x="410" y="122">Batch pool</text><rect class="b" x="520" y="44" width="104" height="34"/><text class="t" x="572" y="65">Task</text><rect class="b" x="520" y="101" width="104" height="34"/><text class="t" x="572" y="122">Task</text><rect class="b" x="520" y="158" width="104" height="34"/><text class="t" x="572" y="179">Task</text><rect class="b" x="660" y="101" width="96" height="34"/><text class="t" x="708" y="122">Processed</text><line class="e" x1="120" y1="118" x2="176" y2="118"/><text class="l" x="149" y="106">sync</text><line class="e" x1="294" y1="118" x2="350" y2="118"/><text class="l" x="322" y="106">submit</text><polyline class="e" points="468,118 494,118 494,61 518,61"/><polyline class="e" points="468,118 494,118 494,118 518,118"/><polyline class="e" points="468,118 494,118 494,175 518,175"/><polyline class="e" points="624,61 642,61 642,118 658,118"/><polyline class="e" points="624,118 642,118 642,118 658,118"/><polyline class="e" points="624,175 642,175 642,118 658,118"/><text class="l" x="572" y="212">one spectrum per task, run in parallel</text><text class="l ls" x="4" y="72">auto-phase, baseline, calibrate against a reference standard</text><g class="anim f8"><circle class="job t1" cx="124" cy="118" r="3.4" style="animation-delay:0s"/><circle class="job t2" cx="124" cy="118" r="3.4" style="animation-delay:0.5s"/><circle class="job t3" cx="124" cy="118" r="3.4" style="animation-delay:1s"/></g></svg>
+        <figcaption><b>Figure 6.</b> Raw acquisitions are synced off the spectrometer, then one processing task runs per spectrum across a pool of nodes. Each run writes its own audit record alongside the processed output, so a result can be traced to the code and the operator that produced it.</figcaption>
+      </figure>
+
+      <details>
+        <summary><span>How the processing was automated</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            A raw acquisition is not a usable spectrum. It needs phase correction, baseline
+            correction and calibration against a known reference before anything downstream
+            can read it. Done by hand in the instrument software, that is several minutes of
+            a trained person&rsquo;s attention per sample, and two analysts will not produce
+            byte-identical output from the same input.
+          </p>
+          <p>
+            For a research question that is tolerable. For a clinical workflow it is a
+            reproducibility problem, because the processing itself becomes an undocumented
+            step between the instrument and the result.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>Bridge the instrument software rather than reimplement it</h5>
+          <p>
+            The instrument vendor&rsquo;s software is the authority on how a spectrum is
+            processed, and it scripts in Jython. So the automation is a thin Jython layer
+            that drives the vendor tooling and hands off to Python 3 for the analysis, rather
+            than a from-scratch reimplementation of well-understood spectroscopy. Writing my
+            own phasing algorithm would have been more fun and much harder to defend.
+          </p>
+
+          <h5>Calibrate against a known standard, not against the tallest peak</h5>
+          <p>
+            Chemical shift referencing needs a fixed point. Calibrating to a reference
+            compound added to the sample gives one that does not move with biology, and the
+            processing detects the reference and navigator peaks rather than assuming where
+            they will be.
+          </p>
+
+          <h5>One task per spectrum, on a pool that scales to the run</h5>
+          <p>
+            Processing is embarrassingly parallel: spectra do not depend on each other. So
+            the work runs as a task per spectrum across a batch pool, and the same code runs
+            locally or on the pool depending on a single mode switch. That keeps development
+            honest, because the thing you debug on your laptop is the thing that runs on the
+            cluster.
+          </p>
+
+          <h5>Every run leaves an audit record next to its output</h5>
+          <p>
+            Each run gets its own directory keyed by the ticket, the date and the operator,
+            and writes both a human-readable log and a structured record beside the processed
+            data. The point is not tidiness. It is that six months later you can say which
+            code, which inputs and which person produced a given spectrum, without relying on
+            anybody&rsquo;s memory.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>The same acquisition produces the same processed spectrum every time.</li>
+            <li>Processing scales with the size of the run rather than the number of analysts.</li>
+            <li>Every processed spectrum has a record of the code, inputs and operator behind it.</li>
+            <li>The local and cluster paths run identical code, so one cannot drift from the other.</li>
+          </ul>
+
+          <h4>What I would tell someone starting this</h4>
+          <p>
+            Automate the boring, well-specified steps and leave the judgement calls alone.
+            Phasing and baseline correction have right answers. Deciding whether a spectrum is
+            fit to report does not, which is why that stayed a separate model with a human in
+            the loop.
+          </p>
+        </div>
+      </details>
+    </article>
+
     <!-- 6 ─────────────────────────────── -->
-    <article class="entry">
+    <article class="entry" id="case-search">
       <h3>Search that understands what a compound is called</h3>
       <p class="entry-line">
         Semantic retrieval over the metabolite catalogue, running entirely inside our own
@@ -532,7 +640,7 @@
     </article>
 
     <!-- 7 ─────────────────────────────── -->
-    <article class="entry">
+    <article class="entry" id="case-quality">
       <h3>A quality model that knows when to ask a human</h3>
       <p class="entry-line">
         Scoring NMR signal quality, calibrated so that uncertainty routes to review rather
@@ -542,7 +650,7 @@
       <p class="hook">A bad spectrum passed off as a good one is a clinical problem, not an accuracy statistic.</p>
       <figure class="fig">
         <svg viewBox="0 0 760 140" role="img" style="min-width:520px" aria-label="The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one."><line class="ax" x1="40" y1="86" x2="720" y2="86"/><rect class="band wait" x="40" y="58" width="260" height="28"/><text class="l" x="170" y="106">recorded as failing</text><rect class="band rev" x="300" y="58" width="170" height="28"/><text class="l" x="385" y="106">routed to a reviewer</text><rect class="band ok" x="470" y="58" width="250" height="28"/><text class="l" x="595" y="106">passes automatically</text><line class="mid" x1="380" y1="44" x2="380" y2="94"/><text class="l" x="380" y="36">the midpoint, where the boundary is not</text><text class="l ls" x="40" y="128">less confident</text><text class="l le" x="720" y="128">more confident</text><g class="anim f6"><circle class="spc s1" cx="180" cy="72" r="3.6" style="animation-delay:0.15s"/><circle class="spc s2" cx="392" cy="72" r="3.6" style="animation-delay:0.55s"/><circle class="spc s3" cx="600" cy="72" r="3.6" style="animation-delay:0.95s"/></g></svg>
-        <figcaption><b>Figure 6.</b> The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one.</figcaption>
+        <figcaption><b>Figure 7.</b> The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one.</figcaption>
       </figure>
 
       <details>
@@ -624,6 +732,11 @@
           <a href="https://github.com/jowinjestine/f1-race-predictor">github.com/jowinjestine/f1-race-predictor</a>
           <span class="repo-stat" data-repo="f1-race-predictor"></span>
         </p>
+
+        <figure class="fig">
+          <svg viewBox="0 0 760 194" role="img" style="min-width:520px" aria-label="The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess."><rect class="b" x="4" y="76" width="112" height="40"/><text class="t" x="60" y="100">Features</text><rect class="b" x="164" y="16" width="128" height="34"/><text class="t" x="228" y="37">Lap, with tyre</text><rect class="b" x="164" y="58" width="128" height="34"/><text class="t" x="228" y="79">Lap, no tyre</text><rect class="b" x="164" y="100" width="128" height="34"/><text class="t" x="228" y="121">Pre-race</text><rect class="b" x="340" y="58" width="120" height="34"/><text class="t" x="400" y="79">Stacking</text><rect class="b" x="340" y="142" width="120" height="34"/><text class="t" x="400" y="163">Simulator</text><rect class="b" x="508" y="100" width="120" height="34"/><text class="t" x="568" y="121">Ensemble</text><rect class="b" x="660" y="100" width="96" height="34"/><text class="t" x="708" y="121">API</text><polyline class="e" points="116,96 140,96 140,33 162,33"/><polyline class="e" points="116,96 140,96 140,75 162,75"/><polyline class="e" points="116,96 140,96 140,117 162,117"/><polyline class="e" points="292,33 316,33 316,75 338,75"/><polyline class="e" points="292,75 316,75 316,75 338,75"/><polyline class="e" points="292,117 316,117 316,75 338,75"/><polyline class="e" points="292,117 316,117 316,159 338,159"/><polyline class="e" points="460,75 484,75 484,117 506,117"/><polyline class="e" points="460,159 484,159 484,117 506,117"/><line class="e" x1="628" y1="117" x2="658" y2="117"/><text class="l ls" x="508" y="76">calibrated probabilities</text><g class="anim f10"><circle class="row p" cx="120" cy="96" r="3.4"/></g></svg>
+          <figcaption><b>Figure 8.</b> The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess.</figcaption>
+        </figure>
         <p class="aside">
           The useful lesson was about evaluation, not modelling. Time-ordered
           cross-validation exposed an error inflation that random splits had been hiding, and
@@ -643,6 +756,11 @@
           <a href="https://github.com/jowinjestine/f1-data-lakehouse">github.com/jowinjestine/f1-data-lakehouse</a>
           <span class="repo-stat" data-repo="f1-data-lakehouse"></span>
         </p>
+        <figure class="fig">
+          <svg viewBox="0 0 760 142" role="img" style="min-width:520px" aria-label="Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss."><rect class="b" x="4" y="22" width="128" height="40"/><text class="t" x="68" y="46">FastF1</text><rect class="b" x="4" y="82" width="128" height="40"/><text class="t" x="68" y="106">Jolpica API</text><rect class="b" x="180" y="52" width="128" height="40"/><text class="t" x="244" y="69">Cloud Run</text><text class="t" x="244" y="84">ingest jobs</text><rect class="b" x="356" y="52" width="120" height="40"/><text class="t" x="416" y="69">GCS Parquet</text><text class="t" x="416" y="84">immutable</text><rect class="b" x="516" y="52" width="112" height="40"/><text class="t" x="572" y="69">BigQuery</text><text class="t" x="572" y="84">raw</text><rect class="b" x="660" y="52" width="96" height="40"/><text class="t" x="708" y="76">dbt marts</text><line class="e" x1="132" y1="42" x2="178" y2="60"/><line class="e" x1="132" y1="102" x2="178" y2="84"/><line class="e" x1="308" y1="72" x2="354" y2="72"/><text class="l" x="331" y="60">validate</text><line class="e" x1="476" y1="72" x2="514" y2="72"/><line class="e" x1="628" y1="72" x2="658" y2="72"/><text class="l ls" x="356" y="130">Hive-partitioned, never rewritten</text><text class="l ls" x="516" y="130">external tables, then dbt staging</text><g class="anim f9"><circle class="row a1" cx="136" cy="42" r="3.4" style="animation-delay:0s"/><circle class="row a2" cx="136" cy="42" r="3.4" style="animation-delay:1.2s"/></g></svg>
+          <figcaption><b>Figure 9.</b> Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss.</figcaption>
+        </figure>
+
       </li>
 
       <li>
@@ -772,7 +890,7 @@
 
       <figure class="fig">
         <svg viewBox="0 0 760 124" role="img" style="min-width:520px" aria-label="Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published."><rect class="track" x="70" y="52" width="630" height="18"/><rect class="fill grow" x="70" y="52" width="476.28" height="18"/><line class="ax" x1="70" y1="70" x2="70" y2="76"/><text class="l" x="70" y="90">0.5</text><line class="ax" x1="196" y1="70" x2="196" y2="76"/><text class="l" x="196" y="90">0.6</text><line class="ax" x1="322" y1="70" x2="322" y2="76"/><text class="l" x="322" y="90">0.7</text><line class="ax" x1="448" y1="70" x2="448" y2="76"/><text class="l" x="448" y="90">0.8</text><line class="ax" x1="574" y1="70" x2="574" y2="76"/><text class="l" x="574" y="90">0.9</text><line class="ax" x1="700" y1="70" x2="700" y2="76"/><text class="l" x="700" y="90">1.0</text><line class="mid" x1="546.28" y1="30" x2="546.28" y2="52"/><text class="t" x="546.28" y="24">0.878</text><text class="l ls" x="70" y="112">0.5 is no better than chance</text><text class="l le" x="700" y="112">1.0 is perfect separation</text></svg>
-        <figcaption><b>Figure 7.</b> Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published.</figcaption>
+        <figcaption><b>Figure 10.</b> Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published.</figcaption>
       </figure>
       <dl class="pub-figures">
         <div><dt>Validation AUC</dt><dd>0.878</dd></div>
@@ -814,9 +932,14 @@
         <p>
           I grew up in Mumbai taking computers apart, read Computer Engineering at the
           University of Mumbai, then Business Analytics at UConn, and have been in Boston
-          since. Outside work it is Formula 1, a piano I am slowly getting better at, long
-          drives with no particular destination, and an argument with myself about whether
-          to learn Rust properly.
+          since. Outside work it is Formula 1, long drives with no particular destination,
+          and an argument with myself about whether to learn Rust properly.
+        </p>
+        <p>
+          I have played the piano for more than ten years, through five grades of theory and
+          the practical exams with Trinity. It is the one discipline I have that has nothing
+          to do with computers, and the only one where being slightly wrong is audible
+          immediately. That turns out to be useful practice for the rest of it.
         </p>
         <p>
           What I want next is to keep moving toward architecture: designing platforms that
@@ -862,6 +985,6 @@
   <p>Built by hand in Boston. No framework, no build step, three files.</p>
 </footer>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 </body>
 </html>
