@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-04-27T00:00:00Z",
+  "generatedAt": "2026-09-08T15:18:47Z",
   "repos": [
-    { "name": "f1-race-predictor", "commits": 0, "lastCommitAt": null, "available": false },
-    { "name": "f1-data-lakehouse", "commits": 0, "lastCommitAt": null, "available": false }
+    { "name": "f1-race-predictor", "commits": 43, "lastCommitAt": "2026-05-13T18:40:53Z", "available": true },
+    { "name": "f1-data-lakehouse", "commits": 35, "lastCommitAt": "2026-05-02T19:34:08Z", "available": true }
   ]
 }

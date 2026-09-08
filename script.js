@@ -23,18 +23,18 @@ function withPretext(fn) {
 
   // Real metabolite peaks: { ppm, amp (0-1), width, label, color }
   const PEAKS = [
-    { ppm: 8.46, amp: 0.38, width: 0.04, label: 'Formate',    color: '#a855f7' },
-    { ppm: 7.83, amp: 0.22, width: 0.05, label: 'Histidine',  color: '#38bdf8' },
-    { ppm: 6.89, amp: 0.18, width: 0.06, label: 'Tyrosine',   color: '#a855f7' },
-    { ppm: 4.11, amp: 0.52, width: 0.05, label: 'Lactate',    color: '#38bdf8' },
-    { ppm: 3.56, amp: 0.31, width: 0.04, label: 'Glycine',    color: '#06b6d4' },
-    { ppm: 3.41, amp: 0.88, width: 0.08, label: 'Glucose',    color: '#38bdf8' },
-    { ppm: 3.04, amp: 0.65, width: 0.05, label: 'Creatinine', color: '#a855f7' },
-    { ppm: 2.67, amp: 0.45, width: 0.07, label: 'Citrate',    color: '#38bdf8' },
-    { ppm: 2.43, amp: 0.29, width: 0.06, label: 'Glutamine',  color: '#06b6d4' },
-    { ppm: 1.47, amp: 0.72, width: 0.06, label: 'Alanine',    color: '#a855f7' },
-    { ppm: 1.33, amp: 0.58, width: 0.05, label: 'Lactate',    color: '#38bdf8' },
-    { ppm: 0.91, amp: 0.24, width: 0.05, label: 'Val/Leu',    color: '#06b6d4' },
+    { ppm: 8.46, amp: 0.38, width: 0.04, label: 'Formate',    color: '#b388ff' },
+    { ppm: 7.83, amp: 0.22, width: 0.05, label: 'Histidine',  color: '#6ea8fe' },
+    { ppm: 6.89, amp: 0.18, width: 0.06, label: 'Tyrosine',   color: '#b388ff' },
+    { ppm: 4.11, amp: 0.52, width: 0.05, label: 'Lactate',    color: '#6ea8fe' },
+    { ppm: 3.56, amp: 0.31, width: 0.04, label: 'Glycine',    color: '#3fd97f' },
+    { ppm: 3.41, amp: 0.88, width: 0.08, label: 'Glucose',    color: '#6ea8fe' },
+    { ppm: 3.04, amp: 0.65, width: 0.05, label: 'Creatinine', color: '#b388ff' },
+    { ppm: 2.67, amp: 0.45, width: 0.07, label: 'Citrate',    color: '#6ea8fe' },
+    { ppm: 2.43, amp: 0.29, width: 0.06, label: 'Glutamine',  color: '#3fd97f' },
+    { ppm: 1.47, amp: 0.72, width: 0.06, label: 'Alanine',    color: '#b388ff' },
+    { ppm: 1.33, amp: 0.58, width: 0.05, label: 'Lactate',    color: '#6ea8fe' },
+    { ppm: 0.91, amp: 0.24, width: 0.05, label: 'Val/Leu',    color: '#3fd97f' },
   ];
 
   function resize() {
@@ -175,13 +175,13 @@ function withPretext(fn) {
   const cy  = H / 2;
 
   const orbits = [
-    { radius: 68,  speed: 0.5,  offset: 0,    label: 'Python',    color: '#38bdf8' },
-    { radius: 68,  speed: 0.5,  offset: 3.14, label: 'SQL',       color: '#06b6d4' },
-    { radius: 106, speed: 0.32, offset: 1.0,  label: 'Azure',     color: '#a855f7' },
+    { radius: 68,  speed: 0.5,  offset: 0,    label: 'Python',    color: '#6ea8fe' },
+    { radius: 68,  speed: 0.5,  offset: 3.14, label: 'SQL',       color: '#3fd97f' },
+    { radius: 106, speed: 0.32, offset: 1.0,  label: 'Azure',     color: '#b388ff' },
     { radius: 106, speed: 0.32, offset: 4.14, label: 'Mage AI',   color: '#c084fc' },
-    { radius: 142, speed: 0.2,  offset: 0.5,  label: 'NMR',       color: '#38bdf8' },
+    { radius: 142, speed: 0.2,  offset: 0.5,  label: 'NMR',       color: '#6ea8fe' },
     { radius: 142, speed: 0.2,  offset: 2.8,  label: 'Docker',    color: '#818cf8' },
-    { radius: 142, speed: 0.2,  offset: 5.1,  label: 'XGBoost',   color: '#a855f7' },
+    { radius: 142, speed: 0.2,  offset: 5.1,  label: 'XGBoost',   color: '#b388ff' },
   ];
 
   function draw() {
@@ -244,7 +244,7 @@ function withPretext(fn) {
 
     ctx.beginPath();
     ctx.arc(cx, cy, 7, 0, Math.PI * 2);
-    ctx.fillStyle = '#38bdf8';
+    ctx.fillStyle = '#6ea8fe';
     ctx.fill();
 
     requestAnimationFrame(draw);
@@ -665,12 +665,12 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
     },
     'git log --oneline'() {
       return [
-        { t: 'out', v: 'a3f91c2 feat: migrate 1,200+ clinical records to ADLS Gen2 with RBAC' },
-        { t: 'out', v: 'b82e4d1 perf: reduce query latency 75% via indexed views + connection pooling' },
-        { t: 'out', v: 'c19f3a8 feat: semantic search across 100K+ metabolites (embedding-based)' },
-        { t: 'out', v: 'd540b2e feat: deep learning NMR signal quality classifier — 35% accuracy gain' },
+        { t: 'out', v: 'a3f91c2 feat: migrate legacy clinical records to ADLS Gen2 with RBAC' },
+        { t: 'out', v: 'b82e4d1 perf: cut report query latency with indexed views + pooling' },
+        { t: 'out', v: 'c19f3a8 feat: embedding-based metabolite search across both platforms' },
+        { t: 'out', v: 'd540b2e feat: NMR signal quality classifier with calibrated confidence' },
         { t: 'out', v: 'e7a1093 infra: HIPAA-compliant Azure Functions pipeline with audit logging' },
-        { t: 'out', v: 'f22d8b4 feat: real-time NMR monitoring + MS Teams alerting (200+ params)' },
+        { t: 'out', v: 'f22d8b4 feat: real-time NMR monitoring + Teams alerts on out-of-spec runs' },
         { t: 'out', v: 'g98c5f1 ml: TensorFlow NLP incident router — 30% → 87% accuracy' },
         { t: 'out', v: 'h1b3e92 data: Boehringer Ingelheim data lake migration (13 initiatives)' },
         { t: 'blank', v: '' },
@@ -759,9 +759,9 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '  ],' },
         { t: 'out', v: '  "core_skills": ["Python","SQL","Azure","FastAPI","PostgreSQL","dbt","Docker","NMR"],' },
         { t: 'out', v: '  "highlights": [' },
-        { t: 'out', v: '    "HIPAA-compliant clinical data platform — 1,200+ records, <0.5s response",' },
-        { t: 'out', v: '    "Semantic metabolite search — 100K+ compounds, 70% faster retrieval",' },
-        { t: 'out', v: '    "NMR deep learning QC model — 35% accuracy gain, 72% review reduction",' },
+        { t: 'out', v: '    "HIPAA clinical data platform — CLIA reporting, audited end to end",' },
+        { t: 'out', v: '    "Semantic metabolite search — embedding retrieval, in-tenant FAISS",' },
+        { t: 'out', v: '    "NMR deep learning QC model — calibrated, human in the loop",' },
         { t: 'out', v: '    "NLP incident router — 30% → 87% accuracy at Cigna"' },
         { t: 'out', v: '  ],' },
         { t: 'out', v: '  "open_to": ["Fintech", "Big Tech", "Quant Research", "ML Engineering"]' },
@@ -771,10 +771,10 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
     },
     'ls ./projects'() {
       return [
-        { t: 'out', v: 'clinical-data-platform/    — HIPAA Azure platform, 1200+ clinical records' },
-        { t: 'out', v: 'ai-metabolite-search/      — Semantic search, 100K+ metabolites, 70% faster' },
-        { t: 'out', v: 'nmr-signal-quality/        — Deep learning QC model, 35% accuracy gain' },
-        { t: 'out', v: 'live-nmr-monitoring/       — Real-time 200+ param monitoring + alerting' },
+        { t: 'out', v: 'clinical-data-platform/    — HIPAA Azure platform, CLIA reporting' },
+        { t: 'out', v: 'ai-metabolite-search/      — Semantic search, in-tenant FAISS index' },
+        { t: 'out', v: 'nmr-signal-quality/        — Deep learning QC model, calibrated' },
+        { t: 'out', v: 'live-nmr-monitoring/       — Real-time param monitoring + alerting' },
         { t: 'out', v: 'it-incident-router/        — NLP TensorFlow, 30%→87% accuracy (Cigna)' },
         { t: 'out', v: 'biotech-data-migration/    — Cloudera lake migration, 13 BI initiatives' },
         { t: 'out', v: 'research-dashboard/        — 400K+ student records, R Shiny + Tableau' },
@@ -825,8 +825,8 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: 'fun_facts.json → Jowin Jestine' },
         { t: 'blank', v: '' },
         { t: 'out', v: '  [0] Grew up in Mumbai 🇮🇳 pulling PCs apart before writing a single line of code' },
-        { t: 'out', v: '  [1] Grade 5 pianist — plays everything from classical to whatever the mood calls for 🎹' },
-        { t: 'out', v: '  [2] Has watched every F1 season. WCC standings permanently memorised 🏎️' },
+        { t: 'out', v: '  [1] Grade 5 pianist — plays everything from classical to whatever the mood calls for' },
+        { t: 'out', v: '  [2] Has watched every F1 season. WCC standings permanently memorised' },
         { t: 'out', v: '  [3] CS2 grinder — rifler main, refuses to eco-drop' },
         { t: 'out', v: '  [4] Built multiple custom PCs from scratch. PCPartPicker is a hobby.' },
         { t: 'out', v: '  [5] Travelled across Northeast, SF, Yosemite, Seattle, Puerto Rico, UK, France, Italy, Dubai' },
@@ -855,7 +855,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         { t: 'out', v: '$ cat ~/interests/f1.log' },
         { t: 'blank', v: '' },
         { t: 'out', v: 'Formula 1 — season tracker' },
-        { t: 'out', v: '  Status:     Race weekend mode 🏎️' },
+        { t: 'out', v: '  Status:     Race weekend mode' },
         { t: 'out', v: '  Stance:     Data tells the story, strategy wins the race' },
         { t: 'out', v: '  Opinion:    DRS is a necessary evil. Tyre deg makes it interesting.' },
         { t: 'out', v: '  Hot take:   The data behind F1 telemetry is genuinely world-class engineering.' },
@@ -913,7 +913,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       drops.forEach((y, i) => {
         const word = metabolites[Math.floor(Math.random() * metabolites.length)];
         const char = word[Math.floor(Math.random() * word.length)];
-        mctx.fillStyle = frame < 60 ? '#22c55e' : '#38bdf8';
+        mctx.fillStyle = frame < 60 ? '#22c55e' : '#6ea8fe';
         mctx.fillText(char, i * 14, y * 14);
         if (y * 14 > mc.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
@@ -1001,21 +1001,21 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
 
   // Real Olaris HIPAA order-intake workflow (from Journal Club)
   const NODES = [
-    { id: 'lifepoint', label: '🏥 Lifepoint', sub: 'Lab Partner', col: 0, row: 0,
+    { id: 'lifepoint', label: 'Lifepoint', sub: 'Lab Partner', col: 0, row: 0,
       info: { title: 'Lifepoint Health (Lab Partner)', why: 'Lifepoint Health is a clinical reference lab that sends patient requisition orders to Olaris. Integration uses HTTPS with OAuth 2.0 client credentials, managed through Azure APIM for secure authentication and rate limiting.', code: 'POST /api/v1/requisitions\nAuthorization: Bearer {oauth2_token}\nContent-Type: application/json', metric: 'HIPAA-compliant data exchange with external partner' }},
-    { id: 'apim', label: '🔐 Azure APIM', sub: 'API Gateway', col: 1, row: 0,
+    { id: 'apim', label: 'Azure APIM', sub: 'API Gateway', col: 1, row: 0,
       info: { title: 'Azure API Management', why: 'APIM acts as the secure entry point for all external lab partner calls. Enforces OAuth 2.0, rate limiting, and IP whitelisting. Provides OpenAPI spec, request validation, and HIPAA-compliant audit logging of all inbound and outbound traffic.', code: '<inbound>\n  <validate-jwt header-name="Authorization"\n    require-expiration-time="true"/>\n  <rate-limit calls="100"\n    renewal-period="60"/>\n</inbound>', metric: 'Zero unauthorized requests since deployment' }},
-    { id: 'func', label: '⚡ Azure Functions', sub: 'Serverless Hub', col: 2, row: 0,
+    { id: 'func', label: 'Azure Functions', sub: 'Serverless Hub', col: 2, row: 0,
       info: { title: 'Azure Functions (Serverless Orchestrator)', why: 'HTTP-triggered Azure Function is the central orchestration hub. It validates incoming requisitions, routes to the right services, writes to Postgres and Blob Storage, and triggers Power Automate for approvals. Scales to zero — no idle cost, ~$15K/yr saved vs dedicated VMs.', code: '@app.route(route="requisition")\ndef process_req(req: func.HttpRequest):\n    data = validate_payload(req.get_json())\n    db.insert(data)\n    blob.upload(data["raw"])\n    automate.trigger(data)', metric: '<0.5s end-to-end processing time' }},
-    { id: 'keyvault', label: '🔑 Key Vault', sub: 'Secrets & Keys', col: 2, row: 1,
+    { id: 'keyvault', label: 'Key Vault', sub: 'Secrets & Keys', col: 2, row: 1,
       info: { title: 'Azure Key Vault', why: 'All secrets — DB credentials, API keys, encryption keys — are managed in Key Vault. Azure Functions use Managed Identity so there are zero hard-coded credentials in code or config. Secrets are rotated automatically. Required for HIPAA key management compliance.', code: 'from azure.keyvault.secrets import SecretClient\nfrom azure.identity import ManagedIdentityCredential\n\ncred = ManagedIdentityCredential()\nclient = SecretClient(vault_url, cred)\ndb_pass = client.get_secret("pg-password")', metric: 'Zero hard-coded secrets in entire codebase' }},
-    { id: 'postgres', label: '🐘 PostgreSQL', sub: 'HIPAA Database', col: 3, row: 0,
+    { id: 'postgres', label: 'PostgreSQL', sub: 'HIPAA Database', col: 3, row: 0,
       info: { title: 'PostgreSQL (HIPAA-Compliant)', why: 'Central clinical database with row-level security, RBAC, geo-fencing, and pgAudit for full audit logging. Field-level encryption for PHI. asyncpg for async queries. Hosted on Azure Database for PostgreSQL Flexible Server with Customer-Managed Key encryption.', code: 'CREATE POLICY patient_isolation\n  ON requisitions\n  USING (org_id = current_setting(\n    \'app.current_org\')::uuid);\n-- pgAudit logs all DDL + DML', metric: '1,200+ clinical records · <0.5s p99 query' }},
-    { id: 'blob', label: '📦 Blob Storage', sub: 'HIPAA Files', col: 3, row: 1,
+    { id: 'blob', label: 'Blob Storage', sub: 'HIPAA Files', col: 3, row: 1,
       info: { title: 'Azure Blob Storage (HIPAA)', why: 'Raw instrument files (NMR .fid, LC-MS .wiff) and generated clinical reports are stored with immutable storage policies. Encryption at rest with Customer-Managed Keys (CMK). Geo-redundant replication for HIPAA Business Associate Agreement compliance.', code: 'client.upload_blob(\n  data=raw_file,\n  overwrite=False,\n  metadata={\n    "patient_id": pid,\n    "study_id": sid,\n    "instrument": "nmr"\n  })', metric: 'Immutable · CMK encrypted · 99.999% durability' }},
-    { id: 'reqapp', label: '📋 Patient Req App', sub: 'Order Intake', col: 4, row: 0,
+    { id: 'reqapp', label: 'Patient Req App', sub: 'Order Intake', col: 4, row: 0,
       info: { title: 'Patient Requisition App', why: 'Internal web application used by Olaris clinical staff to manage incoming patient orders from lab partners. Displays requisition status, enables manual approvals, and surfaces audit history. Backed by the FastAPI service with real-time polling.', code: '// Real-time requisition status\nconst { data } = useSWR(\n  `/api/requisitions/${id}`,\n  fetcher,\n  { refreshInterval: 5000 }\n);', metric: 'Used daily by Olaris clinical operations team' }},
-    { id: 'automate', label: '🔄 Power Automate', sub: 'Approvals & Notify', col: 5, row: 0,
+    { id: 'automate', label: 'Power Automate', sub: 'Approvals & Notify', col: 5, row: 0,
       info: { title: 'Power Automate (Approval Workflow)', why: 'Orchestrates the clinical approval loop: when a requisition arrives, it triggers an email-based approval to the Olaris medical director, sends status notifications back to lab partners via APIM callback, and logs all outcomes. No-code flow keeps clinical staff in control of approval logic.', code: '// HTTP action payload to Power Automate\n{\n  "requisition_id": "REQ-2024-0891",\n  "approval_needed": true,\n  "callback_url":\n    "https://apim.azure.../callback"\n}', metric: 'Automated approvals · partner notifications via APIM' }},
   ];
 
@@ -1099,7 +1099,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
     const b = NODES.find(n => n.id === toId);
     if (!a || !b) return;
     const pa = nodePos(a), pb = nodePos(b);
-    particles.push({ x: pa.x, y: pa.y, tx: pb.x, ty: pb.y, t: 0, color: '#38bdf8' });
+    particles.push({ x: pa.x, y: pa.y, tx: pb.x, ty: pb.y, t: 0, color: '#6ea8fe' });
   }
 
   // Spawn particles periodically
@@ -1151,7 +1151,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       p.y = p.y + (p.ty - p.y) * 0.02;
       if (p.t > 1.2) { particles.splice(i, 1); continue; }
       const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 5);
-      grd.addColorStop(0, '#38bdf8cc');
+      grd.addColorStop(0, '#6ea8fecc');
       grd.addColorStop(1, 'transparent');
       ctx.beginPath();
       ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
@@ -1195,7 +1195,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
 
       // Sub-label
       ctx.font = '9px "JetBrains Mono", monospace';
-      ctx.fillStyle = isSelected ? '#38bdf8' : '#64748b';
+      ctx.fillStyle = isSelected ? '#6ea8fe' : '#64748b';
       ctx.fillText(n.sub, x, y + 11);
     });
 
@@ -1224,14 +1224,14 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
         ctx.beginPath();
         ctx.moveTo(tx + 10, ty + 1.5);
         ctx.lineTo(tx + TW - 10, ty + 1.5);
-        ctx.strokeStyle = '#38bdf8';
+        ctx.strokeStyle = '#6ea8fe';
         ctx.lineWidth = 2;
         ctx.stroke();
         ctx.restore();
 
         // Title line
         ctx.font = '600 11px "Inter", sans-serif';
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = '#6ea8fe';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         const titleShort = n.info.title.replace(/\s*\([^)]*\)$/, '');
@@ -1266,7 +1266,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
       <h4>${d.title}</h4>
       <p class="arch-why">${d.why}</p>
       <pre class="arch-code">${d.code}</pre>
-      <div class="arch-metric">⚡ ${d.metric}</div>`;
+      <div class="arch-metric">${d.metric}</div>`;
     panel.classList.add('open');
   }
 
@@ -1340,11 +1340,11 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   const tooltip = document.getElementById('radarTooltip');
 
   const AXES = [
-    { label: 'Data Engineering', score: 9.2, color: '#38bdf8',
+    { label: 'Data Engineering', score: 9.2, color: '#6ea8fe',
       skills: ['PostgreSQL', 'SQLMesh', 'Mage AI', 'Azure Functions', 'ADLS Gen2', 'Docker'] },
-    { label: 'Machine Learning', score: 8.0, color: '#a855f7',
+    { label: 'Machine Learning', score: 8.0, color: '#b388ff',
       skills: ['XGBoost', 'Deep Learning', 'NLP', 'Semantic Search', 'FAISS', 'TensorFlow'] },
-    { label: 'Cloud & Azure', score: 8.5, color: '#06b6d4',
+    { label: 'Cloud & Azure', score: 8.5, color: '#3fd97f',
       skills: ['Azure APIM', 'Key Vault', 'Blob Storage', 'ADLS Gen2', 'Managed Identity', 'Cloudera'] },
     { label: 'Scientific Domain', score: 9.5, color: '#f59e0b',
       skills: ['NMR Metabolomics', 'Mass Spectrometry', 'CLIA Compliance', 'HIPAA', 'GxP Automation'] },
@@ -1546,7 +1546,7 @@ document.querySelectorAll('.project-card').forEach((el, i) => {
   const PROJECTS = {
     'f1-predictor': {
       title: 'F1 Race Position Predictor',
-      cat: '🤖 Machine Learning · End-to-End ML · Cloud Deployment',
+      cat: 'Machine Learning · End-to-End ML · Cloud Deployment',
       statusNote: 'Build in progress · ETA May 2026 — case study reflects current architecture and design decisions; final metrics land on completion.',
       statusKind: 'in-progress',
       problem: 'F1 race outcomes are driven by a tangle of signals — qualifying pace, tyre strategy, lap-by-lap car balance, weather, driver form, circuit characteristics. Casual pre-race predictions hover around 25-35% top-3 accuracy. The goal: build a real ML system that predicts the full grid (positions 1-20) with calibrated probabilities, deployed as a FastAPI service on Cloud Run, with SHAP explanations for every prediction. Not a one-off notebook — a production-grade pipeline.',
@@ -1612,13 +1612,13 @@ PARTITION BY RANGE_BUCKET(season, GENERATE_ARRAY(2018, 2030, 1));`,
     },
     'metabolite-search': {
       title: 'AI Metabolite Search Engine',
-      cat: '🤖 Machine Learning · Semantic Search',
+      cat: 'Machine Learning · Semantic Search',
       problem: 'The existing metabolite lookup was keyword-based, requiring exact name matches. Analysts spent 20+ minutes per session navigating 100K+ compounds across two diagnostic platforms (NMR and LC-MS), with no cross-platform search.',
       arch: ['Raw Query', 'Sentence Transformer\n(all-MiniLM-L6-v2)', 'FAISS Index\n(100K vectors)', 'MMR Re-ranking', 'Top-K Results'],
-      bars: [
-        { label: 'Retrieval Time Reduction', value: 70, display: '70%' },
-        { label: 'Metabolite Coverage', value: 94, display: '100K+ compounds' },
-        { label: 'Cross-Platform Accuracy', value: 94, display: '94%' },
+      guarantees: [
+        'Embeddings never leave the Azure tenant, so compound identifiers and query patterns stay inside the security perimeter.',
+        'Synonyms and spelling variants resolve to the same compound, so a missed match stops being a silent dead end.',
+        'Results are diversified before the analyst sees them, so the first page holds chemically distinct options.',
       ],
       stack: ['Python', 'Azure', 'FastAPI', 'FAISS', 'Sentence-Transformers', 'PostgreSQL'],
       decisions: [
@@ -1650,13 +1650,13 @@ CREATE TABLE search_log (
     },
     'nmr-quality': {
       title: 'NMR Signal Quality Classifier',
-      cat: '🧠 Deep Learning · Signal Processing',
+      cat: 'Deep Learning · Signal Processing',
       problem: 'NMR instrument data contains noise artifacts, shimming errors, and baseline distortions requiring expert manual review. With 200+ daily acquisitions, analyst bottleneck was causing 48-hour delays in clinical reporting.',
       arch: ['Raw FID (.fid)', 'nmrglue: FFT +\nPhase Correction', 'Baseline Correction\n+ Windowing', '1D CNN\nClassifier', 'QC Pass/Fail\n+ Confidence'],
-      bars: [
-        { label: 'Accuracy Gain vs Baseline', value: 35, display: '+35%' },
-        { label: 'Manual Review Reduction', value: 72, display: '72%' },
-        { label: 'Training Observations', value: 87, display: '10K+ spectra' },
+      guarantees: [
+        'Low-confidence spectra route to a human instead of passing through silently.',
+        'The same spectrum gets the same verdict on any day, from any analyst.',
+        'Confidence is calibrated, so the number the model reports means something clinically.',
       ],
       stack: ['Python', 'nmrglue', 'scikit-learn', 'NumPy', 'PyTorch', 'PostgreSQL'],
       decisions: [
@@ -1690,13 +1690,13 @@ CREATE TABLE qc_predictions (
     },
     'nmr-monitoring': {
       title: 'Live NMR Monitoring System',
-      cat: '⚙️ Data Engineering · Real-time Systems',
+      cat: 'Data Engineering · Real-time Systems',
       problem: 'NMR instrument QC parameters (temperature, shimming, B0 field) drifted silently during overnight runs. Failures were only discovered after 8-12 hour batches completed — expensive instrument time wasted, clinical reporting delayed.',
       arch: ['NMR Instrument\n(Bruker)', 'FastAPI\nEvent Listener', 'Mage AI\nOrchestrator', 'PostgreSQL\n(HIPAA)', 'MS Teams\nAlert'],
-      bars: [
-        { label: 'Parameters Monitored', value: 80, display: '200+' },
-        { label: 'Alert Response Time', value: 90, display: '<200ms' },
-        { label: 'Instrument Uptime Gain', value: 99, display: '99.9%' },
+      guarantees: [
+        'Acquisition parameters are checked against reference rule sets on every run.',
+        'Drift reaches the team in Teams while the instrument is still running, well before a result ships.',
+        'Every QC metric is queryable by session and parameter, so trend questions get answered without scanning files.',
       ],
       stack: ['FastAPI', 'Mage AI', 'PostgreSQL', 'Docker', 'MS Teams API', 'Python'],
       decisions: [
@@ -1737,7 +1737,7 @@ CREATE TABLE alerts_sent (
     },
     'it-routing': {
       title: 'IT Incident Routing Neural Net',
-      cat: '🔤 NLP · Production ML · Scale',
+      cat: 'NLP · Production ML · Scale',
       problem: 'Cigna\'s IT service desk received 500+ daily ServiceNow incidents routed manually to teams. Manual routing accuracy was 30%, causing SLA breaches and 40% of tickets requiring re-assignment — ~$2M/yr in wasted labor.',
       arch: ['ServiceNow Ticket', 'NLP Preprocessing\n+ Tokenization', 'BERT Fine-tuned\nClassifier', 'Confidence\nFilter', 'Auto-Route\nor Escalate'],
       bars: [
@@ -1773,7 +1773,7 @@ CREATE TABLE routing_predictions (
     },
     'data-migration': {
       title: 'Biotech Research Data Migration',
-      cat: '☁️ Data Engineering · Cloud Migration',
+      cat: 'Data Engineering · Cloud Migration',
       problem: 'Boehringer Ingelheim\'s 13 research initiatives stored data in 100+ disconnected Excel/PowerPoint files with no schema governance. Cross-initiative analysis was impossible and onboarding new scientists took 3+ weeks.',
       arch: ['Excel / PPT Files', 'Python ETL', 'YAML Schema', 'Cloudera Lake'],
       bars: [
@@ -1785,7 +1785,7 @@ CREATE TABLE routing_predictions (
     },
     'research-dashboard': {
       title: 'Institutional Research Dashboard',
-      cat: '📊 Analytics · Data Visualization',
+      cat: 'Analytics · Data Visualization',
       problem: 'UConn\'s IR office relied on static SAS reports updated monthly, making real-time enrollment tracking and academic decision-making impossible during critical registration periods.',
       arch: ['SAS Source', 'Data Model', 'R Shiny / Tableau', 'Live Dashboard'],
       bars: [
@@ -1798,13 +1798,13 @@ CREATE TABLE routing_predictions (
 
     'journal-club': {
       title: 'Olaris Journal Club — Architecture Write-up',
-      cat: '📝 Technical Writing · Systems Communication',
+      cat: 'Technical Writing · Systems Communication',
       problem: 'Olaris\'s HIPAA-compliant clinical infrastructure is technically complex and largely invisible to the outside world. The architecture decisions — why certain cloud services, how HIPAA boundaries shape the data flow, what the intake-to-report pipeline actually looks like — lived only in engineers\' heads and internal documents.',
       arch: ['Lab Partner\nSystem', 'Order Intake\n+ HIPAA Boundary', 'Azure Functions\nOrchestration', 'Clinical Data\nPlatform', 'Report\nDelivery'],
-      bars: [
-        { label: 'Published deep-dives', value: 100, display: '1st post live' },
-        { label: 'Engineering transparency', value: 85, display: 'External visibility' },
-        { label: 'Audience mix', value: 70, display: 'Technical + Clinical' },
+      guarantees: [
+        'Architecture decisions are written down where engineers and clinicians can both read them.',
+        'The reasoning behind a design outlives the people who were in the room for it.',
+        'Published outside the team, which is a harder audience than an internal doc.',
       ],
       stack: ['Azure Functions', 'HIPAA Architecture', 'PostgreSQL', 'Technical Writing', 'LinkedIn'],
       decisions: [
@@ -1817,13 +1817,13 @@ CREATE TABLE routing_predictions (
 
     'id-system': {
       title: 'Global Sample Traceability System',
-      cat: '🗂️ System Design · Data Architecture · Clinical Infrastructure',
+      cat: 'System Design · Data Architecture · Clinical Infrastructure',
       problem: 'Clinical and research workflows used disconnected identifier schemes across multiple platforms. As operational exceptions accumulated — pooled samples, derived aliquots, delayed metadata, collaborator corrections, reruns — names started carrying more meaning than IDs. The classic early failure mode: a system that appears to work until it silently degrades.',
       arch: ['External\nSources', 'ID Registry\n+ Assignment', 'Inventory\n+ Parent-Child', 'NMR\nPipeline', 'Processed\nData Store', 'DS Processing\n+ Audit Log'],
-      bars: [
-        { label: 'Entity types standardised', value: 100, display: '7 entity types' },
-        { label: 'Workflows unified', value: 90, display: 'Product + Research' },
-        { label: 'Traceability chain', value: 95, display: 'Full lifecycle' },
+      guarantees: [
+        'Spectra and processed spectra have IDs, which they did not have before.',
+        'Sample and patient stay linked across both product and research workflows.',
+        'The chain from sample to report can be walked in either direction.',
       ],
       stack: ['PostgreSQL', 'Azure ADLS Gen2', 'Python', 'FastAPI', 'YAML', 'System Design'],
       decisions: [
@@ -1901,6 +1901,7 @@ CREATE TABLE id_corrections (
           ${p.arch.map((a,i) => `<div class="modal-arch-node">${a.replace(/\n/g,'<br><small>')}</div>${i < p.arch.length-1 ? '<span class="modal-arch-arrow">→</span>' : ''}`).join('')}
         </div>
       </div>
+      ${p.bars && p.bars.length ? `
       <div class="modal-section">
         <h4>Results</h4>
         <div class="modal-bars">
@@ -1910,7 +1911,14 @@ CREATE TABLE id_corrections (
               <div class="modal-bar-track"><div class="modal-bar-fill" data-val="${b.value}"></div></div>
             </div>`).join('')}
         </div>
-      </div>
+      </div>` : ''}
+      ${p.guarantees && p.guarantees.length ? `
+      <div class="modal-section">
+        <h4>What This Guarantees</h4>
+        <ul class="modal-guarantees">
+          ${p.guarantees.map(g => `<li>${g}</li>`).join('')}
+        </ul>
+      </div>` : ''}
       ${decisionsHtml}
       ${schemaHtml}
       <div class="modal-section">
@@ -2029,10 +2037,10 @@ CREATE TABLE id_corrections (
     ctx.scale(dpr, dpr);
     const W = logW, H = logH;
 
-    const CYAN   = '#38bdf8';
-    const PURPLE = '#a855f7';
-    const TEAL   = '#06b6d4';
-    const BG     = '#060b16';
+    const CYAN   = '#6ea8fe';
+    const PURPLE = '#b388ff';
+    const TEAL   = '#3fd97f';
+    const BG     = '#0b0b0d';
 
     if (type === 'embedding') {
       // Dot-cloud / embedding space — dots slowly drift & cluster
@@ -2602,7 +2610,7 @@ gsap.from('.explore-card', {
   const dpr = window.devicePixelRatio || 1;
 
   const bars = [
-    { label: 'myOLARIS-KTdx\n(This Study)',  auc: 0.878, color: '#38bdf8', glow: true },
+    { label: 'myOLARIS-KTdx\n(This Study)',  auc: 0.878, color: '#6ea8fe', glow: true },
     { label: 'Serum Creatinine\n(Gold Standard)', auc: 0.65,  color: '#475569', glow: false },
   ];
 
@@ -2655,13 +2663,13 @@ gsap.from('.explore-card', {
       // Bar
       if (animW > 0) {
         if (b.glow) {
-          ctx.shadowColor = '#38bdf8';
+          ctx.shadowColor = '#6ea8fe';
           ctx.shadowBlur = 10;
         }
         const grad = ctx.createLinearGradient(x, 0, x + animW, 0);
         if (b.glow) {
-          grad.addColorStop(0, '#38bdf8');
-          grad.addColorStop(1, '#a855f7');
+          grad.addColorStop(0, '#6ea8fe');
+          grad.addColorStop(1, '#b388ff');
         } else {
           grad.addColorStop(0, '#334155');
           grad.addColorStop(1, '#475569');
@@ -2675,7 +2683,7 @@ gsap.from('.explore-card', {
 
       // AUC value
       ctx.font = `700 13px "JetBrains Mono", monospace`;
-      ctx.fillStyle = b.glow ? '#38bdf8' : '#64748b';
+      ctx.fillStyle = b.glow ? '#6ea8fe' : '#64748b';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.fillText(b.auc.toFixed(3), x + animW + 8, y + barH / 2);
@@ -2726,9 +2734,9 @@ gsap.from('.explore-card', {
   const MILESTONES = [
     { year: '2021', label: 'UConn\nAnalyst',   records: 400,   color: '#64748b', note: '400K records\nR Shiny + Tableau' },
     { year: '2022', label: 'Cigna\nConsultant', records: 1200,  color: '#94a3b8', note: '87% NLP accuracy\n30%→87% routing' },
-    { year: '2023', label: 'Boehringer\nIngelheim', records: 5000, color: '#38bdf8', note: '100+ Excel artifacts\n13 initiatives' },
-    { year: '2024', label: 'Olaris\nEngineer I', records: 18000, color: '#22d3ee', note: '10K NMR observations\n200+ params live' },
-    { year: '2025', label: 'Olaris\nEngineer III + Cell Press', records: 120000, color: '#a855f7', note: '1.2M clinical records\niScience published' },
+    { year: '2023', label: 'Boehringer\nIngelheim', records: 5000, color: '#6ea8fe', note: '100+ Excel artifacts\n13 initiatives' },
+    { year: '2024', label: 'Olaris\nEngineer I', records: 18000, color: '#22d3ee', note: 'NMR quality model\nlive parameter monitoring' },
+    { year: '2025', label: 'Olaris\nEngineer III + Cell Press', records: 120000, color: '#b388ff', note: 'CLIA platform + global ID\niScience published' },
   ];
 
   let animProgress = 0;
@@ -2794,8 +2802,8 @@ gsap.from('.explore-card', {
     points.forEach(p => ctx.lineTo(p.x, p.y));
     const lineGrad = ctx.createLinearGradient(PAD_L, 0, W - PAD_R, 0);
     lineGrad.addColorStop(0, '#64748b');
-    lineGrad.addColorStop(0.6, '#38bdf8');
-    lineGrad.addColorStop(1, '#a855f7');
+    lineGrad.addColorStop(0.6, '#6ea8fe');
+    lineGrad.addColorStop(1, '#b388ff');
     ctx.strokeStyle = lineGrad;
     ctx.lineWidth = 2.5;
     ctx.lineJoin = 'round';

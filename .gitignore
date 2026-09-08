@@ -13,3 +13,12 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+
+# Skills tooling (local only — this repo deploys publicly)
+.agents/
+skills-lock.json
+
+# Local verification artifacts
+.playwright-mcp/
+*.png
+!og-image.png
