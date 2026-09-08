@@ -1,1077 +1,817 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jowin Jestine — Data &amp; Platform Engineer</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jowin Jestine — data platform engineer</title>
 
-  <!-- SEO & Social -->
-  <meta name="description" content="Jowin Jestine — Data Engineer III at Olaris, and in practice the owner of its production data platform: Azure infrastructure, ingestion pipelines, CI/CD and the internal apps a CLIA-regulated diagnostics lab runs on. ML systems on the side: F1 race prediction and simulation, ARC-AGI program synthesis. Published in iScience (Cell Press) 2025." />
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://jowinjestine.github.io/" />
-  <meta property="og:title"       content="Jowin Jestine — Data &amp; Platform Engineer" />
-  <meta property="og:description" content="Data Engineer III at Olaris — clinical data platforms in production, ML systems on the side (F1 prediction, biomedical NLP, computer vision). Published in iScience (Cell Press) 2025." />
-  <meta property="og:image"       content="https://jowinjestine.github.io/og-image.svg" />
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="Jowin Jestine — Data &amp; Platform Engineer" />
-  <meta name="twitter:description" content="Data Engineer III at Olaris. Clinical data platforms in production; ML projects (F1, NLP, CV) on the side." />
-  <meta name="twitter:image"       content="https://jowinjestine.github.io/og-image.svg" />
+<meta name="description" content="Jowin Jestine is a data engineer at Olaris, where he owns the Azure infrastructure, ingestion pipelines, CI/CD and internal applications behind NMR-based metabolomic diagnostics. Case studies on sample traceability, instrument monitoring and building for a regulated lab." />
+<meta name="theme-color" content="#f6f6f3" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
 
-  <!-- Favicon -->
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <meta name="theme-color" content="#0b0b0d" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://jowinjestine.github.io/" />
+<meta property="og:title" content="Jowin Jestine — data platform engineer" />
+<meta property="og:description" content="I build the data platform a clinical lab runs on. Case studies on sample traceability, instrument monitoring, and engineering inside a regulated boundary." />
+<meta property="og:image" content="https://jowinjestine.github.io/og-image.svg" />
+<meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <a href="#main" class="skip-link">Skip to main content</a>
+<a class="skip" href="#main">Skip to content</a>
 
-  <!-- Custom cursor -->
-  <div class="c-dot" id="cDot"></div>
-  <div class="c-ring" id="cRing"></div>
-  <div class="mouse-glow" id="mouseGlow"></div>
-
-  <!-- Scroll progress -->
-  <div class="scroll-progress" id="scrollProgress"></div>
-
-  <!-- ============ NAVBAR ============ -->
-  <nav id="navbar">
-    <a href="#hero" class="nav-logo">JJ</a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#architecture">Architecture</a></li>
-      <li><a href="#publications">Publications</a></li>
-      <li><a href="#skills">Tools</a></li>
-      <li><a href="#contact" class="nav-cta">Contact</a></li>
-    </ul>
-    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
+<header class="masthead">
+  <a class="wordmark" href="#top">Jowin&nbsp;Jestine</a>
+  <nav aria-label="Sections">
+    <a href="#work">Work</a>
+    <a href="#projects">Projects</a>
+    <a href="#experience">Experience</a>
+    <a href="#writing">Writing</a>
+    <a href="#contact">Contact</a>
   </nav>
+</header>
 
-  <!-- Mobile menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#about" class="mobile-link">About</a>
-    <a href="#experience" class="mobile-link">Experience</a>
-    <a href="#projects" class="mobile-link">Projects</a>
-    <a href="#architecture" class="mobile-link">Architecture</a>
-    <a href="#publications" class="mobile-link">Publications</a>
-    <a href="#skills" class="mobile-link">Tools</a>
-    <a href="#contact" class="mobile-link">Contact</a>
-  </div>
+<main id="main">
 
-  <!-- ============ HERO ============ -->
-  <main id="main">
-  <section id="hero">
-    <canvas id="heroCanvas"></canvas>
-    <div class="hero-glow"></div>
+  <!-- ══════════════ INTRO ══════════════ -->
+  <section id="top" class="intro">
+    <h1>I build the data platform a clinical lab runs on.</h1>
 
-    <div class="hero-content">
-      <h1 class="hero-name">
-        <span class="hero-greeting">Hi, I'm</span>
-        <span class="hero-title gradient-text">Jowin Jestine</span>
-      </h1>
+    <p class="lede">
+      I am a data engineer at <strong>Olaris</strong>, a metabolomics diagnostics company in
+      Boston. In practice I own the platform: the Azure infrastructure, the ingestion
+      pipelines, the deployment path, and the internal applications that the lab uses every
+      day. Most of it is invisible until something breaks, which is the honest description
+      of infrastructure work.
+    </p>
 
-      <div class="hero-journey" aria-label="Origin story">
-        <span>Mumbai</span>
-        <span class="journey-arrow">&rarr;</span>
-        <span>UConn</span>
-        <span class="journey-arrow">&rarr;</span>
-        <span>Boston, MA</span>
-      </div>
+    <p class="lede">
+      The work is interesting because of the constraint. Everything runs inside a
+      CLIA-regulated, HIPAA-bound boundary, so a design cannot only be correct on the happy
+      path. It has to stay traceable when a sample is pooled, when a vendor drops a message,
+      when a result is corrected six weeks later, and when the person who built it is on
+      holiday.
+    </p>
 
-      <div class="hero-role">
-        <span class="role-static">I build&nbsp;</span>
-        <span class="role-typed" id="typewriter"></span><span class="cursor">|</span>
-      </div>
+    <figure class="spectrum-figure">
+      <canvas id="spectrum" width="1200" height="300" role="img"
+              aria-label="A one-dimensional proton NMR spectrum of urine, showing labelled peaks for formate, histidine, creatinine, citrate, glutamine, alanine, lactate and branched-chain amino acids across a chemical shift axis from 9 to 0 parts per million."></canvas>
+      <figcaption>
+        A 1D proton NMR spectrum of urine, which is the raw material almost everything below
+        is built on. Chemical shift runs high to low, left to right, by convention. Each peak
+        is a metabolite; the job of the platform is to make sure the sample that produced this
+        trace can still be tied back to a patient, an order and a report months later.
+      </figcaption>
+    </figure>
 
-      <p class="hero-desc">
-        Data Engineer III at <strong>Olaris</strong>. In practice I own the production
-        platform: the Azure infrastructure, the ingestion pipelines, the CI/CD, and the
-        internal apps a CLIA-regulated diagnostics lab runs on. Most of it is invisible
-        until something breaks. Off the clock I build ML systems for problems I care
-        about — <strong>F1 race prediction and simulation</strong>, and ARC-AGI program
-        synthesis.
+    <dl class="facts">
+      <div><dt>Role</dt><dd>Data Engineer III, Olaris</dd></div>
+      <div><dt>Based</dt><dd>Boston, Massachusetts</dd></div>
+      <div><dt>Before</dt><dd>Boehringer Ingelheim, Cigna, UConn</dd></div>
+      <div><dt>Published</dt><dd>iScience, Cell Press, 2025</dd></div>
+    </dl>
+  </section>
+
+  <!-- ══════════════ WORK ══════════════ -->
+  <section id="work">
+    <div class="section-head">
+      <h2>Selected work</h2>
+      <p>
+        These are systems I built and still own at Olaris. I have written them up as
+        decisions rather than achievements, because the decisions are the part that
+        transfers. Specific volumes, latencies and internal figures are left out on purpose;
+        everything here is about structure and reasoning.
       </p>
-
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-num" data-target="3">0</span><span class="stat-suffix">+</span>
-          <span class="stat-label">Years at Olaris</span>
-        </div>
-        <div class="stat-sep"></div>
-        <div class="stat">
-          <span class="stat-num" data-target="1">0</span>
-          <span class="stat-label">Peer-Reviewed Paper</span>
-        </div>
-        <div class="stat-sep"></div>
-        <div class="stat">
-          <span class="stat-readout">CLIA &middot; HIPAA</span>
-          <span class="stat-label">Regulated Production</span>
-        </div>
-      </div>
-
-      <div class="hero-now" aria-label="Currently working on">
-        <span class="now-label">Now →</span>
-        <div class="now-track">
-          <span class="now-items">
-            <span>Building clinical data platforms at Olaris</span>
-            <span class="now-sep">·</span>
-            <span>Reading reinforcement learning & OpenCV research</span>
-            <span class="now-sep">·</span>
-            <span>Watching every F1 race weekend</span>
-            <span class="now-sep">·</span>
-            <span>Fragging in CS2</span>
-            <span class="now-sep">·</span>
-            <span>Spec-ing out next PC build</span>
-            <span class="now-sep">·</span>
-            <span>Practising piano</span>
-            <span class="now-sep">·</span>
-            <span>Planning the next long drive</span>
-            <span class="now-sep">·</span>
-            <span>Building clinical data platforms at Olaris</span>
-            <span class="now-sep">·</span>
-            <span>Reading reinforcement learning & OpenCV research</span>
-            <span class="now-sep">·</span>
-            <span>Watching every F1 race weekend</span>
-            <span class="now-sep">·</span>
-            <span>Fragging in CS2</span>
-            <span class="now-sep">·</span>
-            <span>Spec-ing out next PC build</span>
-            <span class="now-sep">·</span>
-            <span>Practising piano</span>
-            <span class="now-sep">·</span>
-            <span>Planning the next long drive</span>
-          </span>
-        </div>
-      </div>
-
-      <div class="hero-actions">
-        <a href="#experience" class="btn btn-primary">View My Work</a>
-        <a href="Jowin%20Jestine%20-%20Resume.pdf" download="Jowin Jestine - Resume.pdf" class="btn btn-ghost">Download CV ↓</a>
-        <a href="https://github.com/jowinjestine" target="_blank" rel="noopener"
-           class="btn btn-icon" aria-label="GitHub">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
-            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-          </svg>
-        </a>
-      </div>
     </div>
 
-    <div class="scroll-hint">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
+    <!-- 1 ─────────────────────────────── -->
+    <article class="entry">
+      <h3>Sample inventory that does not trust the webhook</h3>
+      <p class="entry-line">
+        Keeping a PostgreSQL inventory in step with the lab's electronic notebook, given a
+        vendor webhook that loses messages in production.
+      </p>
+      <p class="entry-meta"><span class="tag ok">In production</span> Azure Functions, Storage Queues, PostgreSQL, ADLS Gen2</p>
+
+      <details>
+        <summary><span>Read the case study</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            The lab's inventory lives in an electronic lab notebook. Our database needs to
+            reflect it closely enough that a scientist can trust a query instead of walking
+            to a freezer. The vendor offers webhooks, and the obvious design is to receive
+            each event and write it down.
+          </p>
+          <p>
+            That design fails quietly. In production, a measurable share of webhook
+            deliveries never arrive. Nothing errors. The database simply drifts from
+            reality, and the first symptom is somebody being told a sample exists when it
+            does not. A system that is wrong but confident is worse than one that is
+            visibly down.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>Treat webhook delivery as a hint, not as the source of truth</h5>
+          <p>
+            The receiver's only job is to accept the payload, put it on a queue, and return
+            immediately. It does no parsing and no business logic, so a malformed or
+            surprising payload cannot cost us the event. Correctness moved out of the
+            request path entirely, which also means the vendor's retry behaviour stops
+            being our problem.
+          </p>
+
+          <h5>Reconcile on a schedule instead of hoping for completeness</h5>
+          <p>
+            Because delivery cannot be relied on, a second process periodically walks the
+            notebook's API and compares it against what we hold. Anything missing is pulled
+            in. This is the part that turns completeness from a hope into a property: the
+            steady state is correct even if every webhook in a window is lost.
+          </p>
+
+          <h5>Detect change by hashing fields, not by trusting timestamps</h5>
+          <p>
+            Reconciliation naively implemented would rewrite everything on every pass, which
+            destroys any useful audit history and makes real changes impossible to see. Each
+            record's meaningful fields are hashed, so a pass can tell the difference between
+            “seen again” and “actually changed”, and only genuine changes are written.
+          </p>
+
+          <h5>Archive the raw payload before interpreting it</h5>
+          <p>
+            Every payload lands in object storage exactly as received, before any parsing.
+            When a mapping turns out to be wrong months later, the original is still there
+            and the history can be rebuilt. Parsing logic is the thing most likely to be
+            wrong; the raw event is the thing least likely to be.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>Inventory converges on the notebook even during a total webhook outage.</li>
+            <li>A lost message delays a row. It does not silently lose one.</li>
+            <li>Audit history shows real changes, not reconciliation noise.</li>
+            <li>A parsing mistake is recoverable, because the raw event was never discarded.</li>
+          </ul>
+
+          <h4>What I would tell someone starting this</h4>
+          <p>
+            The instinct is to make the receiver clever: validate, deduplicate, retry. That
+            is effort spent in the one place that cannot be made reliable, because you do not
+            control the sender. Put the cleverness in reconciliation, keep the receiver
+            boring, and the whole system gets easier to reason about.
+          </p>
+        </div>
+      </details>
+    </article>
+
+    <!-- 2 ─────────────────────────────── -->
+    <article class="entry">
+      <h3>Identifiers that survive the exceptions</h3>
+      <p class="entry-line">
+        A traceability model where formal identifiers, not names typed by hand, carry the
+        link from patient to sample to spectrum to report.
+      </p>
+      <p class="entry-meta"><span class="tag wait">Moving into production</span> PostgreSQL, ADLS Gen2, Python, system design</p>
+
+      <details>
+        <summary><span>Read the case study</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            Clinical and research workflows had grown up with separate identifier schemes.
+            Some entities had no identifier at all: a processed spectrum, for instance, could
+            not be named in a way that distinguished it from the raw acquisition it came
+            from.
+          </p>
+          <p>
+            Where identifiers were missing, names filled the gap. Names are typed by people,
+            under time pressure, in several systems, with no enforcement. So meaning migrated
+            into the one field guaranteed to be inconsistent. This is a slow failure: nothing
+            crashes, workarounds become standard practice, and traceability quietly becomes
+            partial instead of guaranteed.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>Identifiers are the system of record; names are a convenience</h5>
+          <p>
+            Names stay, because people need to read something human. But nothing downstream
+            is allowed to depend on them. Every relationship that matters is expressed as a
+            key and a row, which means traceability stops degrading as volume grows and as
+            more people touch the data.
+          </p>
+
+          <h5>A parent-and-child graph, not a linear chain</h5>
+          <p>
+            The tempting model is a chain: patient, order, sample, aliquot. It breaks on the
+            first pooled sample, and again on the first research sample with no patient, and
+            again on a rerun. A parent-and-child relationship at the inventory level absorbs
+            pools, splits, reruns and collaborator material without asking the lab to change
+            how they work. The model bends so that the people do not have to.
+          </p>
+
+          <h5>Design the whole architecture, then deliver it in phases</h5>
+          <p>
+            It would have been faster to ship an identifier registry alone. It would also
+            have guaranteed drift: samples handled physically before an identifier exists,
+            aliquots with no durable parent, corrections needing human interpretation. So the
+            full entity model was designed up front and delivery was phased against it.
+            Phasing the delivery is fine. Phasing the design is how you get a system that
+            has to be replaced.
+          </p>
+
+          <h5>Give spectra and processed spectra real identifiers</h5>
+          <p>
+            The gap that started this project was the most valuable thing to close. Once a
+            processed spectrum has its own identifier and a recorded parent, the chain from a
+            patient's sample through acquisition and processing to a reported result can be
+            walked in either direction, by a person or a query.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>Spectra and processed spectra are addressable, which they were not before.</li>
+            <li>Samples stay linked to patients across both product and research workflows.</li>
+            <li>Pooled, split and rerun material is representable without a workaround.</li>
+            <li>The path from sample to report can be traced in both directions.</li>
+          </ul>
+
+          <h4>What I would tell someone starting this</h4>
+          <p>
+            A rigid identifier scheme looks fine for about a year. Design for the exceptions
+            you already know about, because they are not exceptions, they are the workload.
+            And watch for meaning leaking into free-text fields; that is the earliest signal
+            that the model is too tight.
+          </p>
+        </div>
+      </details>
+    </article>
+
+    <!-- 3 ─────────────────────────────── -->
+    <article class="entry">
+      <h3>Catching instrument drift while the instrument is still running</h3>
+      <p class="entry-line">
+        Monitoring NMR acquisition against reference rule sets, so an overnight batch is not
+        discovered to be worthless in the morning.
+      </p>
+      <p class="entry-meta"><span class="tag ok">In production</span> Mage AI, PostgreSQL, FastAPI, Microsoft Teams</p>
+
+      <details>
+        <summary><span>Read the case study</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            NMR acquisition quality depends on parameters that drift: temperature, shimming,
+            field stability. A long overnight run can degrade partway through, and if nobody
+            finds out until the batch completes, the cost is instrument time that cannot be
+            recovered and clinical reporting that slips.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>Compare against reference rule sets, not a single threshold</h5>
+          <p>
+            Field drift tolerance and temperature tolerance have nothing to do with each
+            other. One global threshold does both jobs badly: it fires constantly on
+            parameters that vary normally, and stays silent on parameters where a small
+            movement is meaningful. Each parameter gets its own reference range, which is
+            more configuration and considerably less noise.
+          </p>
+
+          <h5>Spend the effort on alert fatigue, not on detection</h5>
+          <p>
+            Detection is the easy half. An alert the team learns to ignore is worse than no
+            alert, because it also teaches them to distrust the next one. So there are
+            cooldowns to survive transient spikes, and notifications are grouped rather than
+            fired per reading. I spent as long on restraint as on the checks.
+          </p>
+
+          <h5>Log to a database, not to files</h5>
+          <p>
+            The first version wrote quality metrics to flat files, which answers "what is
+            happening now" and nothing else. Questions worth asking are comparative: was this
+            parameter stable across the batch, is this instrument worse than it was last
+            month. Those are queries, so the metrics belong in PostgreSQL, indexed by session
+            and parameter.
+          </p>
+
+          <h5>Alert where the team already is</h5>
+          <p>
+            The notification goes to Microsoft Teams, because that is where the lab already
+            works. A dashboard nobody opens is not monitoring; it is a monitoring-shaped
+            object.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>Acquisition is checked against reference ranges on every run.</li>
+            <li>Drift reaches a human while the instrument is still running.</li>
+            <li>Quality history is queryable by session and by parameter, so trends are answerable.</li>
+            <li>Alert volume stays low enough that alerts still get read.</li>
+          </ul>
+
+          <h4>What I would tell someone starting this</h4>
+          <p>
+            Build the thresholds with the people who run the instrument, not from the
+            specification sheet. They already know which parameters wander harmlessly and
+            which ones mean stop. That conversation is worth more than any amount of
+            statistical tuning.
+          </p>
+        </div>
+      </details>
+    </article>
+
+    <!-- 4 ─────────────────────────────── -->
+    <article class="entry">
+      <h3>Clinical order intake, end to end</h3>
+      <p class="entry-line">
+        Taking an order from a lab partner through verification, cancellation and approval
+        into a reportable result, without anyone reconciling a spreadsheet.
+      </p>
+      <p class="entry-meta"><span class="tag ok">In production</span> Azure Functions, API Management, Key Vault, Power Automate</p>
+
+      <details>
+        <summary><span>Read the case study</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            An order arriving from an external lab partner has to become a sample, a set of
+            measurements, and eventually a clinical report. Every step has a regulatory
+            expectation attached, and every manual handoff is somewhere a mistake can enter
+            without a trace.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>Put a gateway in front of everything</h5>
+          <p>
+            External traffic terminates at API Management, which owns authentication, routing
+            and policy. The functions behind it do not each re-implement a security posture,
+            and the boundary an auditor cares about is one component rather than a diagram
+            full of arrows.
+          </p>
+
+          <h5>Model cancellation as a first-class path</h5>
+          <p>
+            Orders get cancelled and amended. If that is handled by someone editing a row,
+            the audit trail is a story rather than a record. Verification and cancellation
+            are explicit flows with their own states, so the unhappy paths are as
+            well-defined as the happy one, and neither needs an operator to intervene.
+          </p>
+
+          <h5>Secrets in Key Vault, never in configuration</h5>
+          <p>
+            Unremarkable, and worth stating because the alternative is so common. Nothing in
+            source control or app settings holds a credential, and rotation does not require
+            a deployment.
+          </p>
+
+          <h5>Approvals through the tool people already use</h5>
+          <p>
+            Report approval runs through Power Automate into Teams, as an actionable card.
+            The approval is recorded as a state change in the database rather than living in
+            somebody's inbox, which is the difference between a workflow and a habit.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>Order state is explicit at every point, including when an order is withdrawn.</li>
+            <li>The security boundary is one reviewable component, not a property of many.</li>
+            <li>Approvals leave a record in the database, not only in a chat history.</li>
+            <li>Credential rotation is an operational task, not a code change.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+
+    <!-- 5 ─────────────────────────────── -->
+    <article class="entry">
+      <h3>Making every change to a regulated app reviewable</h3>
+      <p class="entry-line">
+        Continuous delivery and a staging environment for clinical applications, plus
+        immutable, serialised records of data-science output.
+      </p>
+      <p class="entry-meta"><span class="tag ok">In production</span> Bitbucket Pipelines, Docker, ADLS Gen2</p>
+
+      <details>
+        <summary><span>Read the case study</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            Analytical code that influences a clinical result carries the same expectations as
+            any other regulated artefact: you should be able to say what ran, when, on what
+            input, and who reviewed it. Reproducibility by convention does not survive a busy
+            quarter.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>One deployment path for every application, no exceptions</h5>
+          <p>
+            Standardised pipelines mean a change reaches production the same way every time,
+            through review and a recorded build. The value is not the automation, it is the
+            absence of a second, undocumented route. A single exception makes the guarantee
+            worthless.
+          </p>
+
+          <h5>A staging environment that actually resembles production</h5>
+          <p>
+            Refactoring a clinical application with no safe place to test it means the test
+            is the release. Staging is unglamorous infrastructure that mostly pays off on the
+            days you were going to make a mistake.
+          </p>
+
+          <h5>Write outputs once, immutably, and serialise them</h5>
+          <p>
+            Model and analysis outputs are stored so that they cannot be overwritten in
+            place, with enough structure to be verified later. A result you can regenerate is
+            useful; a result you can prove was the one used is what regulation is actually
+            asking for.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>Every change to a clinical application is reviewed and recorded before release.</li>
+            <li>There is no informal path to production for anyone, including me.</li>
+            <li>A past result can be produced as evidence, not reconstructed from memory.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+
+    <!-- 6 ─────────────────────────────── -->
+    <article class="entry">
+      <h3>Search that understands what a compound is called</h3>
+      <p class="entry-line">
+        Semantic retrieval over the metabolite catalogue, running entirely inside our own
+        cloud tenant.
+      </p>
+      <p class="entry-meta"><span class="tag ok">In production</span> Sentence Transformers, FAISS, FastAPI</p>
+
+      <details>
+        <summary><span>Read the case study</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            Metabolite lookup was exact-match. Scientific naming does not cooperate with
+            that: one compound carries synonyms, abbreviations and structural aliases, so a
+            correct query returns nothing and the analyst has to guess again. A silent dead
+            end is the worst possible search result, because it looks like an answer.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>Embeddings computed and indexed in-tenant</h5>
+          <p>
+            A hosted vector service would have been quicker to stand up and would have sent
+            compound identifiers and query patterns outside the compliance boundary. A local
+            model and a local index keep both inside it. The constraint chose the
+            architecture, and the architecture turned out to be cheaper anyway.
+          </p>
+
+          <h5>Diversify results before showing them</h5>
+          <p>
+            Ranking by similarity alone fills the first page with near-duplicates of the same
+            compound. Re-ranking for relevance and diversity together means the first screen
+            offers chemically distinct options, which is what the analyst was actually asking
+            for.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>Synonyms and spelling variants resolve to the same compound.</li>
+            <li>No embedding or query leaves the tenant.</li>
+            <li>The first page of results is chemically distinct, not the same molecule eight times.</li>
+          </ul>
+        </div>
+      </details>
+    </article>
+
+    <!-- 7 ─────────────────────────────── -->
+    <article class="entry">
+      <h3>A quality model that knows when to ask a human</h3>
+      <p class="entry-line">
+        Scoring NMR signal quality, calibrated so that uncertainty routes to review rather
+        than guessing.
+      </p>
+      <p class="entry-meta"><span class="tag ok">In production</span> PyTorch, nmrglue, scikit-learn</p>
+
+      <details>
+        <summary><span>Read the case study</span></summary>
+        <div class="case">
+          <h4>The problem</h4>
+          <p>
+            Spectra carry noise, shimming artefacts and baseline distortion. Expert review
+            catches these and is also the bottleneck. Automating the judgement is attractive
+            and dangerous in equal measure, because a bad spectrum passed off as good is a
+            clinical problem, not an accuracy statistic.
+          </p>
+
+          <h4>What I decided, and why</h4>
+
+          <h5>Treat the spectrum as a sequence</h5>
+          <p>
+            A tree-based model sees each frequency bin as independent, which throws away the
+            fact that an artefact at one shift distorts its neighbours. A one-dimensional
+            convolution over the spectrum keeps that locality, which is the entire signal
+            here.
+          </p>
+
+          <h5>Calibrate the threshold well above the default</h5>
+          <p>
+            The decision boundary is not a modelling choice, it is a clinical one. A false
+            pass is far more costly than a false flag, so the operating point is set to push
+            uncertain spectra to a person. The model's job is to be confident only when it
+            has earned it.
+          </p>
+
+          <h5>Generate failures from domain knowledge</h5>
+          <p>
+            Failing spectra are rare, so the classes are imbalanced. Oversampling the real
+            failures risks leaking them into validation. Synthesising artefacts from known
+            shimming error patterns produced a balanced training set while keeping validation
+            honest.
+          </p>
+
+          <h4>What this guarantees</h4>
+          <ul class="guarantees">
+            <li>Low-confidence spectra go to a human instead of through the pipeline.</li>
+            <li>The same spectrum receives the same verdict on any day, from any reviewer.</li>
+            <li>Reported confidence is calibrated, so the number means something.</li>
+          </ul>
+
+          <h4>What I would tell someone starting this</h4>
+          <p>
+            Most of the work is not the model. It is deciding what happens when the model is
+            unsure, and being willing to make the system slower in exchange for being right.
+          </p>
+        </div>
+      </details>
+    </article>
   </section>
 
-  <!-- ============ LOGO STRIP ============ -->
-  <div class="logo-strip" aria-label="Companies and institutions">
-    <div class="container">
-      <p class="logo-strip-label">Experience &amp; Affiliations</p>
-      <div class="logo-strip-track">
-        <span class="logo-item">Olaris, Inc.</span>
-        <span class="logo-sep">·</span>
-        <span class="logo-item">Boehringer Ingelheim</span>
-        <span class="logo-sep">·</span>
-        <span class="logo-item">Cigna</span>
-        <span class="logo-sep">·</span>
-        <span class="logo-item">University of Connecticut</span>
-        <span class="logo-sep">·</span>
-        <span class="logo-item logo-item-highlight">Cell Press · iScience</span>
-        <span class="logo-sep">·</span>
-        <span class="logo-item">University of Mumbai</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============ ABOUT ============ -->
-  <section id="about">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">About Me</span>
-        <h2>I Build the Boring Parts<br/>Everything Else Depends On</h2>
-      </div>
-
-      <div class="about-grid">
-        <div class="about-visual">
-          <div class="orbit-wrap">
-            <canvas id="orbitCanvas" width="340" height="340"></canvas>
-            <div class="orbit-badge">
-              <span class="orbit-badge-icon"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-              Data Engineer III
-            </div>
-            <div class="orbit-location"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Boston, MA</div>
-          </div>
-        </div>
-
-        <div class="about-body">
-          <p>I grew up in <strong>Mumbai</strong> pulling computers apart and putting them back together — that's where the engineering instinct came from. Computer Engineering at University of Mumbai, then Business Analytics at UConn, now building production data platforms at <strong>Olaris</strong> in Boston.</p>
-          <p>I care about systems that are <strong>fast, observable and production-grade</strong>. HIPAA-compliant cloud infrastructure, and data models built to outlast the current schema. Outside of work I'm playing piano, following F1, or planning the next long drive.</p>
-          <p>I was also part of the team behind a <strong>Cell Press (iScience) publication</strong> in 2025 — a kidney transplant biomarker classifier that outperformed serum creatinine.</p>
-
-          <div class="about-pills">
-            <div class="about-pill">
-              <span class="pill-icon"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M10 2v7.5L4 20a1 1 0 0 0 .9 1.5h14.2A1 1 0 0 0 20 20l-6-10.5V2"/><path d="M8.5 2h7"/><path d="M7 15.5h10"/></svg></span>
-              <div>
-                <strong>Biotech-Focused</strong>
-                <span>CLIA-compliant pipelines for MS &amp; NMR data</span>
-              </div>
-            </div>
-            <div class="about-pill">
-              <span class="pill-icon"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg></span>
-              <div>
-                <strong>Cloud-Native</strong>
-                <span>Azure infrastructure with ADLS Gen2 &amp; Functions</span>
-              </div>
-            </div>
-            <div class="about-pill">
-              <span class="pill-icon"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span>
-              <div>
-                <strong>ML-Enabled</strong>
-                <span>XGBoost, deep learning &amp; semantic search at scale</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="about-interests">
-            <p class="interests-label">When I'm not building pipelines —</p>
-            <div class="interests-chips">
-              <span class="interest-chip">F1 fanatic</span>
-              <span class="interest-chip">CS2</span>
-              <span class="interest-chip">Building PCs</span>
-              <span class="interest-chip">Grade 5 pianist</span>
-              <span class="interest-chip">Long drives</span>
-              <span class="interest-chip">Avid traveller</span>
-              <span class="interest-chip">Cricket</span>
-              <span class="interest-chip">Anything chicken</span>
-              <span class="interest-chip">RL &amp; CV research</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ IMPACT TIMELINE ============ -->
-  <section id="impact">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Career Trajectory</span>
-        <h2>Scale of Impact<br/>Over Time</h2>
-        <p class="section-sub">Each role added scope I had not had before.</p>
-      </div>
-      <canvas id="impactCanvas" height="220"></canvas>
-    </div>
-  </section>
-
-  <!-- ============ EXPERIENCE ============ -->
-  <section id="experience">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Experience</span>
-        <h2>Where I've Made an Impact</h2>
-      </div>
-
-      <div class="timeline">
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-header">
-              <div>
-                <h3>Olaris, Inc.</h3>
-                <span class="tl-location">Boston, MA</span>
-              </div>
-              <div class="tl-meta">
-                <span class="tl-role">Data Engineer III</span>
-                <span class="tl-date">2025 — Present</span>
-              </div>
-            </div>
-            <ul class="tl-bullets">
-              <li>Promoted two levels at the end of 2024, from Data Engineer I straight to Data Engineer III</li>
-              <li><strong>Own the production platform end to end</strong>: Azure Functions (HIPAA and non-HIPAA), API Management, PostgreSQL roles and schemas, Key Vault, ADLS Gen2, and the full Docker estate on the VM</li>
-              <li>Built the real-time sample inventory pipeline. Upstream webhook delivery is unreliable in production, so the system doesn&rsquo;t trust it: queue-decoupled processing, active reconciliation, hash-based change detection and full payload archival keep the inventory complete even when the vendor drops messages</li>
-              <li>Delivered <strong>sub-second clinical order intake</strong> with verification and cancellation workflows, and a de-identification service that keeps PHI out of analytics while preserving analytical utility</li>
-              <li>Standardised CI/CD across every CLIA application, so each change is reviewed, versioned and auditable before it reaches production. I also designed the global ID system that links a spectrum to a patient</li>
-            </ul>
-            <div class="tl-tags">
-              <span>Azure Functions</span><span>API Management</span><span>PostgreSQL</span><span>HIPAA &middot; CLIA</span><span>Mage AI</span><span>Bitbucket CI/CD</span><span>Docker</span><span>ADLS Gen2</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-header">
-              <div>
-                <h3>Olaris, Inc.</h3>
-                <span class="tl-location">Boston, MA</span>
-              </div>
-              <div class="tl-meta">
-                <span class="tl-role">Data Engineer I</span>
-                <span class="tl-date">2023 — 2024</span>
-              </div>
-            </div>
-            <ul class="tl-bullets">
-              <li>Developed a deep learning model scoring NMR signal peak quality, materially improving accuracy and displacing manual review</li>
-              <li>Built reusable Python ML libraries standardising NMR ingestion and feature extraction for research pipelines</li>
-              <li>Deployed a live instrument monitoring service that checks acquisition against reference rule sets and alerts the lab in Teams the moment a parameter drifts out of spec</li>
-            </ul>
-            <div class="tl-tags">
-              <span>Deep Learning</span><span>NMR</span><span>Python</span><span>FastAPI</span><span>Mage AI</span><span>Docker</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-header">
-              <div>
-                <h3>Boehringer Ingelheim</h3>
-                <span class="tl-location">Hartford, CT · via Yoh</span>
-              </div>
-              <div class="tl-meta">
-                <span class="tl-role">Data Engineer, Biotherapeutics</span>
-                <span class="tl-date">2022 — 2023</span>
-              </div>
-            </div>
-            <ul class="tl-bullets">
-              <li>Migrated <strong>100+ Excel/PowerPoint artifacts</strong> across 13 research initiatives into relational databases, enabling Cloudera Data Lake integration</li>
-              <li>Defined data schemas via YAML, reducing onboarding time by <strong>30%</strong> and improving cross-team data consistency</li>
-              <li>Supported HIPAA compliance strategies for multi-site data warehouses, reducing regulatory risk across clinical analytics</li>
-            </ul>
-            <div class="tl-tags">
-              <span>Cloudera</span><span>Python</span><span>SQL</span><span>YAML</span><span>HIPAA</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-header">
-              <div>
-                <h3>University of Connecticut</h3>
-                <span class="tl-location">Storrs, CT</span>
-              </div>
-              <div class="tl-meta">
-                <span class="tl-role">Data Analyst, Budget Planning &amp; Institutional Research</span>
-                <span class="tl-date">2021 — 2022</span>
-              </div>
-            </div>
-            <ul class="tl-bullets">
-              <li>Queried and modelled <strong>400K+ records</strong> from SAS using SQL to support student success and retention analysis</li>
-              <li>Built interactive dashboards in R Shiny and Tableau enabling real-time decision-making across academic departments</li>
-            </ul>
-            <div class="tl-tags">
-              <span>SQL</span><span>SAS</span><span>R Shiny</span><span>Tableau</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-dot"></div>
-          <div class="tl-card">
-            <div class="tl-header">
-              <div>
-                <h3>Cigna</h3>
-                <span class="tl-location">Hartford, CT</span>
-              </div>
-              <div class="tl-meta">
-                <span class="tl-role">Graduate Data Science Consultant</span>
-                <span class="tl-date">2021 — 2022</span>
-              </div>
-            </div>
-            <ul class="tl-bullets">
-              <li>Trained TensorFlow neural network automating ServiceNow incident routing — improved accuracy from 30% to <strong>87%</strong></li>
-              <li>Applied NLP (lemmatization, topic modelling) reducing resolution time by 50%</li>
-              <li>Delivered real-time classifier with <strong>96% recall</strong> and 80% precision for incident prioritisation</li>
-            </ul>
-            <div class="tl-tags">
-              <span>TensorFlow</span><span>NLP</span><span>Python</span><span>ServiceNow</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PROJECTS ============ -->
+  <!-- ══════════════ PROJECTS ══════════════ -->
   <section id="projects">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Projects</span>
-        <h2>Things I've Built</h2>
-      </div>
+    <div class="section-head">
+      <h2>Things I build on weekends</h2>
+      <p>
+        Mostly Formula 1, because it is a rich, messy, well-documented dataset with a fresh
+        instalment every fortnight. Some of it is on GitHub; some of it is private while it
+        is still ugly.
+      </p>
+    </div>
 
-      <!-- Filter tabs -->
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-filter="all">All</button>
-        <button class="filter-tab" data-filter="engineering">Data Engineering</button>
-        <button class="filter-tab" data-filter="ml">Machine Learning</button>
-        <button class="filter-tab" data-filter="analytics">Analytics</button>
-      </div>
-
-      <!-- Featured card -->
-      <div class="featured-card">
-        <div class="featured-label">Featured Project</div>
-        <h3 class="featured-title">Clinical Data Platform</h3>
-        <p class="featured-desc">
-          HIPAA-compliant, cloud-hosted biotech data platform on Azure — governing clinical records with
-          role-based access control, geo-fencing, field-level encryption, and full audit logging.
-          Powers the diagnostic reporting pipeline for targeted mass spectrometry and NMR-based metabolomics.
+    <ul class="projects">
+      <li>
+        <h3>F1 race position predictor</h3>
+        <p>
+          Predicts the full finishing grid with calibrated probabilities rather than a single
+          winner, served from Cloud Run with per-prediction explanations. Four models cover
+          lap-level and pre-race views, with a meta-model on top.
         </p>
-        <div class="featured-metrics">
-          <div class="featured-metric">
-            <span class="featured-metric-val">CLIA</span>
-            <span class="featured-metric-label">Regulated Workflow</span>
-          </div>
-          <div class="featured-metric">
-            <span class="featured-metric-val">HIPAA</span>
-            <span class="featured-metric-label">PHI Boundary</span>
-          </div>
-          <div class="featured-metric">
-            <span class="featured-metric-val">RBAC</span>
-            <span class="featured-metric-label">Access Control</span>
-          </div>
-          <div class="featured-metric">
-            <span class="featured-metric-val">Audited</span>
-            <span class="featured-metric-label">Every State Change</span>
-          </div>
+        <p class="entry-meta">
+          <a href="https://github.com/jowinjestine/f1-race-predictor">github.com/jowinjestine/f1-race-predictor</a>
+          <span class="repo-stat" data-repo="f1-race-predictor"></span>
+        </p>
+        <p class="aside">
+          The useful lesson was about evaluation, not modelling. Time-ordered
+          cross-validation exposed an error inflation that random splits had been hiding, and
+          calibration mattered more than any architecture change. Most of the engineering
+          went into the harness that could tell me I was wrong.
+        </p>
+      </li>
+
+      <li>
+        <h3>F1 data lakehouse</h3>
+        <p>
+          Medallion-style analytics on GCP: scheduled ingestion into cloud storage, dbt
+          transformations into BigQuery, tests at each layer. The boring counterpart to the
+          predictor, and the reason the predictor has features to read.
+        </p>
+        <p class="entry-meta">
+          <a href="https://github.com/jowinjestine/f1-data-lakehouse">github.com/jowinjestine/f1-data-lakehouse</a>
+          <span class="repo-stat" data-repo="f1-data-lakehouse"></span>
+        </p>
+      </li>
+
+      <li>
+        <h3>F1 simulation engine</h3>
+        <p>
+          Instead of predicting one outcome, simulate the race repeatedly across a large
+          parameter space and look at the distribution. Smart sampling keeps it tractable,
+          and calibration against real results keeps it honest. Includes a replay view, which
+          exists mainly so I can see when the model believes something absurd.
+        </p>
+        <p class="entry-meta"><span class="tag wait">Private repository</span></p>
+      </li>
+
+      <li>
+        <h3>NeuroGolf Lab</h3>
+        <p>
+          A browser tool for building ONNX graphs by hand against ARC-style reasoning tasks:
+          wire up a candidate, validate it against the visible examples, publish what passes.
+          Humans work in the editor and headless agents attempt the same tasks through the
+          identical validation gate, so neither gets a private definition of success.
+        </p>
+        <p class="entry-meta"><span class="tag wait">Private repository</span></p>
+      </li>
+
+      <li>
+        <h3>ARC Prize 2026</h3>
+        <p>
+          An agent for the ARC-AGI-3 competition, with a local development and submission
+          loop so that iterating does not depend on a hosted notebook. I keep coming back to
+          this because it punishes memorisation, which makes it the honest test.
+        </p>
+        <p class="entry-meta"><span class="tag wait">Private repository</span></p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ══════════════ EXPERIENCE ══════════════ -->
+  <section id="experience">
+    <div class="section-head">
+      <h2>Experience</h2>
+    </div>
+
+    <ol class="roles">
+      <li>
+        <div class="role-when">2025 to now</div>
+        <div class="role-what">
+          <h3>Data Engineer III, Olaris</h3>
+          <p>
+            Promoted two levels at the end of 2024, from Data Engineer I. I own the Azure
+            estate, the ingestion pipelines, the container and deployment tooling, the
+            database roles and schemas, and the internal applications the lab depends on:
+            patient requisition, keyfile management, run lists and naming.
+          </p>
         </div>
-        <div class="tl-tags">
-          <span>PostgreSQL</span><span>Azure</span><span>FastAPI</span>
-          <span>HIPAA</span><span>RBAC</span><span>SQLMesh</span><span>Python</span>
+      </li>
+      <li>
+        <div class="role-when">2023 to 2024</div>
+        <div class="role-what">
+          <h3>Data Engineer I, Olaris</h3>
+          <p>
+            Consolidated the compute estate onto a single containerised host, built the
+            first instrument monitoring service, wrote the reusable libraries for NMR
+            ingestion and feature extraction, and organised several years of legacy raw and
+            clinical data so that it could be found and trusted.
+          </p>
         </div>
-        <div class="featured-bg-text">OLARIS</div>
+      </li>
+      <li>
+        <div class="role-when">2022 to 2023</div>
+        <div class="role-what">
+          <h3>Data Engineer, Biotherapeutics, Boehringer Ingelheim</h3>
+          <p>
+            Moved thirteen research initiatives out of disconnected spreadsheets and decks
+            into a governed data lake with declared schemas, which made cross-initiative
+            analysis possible for the first time.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="role-when">2021 to 2022</div>
+        <div class="role-what">
+          <h3>Graduate Data Science Consultant, Cigna</h3>
+          <p>
+            Built an NLP classifier that routed IT service incidents automatically, with a
+            confidence filter so that low-certainty tickets went to human triage instead of
+            to the wrong team. Accuracy improved from 30% to 87%, and a retraining loop fed
+            every human correction back in.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="role-when">2021 to 2022</div>
+        <div class="role-what">
+          <h3>Graduate Assistant, Institutional Research, UConn</h3>
+          <p>
+            Replaced monthly static reporting with live dashboards over 400,000 student
+            records, which meant enrolment questions could be answered during registration
+            rather than after it.
+          </p>
+        </div>
+      </li>
+    </ol>
+
+    <p class="edu">
+      MS Business Analytics and Project Management, University of Connecticut.
+      BE Computer Engineering, University of Mumbai.
+    </p>
+  </section>
+
+  <!-- ══════════════ WRITING ══════════════ -->
+  <section id="writing">
+    <div class="section-head">
+      <h2>Writing and research</h2>
+    </div>
+
+    <article class="pub">
+      <h3>
+        Urinary metabolite signatures to detect and differentiate graft injury in kidney
+        transplant recipients
+      </h3>
+      <p class="pub-meta">iScience, Cell Press, 2025</p>
+      <p>
+        A non-invasive classifier for kidney transplant graft injury built on urinary
+        metabolite signatures, validated against serum creatinine, which is the current
+        clinical standard. I contributed to the data and analysis work behind it.
+      </p>
+      <dl class="pub-figures">
+        <div><dt>Validation AUC</dt><dd>0.878</dd></div>
+        <div><dt>Accuracy</dt><dd>86.4%</dd></div>
+        <div><dt>Patients</dt><dd>145</dd></div>
+      </dl>
+      <p class="aside">
+        These figures are published, which is why they appear here. Internal Olaris
+        performance numbers do not.
+      </p>
+    </article>
+
+    <article class="pub">
+      <h3>Writing up the clinical intake architecture</h3>
+      <p class="pub-meta">Olaris journal club</p>
+      <p>
+        An external write-up of how an order becomes a clinical report, aimed at a mixed
+        audience of engineers and clinical staff. I led with the constraint rather than
+        hiding it: once you explain that a regulatory boundary decides which service may
+        touch which data, the architecture stops looking arbitrary and starts looking
+        necessary.
+      </p>
+      <p class="aside">
+        This is the part of my work I am worst at and most deliberately practising. Systems
+        that run quietly get taken for granted, and the fix is not better systems, it is
+        explaining them before somebody has to ask.
+      </p>
+    </article>
+  </section>
+
+  <!-- ══════════════ ABOUT ══════════════ -->
+  <section id="about">
+    <div class="section-head">
+      <h2>A little more</h2>
+    </div>
+
+    <div class="about-cols">
+      <div>
+        <p>
+          I grew up in Mumbai taking computers apart, read Computer Engineering at the
+          University of Mumbai, then Business Analytics at UConn, and have been in Boston
+          since. Outside work it is Formula 1, a piano I am slowly getting better at, long
+          drives with no particular destination, and an argument with myself about whether
+          to learn Rust properly.
+        </p>
+        <p>
+          What I want next is to keep moving toward architecture: designing platforms that
+          are traceable and compliant because of how they are built rather than because
+          somebody remembered, and that do not depend on any single person to keep running.
+          Including me.
+        </p>
       </div>
-
-      <!-- 2026 Builds subheader -->
-      <div class="project-subheader">
-        <span class="project-subheader-tag">●</span>
-        <h3 class="project-subheader-title">2026 Builds</h3>
-        <span class="project-subheader-line"></span>
-        <span class="project-subheader-meta">Personal portfolio · Apr–Dec 2026</span>
-      </div>
-
-      <!-- Live builds strip — populated from stats.json (refreshed nightly by GH Actions) -->
-      <div class="live-strip" id="liveStrip" aria-label="GitHub repo activity">
-        <span class="live-strip-label">
-          <span class="live-strip-dot"></span>
-          Live builds
-        </span>
-        <div class="live-strip-items" id="liveStripItems">
-          <span class="live-strip-item live-strip-item-pending">Loading…</span>
-        </div>
-        <span class="live-strip-stamp" id="liveStripStamp"></span>
-      </div>
-
-      <!-- 2026 Builds grid -->
-      <div class="project-grid project-grid-2026">
-
-        <div class="project-card" data-category="ml" data-status="in-progress" data-modal="f1-predictor">
-          <canvas class="card-thumb" data-thumb="neural"></canvas>
-          <div class="project-card-top">
-            <span class="project-cat cat-ml">Machine Learning</span>
-            <span class="project-status status-live">Deployed &middot; Cloud Run</span>
-          </div>
-          <h3 class="project-title">F1 Race Position Predictor</h3>
-          <p class="project-desc">End-to-end ML pipeline predicting F1 finishing positions and podiums. Four-model stack — lap-level (with/without tyre), pre-race outcome, calibrated meta — trained on 2018–2025 seasons.</p>
-          <div class="project-metric metric-ml">XGBoost · 38 candidates · SHAP-explained</div>
-          <div class="tl-tags"><span>XGBoost</span><span>FastAPI</span><span>Cloud Run</span><span>MLflow</span><span>SHAP</span></div>
-          <button class="case-study-btn" data-modal="f1-predictor">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="engineering" data-status="planned">
-          <canvas class="card-thumb" data-thumb="pipeline"></canvas>
-          <div class="project-card-top">
-            <span class="project-cat cat-eng">Data Engineering</span>
-            <span class="project-status status-live">Built &middot; Running on GCP</span>
-          </div>
-          <h3 class="project-title">F1 Data Lakehouse</h3>
-          <p class="project-desc">Medallion-architecture analytics platform on GCP. FastF1 ingestion → Cloud Functions → GCS → dbt → BigQuery → Looker Studio. Cloud Scheduler for nightly orchestration; dbt tests for data quality.</p>
-          <div class="project-metric">dbt · BigQuery · Cloud Functions · Scheduler</div>
-          <div class="tl-tags"><span>dbt</span><span>BigQuery</span><span>GCS</span><span>Cloud Functions</span><span>Looker Studio</span></div>
-        </div>
-
-        <div class="project-card" data-category="ml" data-status="planned">
-          <canvas class="card-thumb" data-thumb="embedding"></canvas>
-          <div class="project-card-top">
-            <span class="project-cat cat-ml">NLP · Biomedical</span>
-            <span class="project-status status-planned">Planned</span>
-          </div>
-          <h3 class="project-title">PubMed Abstract Classifier</h3>
-          <p class="project-desc">Fine-tuned PubMedBERT for multi-label classification of biomedical abstracts. HuggingFace + Transformers, deployed as a FastAPI service. Bridges the data-platform work at Olaris with hands-on ML.</p>
-          <div class="project-metric metric-ml">PubMedBERT · multi-label · HF deploy</div>
-          <div class="tl-tags"><span>PubMedBERT</span><span>HuggingFace</span><span>FastAPI</span><span>Transformers</span></div>
-        </div>
-
-        <div class="project-card" data-category="ml" data-status="in-progress">
-          <canvas class="card-thumb" data-thumb="barchart"></canvas>
-          <div class="project-card-top">
-            <span class="project-cat cat-ml">Simulation</span>
-            <span class="project-status status-progress">In Progress &middot; Private</span>
-          </div>
-          <h3 class="project-title">F1 Simulation Engine</h3>
-          <p class="project-desc">Race simulator that explores the probability space of a Grand Prix rather than predicting a single outcome &mdash; roughly 8,375 parameter combinations reduced by smart sampling, then calibrated against real results. Includes a race replay view for sanity-checking what the model actually believes.</p>
-          <div class="project-metric metric-ml">Probability space &middot; smart sampling &middot; calibration</div>
-          <div class="tl-tags"><span>Python</span><span>Monte Carlo</span><span>Calibration</span><span>Visualisation</span></div>
-        </div>
-
-        <div class="project-card" data-category="ml" data-status="in-progress">
-          <canvas class="card-thumb" data-thumb="neural"></canvas>
-          <div class="project-card-top">
-            <span class="project-cat cat-ml">Program Synthesis</span>
-            <span class="project-status status-progress">Active &middot; Private</span>
-          </div>
-          <h3 class="project-title">NeuroGolf Lab</h3>
-          <p class="project-desc">A browser-based ARC task viewer and visual ONNX graph editor. Wire up a candidate graph, validate it against the visible training examples, and push passing artifacts to Hugging Face. Humans solve in the GUI and headless agents attempt through the same validation gate.</p>
-          <div class="project-metric metric-ml">ONNX graph search &middot; shared validation gate</div>
-          <div class="tl-tags"><span>ONNX</span><span>FastAPI</span><span>React</span><span>Hugging Face</span><span>ARC-AGI</span></div>
-        </div>
-
-        <div class="project-card" data-category="ml" data-status="in-progress">
-          <canvas class="card-thumb" data-thumb="spectrum"></canvas>
-          <div class="project-card-top">
-            <span class="project-cat cat-ml">Competition</span>
-            <span class="project-status status-progress">In Progress &middot; Private</span>
-          </div>
-          <h3 class="project-title">ARC Prize 2026 &mdash; ARC-AGI-3</h3>
-          <p class="project-desc">An agent for the ARC-AGI-3 Kaggle competition, with a local development and submission loop so iteration doesn&rsquo;t depend on the notebook environment.</p>
-          <div class="project-metric metric-ml">Kaggle &middot; agent loop &middot; local submission harness</div>
-          <div class="tl-tags"><span>Python</span><span>Agents</span><span>Kaggle</span></div>
-        </div>
-
-      </div>
-
-      <!-- Production Work subheader -->
-      <div class="project-subheader">
-        <span class="project-subheader-tag">●</span>
-        <h3 class="project-subheader-title">Production Work</h3>
-        <span class="project-subheader-line"></span>
-        <span class="project-subheader-meta">Olaris · Boehringer · UConn · Cigna</span>
-      </div>
-
-      <!-- Project grid -->
-      <div class="project-grid">
-
-        <div class="project-card" data-category="ml" data-modal="metabolite-search">
-          <canvas class="card-thumb" data-thumb="embedding"></canvas>
-          <span class="project-cat cat-ml">Machine Learning</span>
-          <h3 class="project-title">AI Metabolite Search Engine</h3>
-          <p class="project-desc">Semantic search across the metabolite catalogue from two diagnostic platforms. Replaced exact-match keyword lookup with embedding-based retrieval, so analysts stop losing sessions to spelling variants and synonyms.</p>
-          <div class="project-metric metric-ml">Embedding retrieval &middot; in-tenant FAISS</div>
-          <div class="tl-tags"><span>Semantic Search</span><span>Python</span><span>Azure</span><span>FastAPI</span></div>
-          <button class="case-study-btn" data-modal="metabolite-search">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="ml" data-modal="nmr-quality">
-          <canvas class="card-thumb" data-thumb="spectrum"></canvas>
-          <span class="project-cat cat-ml">Deep Learning</span>
-          <h3 class="project-title">NMR Signal Quality Model</h3>
-          <p class="project-desc">Deep learning classifier scoring NMR signal peak quality, trained on historical acquisitions and calibrated so low-confidence spectra still route to a human rather than through silently.</p>
-          <div class="project-metric metric-ml">Calibrated confidence &middot; human in the loop</div>
-          <div class="tl-tags"><span>Deep Learning</span><span>Python</span><span>NMR</span><span>scikit-learn</span></div>
-          <button class="case-study-btn" data-modal="nmr-quality">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="engineering" data-modal="nmr-monitoring">
-          <canvas class="card-thumb" data-thumb="realtime"></canvas>
-          <span class="project-cat cat-eng">Data Engineering</span>
-          <h3 class="project-title">Live NMR Monitoring System</h3>
-          <p class="project-desc">Real-time instrument monitoring with automated MS Teams alerting. Checks acquisition parameters and QC metrics against reference rule sets and flags drift before it reaches a reportable result.</p>
-          <div class="project-metric">Reference rule sets &middot; real-time alerts</div>
-          <div class="tl-tags"><span>FastAPI</span><span>Mage AI</span><span>PostgreSQL</span><span>Docker</span></div>
-          <button class="case-study-btn" data-modal="nmr-monitoring">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="ml" data-modal="it-routing">
-          <canvas class="card-thumb" data-thumb="neural"></canvas>
-          <span class="project-cat cat-ml">NLP</span>
-          <h3 class="project-title">IT Incident Routing Neural Net</h3>
-          <p class="project-desc">TensorFlow NLP system automating ServiceNow IT incident routing at Cigna using topic modelling and lemmatization — improved accuracy from 30% to 87%.</p>
-          <div class="project-metric metric-ml">30% → 87% accuracy · 96% recall</div>
-          <div class="tl-tags"><span>TensorFlow</span><span>NLP</span><span>Python</span><span>ServiceNow</span></div>
-          <button class="case-study-btn" data-modal="it-routing">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="engineering" data-modal="data-migration">
-          <canvas class="card-thumb" data-thumb="pipeline"></canvas>
-          <span class="project-cat cat-eng">Data Engineering</span>
-          <h3 class="project-title">Biotech Research Data Migration</h3>
-          <p class="project-desc">Migrated 100+ Excel and PowerPoint artifacts across 13 Boehringer Ingelheim research initiatives into a structured Cloudera Data Lake with YAML-defined schemas.</p>
-          <div class="project-metric">13 initiatives · 30% faster onboarding</div>
-          <div class="tl-tags"><span>Cloudera</span><span>Python</span><span>SQL</span><span>YAML</span></div>
-          <button class="case-study-btn" data-modal="data-migration">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="analytics" data-modal="research-dashboard">
-          <canvas class="card-thumb" data-thumb="barchart"></canvas>
-          <span class="project-cat cat-analytics">Analytics</span>
-          <h3 class="project-title">Institutional Research Dashboard</h3>
-          <p class="project-desc">Modelled 400K+ student records from SAS to build interactive R Shiny and Tableau dashboards supporting real-time academic decision-making at UConn.</p>
-          <div class="project-metric">400K+ records · live dashboards</div>
-          <div class="tl-tags"><span>R Shiny</span><span>Tableau</span><span>SQL</span><span>SAS</span></div>
-          <button class="case-study-btn" data-modal="research-dashboard">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="engineering" data-modal="id-system">
-          <canvas class="card-thumb" data-thumb="pipeline"></canvas>
-          <span class="project-cat cat-eng">System Design</span>
-          <h3 class="project-title">Global Sample Traceability System</h3>
-          <p class="project-desc">Designed a unified ID architecture across 7 entity types spanning clinical and research workflows — eliminating identifier fragmentation and building a parent-child traceability model that handles pooled, derived, and collaborator samples.</p>
-          <div class="project-metric">7 entity types · full lifecycle traceability</div>
-          <div class="tl-tags"><span>System Design</span><span>PostgreSQL</span><span>ADLS Gen2</span><span>Python</span></div>
-          <button class="case-study-btn" data-modal="id-system">Case Study →</button>
-        </div>
-
-        <div class="project-card" data-category="engineering" data-modal="journal-club">
-          <canvas class="card-thumb" data-thumb="realtime"></canvas>
-          <span class="project-cat cat-eng">Technical Writing</span>
-          <h3 class="project-title">Olaris Journal Club Write-up</h3>
-          <p class="project-desc">Published a public technical deep-dive on Olaris's HIPAA-compliant order intake architecture — translating internal engineering decisions into a mixed-audience write-up covering Azure Functions, data boundaries, and clinical data flow.</p>
-          <div class="project-metric">HIPAA architecture · public deep-dive</div>
-          <div class="tl-tags"><span>Technical Writing</span><span>Azure Functions</span><span>HIPAA</span><span>Architecture</span></div>
-          <button class="case-study-btn" data-modal="journal-club">Case Study →</button>
-        </div>
-
+      <div>
+        <h3 class="tools-head">Tools I reach for</h3>
+        <p class="tools">
+          Python, SQL and R. PostgreSQL, dbt, SQLMesh, DuckDB and pandas. Azure Functions,
+          API Management, ADLS Gen2, Event Grid, Key Vault and Azure PostgreSQL. Mage AI for
+          orchestration. Docker, Bitbucket Pipelines and Linux. FastAPI, Streamlit, NiceGUI
+          and R Shiny for interfaces. PyTorch, XGBoost and scikit-learn when a model is
+          genuinely the answer. On personal work, GCP: Cloud Run, BigQuery and Pub/Sub.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- ============ ARCHITECTURE ============ -->
-  <section id="architecture">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">HIPAA Workflow</span>
-        <h2>Clinical Order Intake Architecture</h2>
-        <p class="section-sub">The HIPAA-compliant order intake workflow powering Olaris clinical diagnostics — from lab partner to clinical report. Click any node to see the technology, rationale, and compliance detail. <a href="https://www.linkedin.com/posts/olarisbor_olarisjournalclub-azurefunctions-hipaacompliance-activity-7371875372885393408-ghL0?utm_source=share&utm_medium=member_desktop&rcm=ACoAACZaj5EBxy67JLT0naXg6rMXOUOEdVA6bPU" target="_blank" rel="noopener" class="arch-jc-link">Read the Journal Club post ↗</a></p>
-      </div>
-      <div class="arch-wrap">
-        <canvas id="archCanvas"></canvas>
-        <div class="arch-panel" id="archPanel">
-          <button class="arch-panel-close" aria-label="Close panel" id="archPanelClose"></button>
-          <div class="arch-panel-body" id="archPanelBody"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SKILLS RADAR ============ -->
-  <section id="skills-radar">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Competencies</span>
-        <h2>Skills Radar</h2>
-        <p class="section-sub">Six core domains of expertise — hover any axis label to explore the underlying skills.</p>
-      </div>
-      <div class="radar-wrap">
-        <canvas id="radarCanvas" width="500" height="500"></canvas>
-        <div class="radar-legend" id="radarLegend"></div>
-        <div class="radar-tooltip" id="radarTooltip"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ EXPLORING ============ -->
-  <section id="exploring">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Currently Exploring</span>
-        <h2>What's Next</h2>
-        <p class="section-sub">What I am reading and building outside work right now.</p>
-      </div>
-      <div class="exploring-grid">
-        <div class="explore-card">
-          <div class="explore-icon">CV</div>
-          <h3>Computer Vision for Lab Bottlenecks</h3>
-          <p>CVT execution and SVT load times are the NMR team&rsquo;s biggest time sinks. Building first-pass vision models to assist during both &mdash; the point is to take work off the lab staff during those two steps.</p>
-          <div class="explore-status"><span class="explore-dot"></span> Building</div>
-        </div>
-        <div class="explore-card">
-          <div class="explore-icon">ID</div>
-          <h3>Metadata-Driven Unified Architecture</h3>
-          <p>One traceable spine connecting samples, experiments, analyses, predictions and reports. Fewer silos, and no step that only works because somebody remembers how it works.</p>
-          <div class="explore-status"><span class="explore-dot"></span> Designing</div>
-        </div>
-        <div class="explore-card">
-          <div class="explore-icon">ARC</div>
-          <h3>ARC-AGI &amp; Program Synthesis</h3>
-          <p>ONNX graph search and agent loops against ARC tasks. I compete because it forces the question of what generalisation costs when you cannot memorise the answer.</p>
-          <div class="explore-status"><span class="explore-dot"></span> Competing</div>
-        </div>
-        <div class="explore-card">
-          <div class="explore-icon">RS</div>
-          <h3>Rust</h3>
-          <p>Moving systems-level work off Python where latency and memory genuinely matter. Long overdue for the parts of a pipeline that should never be the bottleneck.</p>
-          <div class="explore-status"><span class="explore-dot"></span> Learning</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SKILLS ============ -->
-  <section id="skills">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Skills</span>
-        <h2>Tools of the Trade</h2>
-      </div>
-
-      <div class="skills-grid">
-
-        <div class="skill-card">
-          <div class="skill-card-header">
-            <span class="skill-emoji">DATA</span>
-            <h3>Data Engineering</h3>
-          </div>
-          <div class="skill-chips">
-            <span class="chip c1">PostgreSQL</span>
-            <span class="chip c1">Mage AI</span>
-            <span class="chip c1">SQLMesh</span>
-            <span class="chip c1">Azure Data Lake</span>
-            <span class="chip c2">Docker</span>
-            <span class="chip c2">Bitbucket CI/CD</span>
-            <span class="chip c2">Azure Functions</span>
-            <span class="chip c2">OpenMetadata</span>
-            <span class="chip c2">Great Expectations</span>
-            <span class="chip c2">dbt</span>
-            <span class="chip c2">DuckDB</span>
-            <span class="chip c2">Azure Queues</span>
-          </div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-header">
-            <span class="skill-emoji">CODE</span>
-            <h3>Programming</h3>
-          </div>
-          <div class="skill-chips">
-            <span class="chip c1">Python</span>
-            <span class="chip c1">SQL</span>
-            <span class="chip c1">R</span>
-            <span class="chip c2">FastAPI</span>
-            <span class="chip c2">TensorFlow</span>
-            <span class="chip c2">PyTorch</span>
-            <span class="chip c2">scikit-learn</span>
-            <span class="chip c2">Pandas</span>
-            <span class="chip c2">Spark</span>
-            <span class="chip c2">Streamlit</span>
-            <span class="chip c2">NiceGUI</span>
-          </div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-header">
-            <span class="skill-emoji">CLOUD</span>
-            <h3>Cloud &amp; Infra</h3>
-          </div>
-          <div class="skill-chips">
-            <span class="chip c1">Microsoft Azure</span>
-            <span class="chip c1">Docker</span>
-            <span class="chip c1">Linux</span>
-            <span class="chip c2">Cloudera</span>
-            <span class="chip c2">ADLS Gen2</span>
-            <span class="chip c2">Azure Blob Storage</span>
-            <span class="chip c2">pgAudit</span>
-            <span class="chip c2">API Management</span>
-            <span class="chip c2">Key Vault</span>
-            <span class="chip c2">Event Grid</span>
-            <span class="chip c2">Event Hub</span>
-            <span class="chip c2">Power Automate</span>
-            <span class="chip c2">Terraform</span>
-          </div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-header">
-            <span class="skill-emoji">ML</span>
-            <h3>Machine Learning</h3>
-          </div>
-          <div class="skill-chips">
-            <span class="chip c1">XGBoost</span>
-            <span class="chip c1">Deep Learning</span>
-            <span class="chip c1">NLP</span>
-            <span class="chip c2">Semantic Search</span>
-            <span class="chip c2">Symbolic Regression</span>
-            <span class="chip c2">Nested CV</span>
-            <span class="chip c2">Predictive Modelling</span>
-          </div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-header">
-            <span class="skill-emoji">VIZ</span>
-            <h3>Visualisation</h3>
-          </div>
-          <div class="skill-chips">
-            <span class="chip c1">Tableau</span>
-            <span class="chip c1">R Shiny</span>
-            <span class="chip c2">Power BI</span>
-            <span class="chip c2">Apache Superset</span>
-            <span class="chip c2">Plotly</span>
-          </div>
-        </div>
-
-        <div class="skill-card">
-          <div class="skill-card-header">
-            <span class="skill-emoji">SCI</span>
-            <h3>Scientific Domain</h3>
-          </div>
-          <div class="skill-chips">
-            <span class="chip c1">NMR Metabolomics</span>
-            <span class="chip c1">Mass Spectrometry</span>
-            <span class="chip c2">CLIA Compliance</span>
-            <span class="chip c2">HIPAA</span>
-            <span class="chip c2">GxP Automation</span>
-            <span class="chip c2">ELN Integration</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============ PUBLICATIONS ============ -->
-  <section id="publications">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Research</span>
-        <h2>Published Work</h2>
-      </div>
-      <div class="pub-card">
-        <div class="pub-journal-badge">
-          <span class="pub-journal-name">iScience</span>
-          <span class="pub-publisher">Cell Press &middot; 2025</span>
-        </div>
-        <h3 class="pub-title">Urinary metabolite signatures to detect and differentiate graft injury in kidney transplant patients</h3>
-        <p class="pub-authors">Chen Dong, Alessia Trimigno, <strong>Jowin Jestine</strong>, Jifang Zhao, Elizabeth M. O'Day, Dirk R. Kuypers</p>
-        <p class="pub-abstract">A urine-based metabolite classifier (myOLARIS-KTdx) trained on 102 patients and validated on 43 achieves AUC&nbsp;0.867&ndash;0.878 for detecting kidney transplant graft injury &mdash; significantly outperforming serum creatinine (AUC&nbsp;&le;0.65). The model differentiates under- vs. over-immunosuppression, offering a non-invasive alternative to biopsy for personalized clinical management.</p>
-        <div class="pub-metrics">
-          <div class="pub-metric">
-            <span class="pm-val">0.878</span>
-            <span class="pm-lbl">Validation AUC</span>
-          </div>
-          <div class="pub-metric">
-            <span class="pm-val">145</span>
-            <span class="pm-lbl">Patients</span>
-          </div>
-          <div class="pub-metric">
-            <span class="pm-val">86.4%</span>
-            <span class="pm-lbl">Accuracy</span>
-          </div>
-        </div>
-        <div class="pub-auc-wrap">
-          <p class="pub-auc-title">AUC Comparison — myOLARIS-KTdx vs Serum Creatinine (gold standard)</p>
-          <canvas id="aucChart" height="90"></canvas>
-          <p class="pub-auc-note">Higher AUC = better diagnostic discrimination. Serum creatinine is the current clinical gold standard.</p>
-        </div>
-        <div class="pub-footer">
-          <a href="https://doi.org/10.1016/j.isci.2025.113331" target="_blank" rel="noopener" class="pub-doi-link">
-            <span>DOI: 10.1016/j.isci.2025.113331</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-          <span class="pub-contribution">Contribution: Clinical data pipeline &amp; metabolomics platform engineering</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PHILOSOPHY ============ -->
-  <section id="philosophy">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Engineering Principles</span>
-        <h2>How I Think About<br/>Data Systems</h2>
-      </div>
-      <div class="philosophy-grid">
-        <div class="phil-card phil-featured">
-          <div class="phil-quote-mark">"</div>
-          <blockquote class="phil-quote">
-            Data systems should be built to handle all current scenarios — but also designed with the flexibility to understand how processes and data change over time. Redesign should be almost frictionless.
-          </blockquote>
-          <cite class="phil-cite">— Jowin Jestine</cite>
-        </div>
-        <div class="phil-card">
-          <span class="phil-icon">AUDIT</span>
-          <h3>Audit logs are a feature, not overhead</h3>
-          <p>In regulated systems, the ability to trace every state change isn't optional — it's the product. Every write is a commitment, every read is a contract.</p>
-        </div>
-        <div class="phil-card">
-          <span class="phil-icon">SCHEMA</span>
-          <h3>Data contracts at the boundary, flexibility inside</h3>
-          <p>Define strict schemas at ingestion and output boundaries. Keep the transformation layer adaptable. When upstream sources change, only the boundary layer needs to move.</p>
-        </div>
-        <div class="phil-card">
-          <span class="phil-icon">ORDER</span>
-          <h3>Correctness first, then performance</h3>
-          <p>A fast wrong answer is worse than a slow right one — especially in clinical or financial data. Optimize once correctness is provable and observable.</p>
-        </div>
-        <div class="phil-card">
-          <span class="phil-icon">SIGNAL</span>
-          <h3>Observability is not monitoring</h3>
-          <p>Monitoring tells you when something is broken. Observability tells you why, and what changed. I build systems I can reason about at 2am without the runbook.</p>
-        </div>
-        <div class="phil-card">
-          <span class="phil-icon">SPOF</span>
-          <h3>No system should depend on one person</h3>
-          <p>If a pipeline only runs because I know which script to re-run, that is not a system, it is a habit that has held so far. Documentation, self-service tooling and clear ownership are what let a platform survive people leaving.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ============ EDUCATION ============ -->
-  <section id="education">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">Education</span>
-        <h2>Academic Foundation</h2>
-      </div>
-
-      <div class="edu-grid">
-        <div class="edu-card">
-          <div class="edu-icon-wrap"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3.2 2.7 8.8 2.7 12 0v-5"/></svg></div>
-          <div class="edu-body">
-            <h3>Master of Business Analytics &amp; Project Management</h3>
-            <span class="edu-school">University of Connecticut</span>
-            <span class="edu-loc">Hartford, CT</span>
-          </div>
-          <div class="edu-glow"></div>
-        </div>
-        <div class="edu-card">
-          <div class="edu-icon-wrap"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-          <div class="edu-body">
-            <h3>Bachelor of Engineering in Computer Engineering</h3>
-            <span class="edu-school">University of Mumbai</span>
-            <span class="edu-loc">Mumbai, India</span>
-          </div>
-          <div class="edu-glow"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ CONTACT ============ -->
+  <!-- ══════════════ CONTACT ══════════════ -->
   <section id="contact">
-    <div class="container">
-      <div class="contact-wrap">
-        <span class="section-tag">Contact</span>
-        <h2>Let's Build Something Together</h2>
-        <p>Whether it's a data pipeline, a Fintech platform, or just a conversation about engineering at scale — I'm all ears. I usually reply within 24 hours (unless it's a race weekend).</p>
-
-        <div class="contact-cards">
-          <a href="mailto:jowinjestine@gmail.com" class="contact-card">
-            <div class="contact-icon"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></div>
-            <div>
-              <span class="contact-label">Email</span>
-              <span class="contact-val">jowinjestine@gmail.com</span>
-            </div>
-          </a>
-          <a href="https://www.linkedin.com/in/jowinjestine" target="_blank" rel="noopener" class="contact-card">
-            <div class="contact-icon"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-13h4z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
-            <div>
-              <span class="contact-label">LinkedIn</span>
-              <span class="contact-val">in/jowinjestine</span>
-            </div>
-          </a>
-          <a href="tel:+18607066565" class="contact-card">
-            <div class="contact-icon"><svg class="ico" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-            <div>
-              <span class="contact-label">Phone</span>
-              <span class="contact-val">(860) 706-6565</span>
-            </div>
-          </a>
-          <a href="https://github.com/jowinjestine" target="_blank" rel="noopener" class="contact-card">
-            <div class="contact-icon"><svg class="ico ico-fill" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg></div>
-            <div>
-              <span class="contact-label">GitHub</span>
-              <span class="contact-val">github.com/jowinjestine</span>
-            </div>
-          </a>
-        </div>
-      </div>
+    <div class="section-head">
+      <h2>Get in touch</h2>
+      <p>
+        If you are building data infrastructure where correctness is not negotiable, I would
+        like to hear about it. I usually reply within a day, unless it is a race weekend.
+      </p>
     </div>
+
+    <ul class="contact-list">
+      <li><span>Email</span><a href="mailto:jowinjestine@gmail.com">jowinjestine@gmail.com</a></li>
+      <li><span>LinkedIn</span><a href="https://www.linkedin.com/in/jowinjestine">in/jowinjestine</a></li>
+      <li><span>GitHub</span><a href="https://github.com/jowinjestine">jowinjestine</a></li>
+      <li><span>CV</span><a href="Jowin%20Jestine%20-%20Resume.pdf" download>Download as PDF</a></li>
+    </ul>
   </section>
 
-  <!-- ============ FOOTER ============ -->
-  </main>
+</main>
 
-  <footer>
-    <div class="container footer-inner">
-      <span class="footer-logo gradient-text">JJ</span>
-      <span class="footer-name">Jowin Jestine — Data Engineer III</span>
-      <span class="footer-built">Built from scratch in Boston, MA</span>
-      <span class="footer-hint">press <kbd>/</kbd> for terminal</span>
-      <span class="footer-copy">© 2026</span>
-    </div>
-  </footer>
+<footer>
+  <p>Built by hand in Boston. No framework, no build step, three files.</p>
+</footer>
 
-  <!-- ============ TERMINAL OVERLAY ============ -->
-  <div id="terminal-overlay" aria-hidden="true">
-    <div class="term-topbar">
-      <span class="term-dot" style="background:#ff5f56"></span>
-      <span class="term-dot" style="background:#ffbd2e"></span>
-      <span class="term-dot" style="background:#27c93f"></span>
-      <span class="term-title">jowin@portfolio — bash</span>
-      <button class="term-close" id="termClose" aria-label="Close terminal"></button>
-    </div>
-    <div class="term-body" id="termBody"></div>
-    <div class="term-input-row">
-      <span class="term-prompt">jowin@portfolio:~$</span>
-      <input type="text" id="termInput" class="term-input" autocomplete="off" spellcheck="false" />
-    </div>
-  </div>
-
-  <!-- ============ MODAL OVERLAY ============ -->
-  <div id="modal-overlay" aria-hidden="true">
-    <button class="modal-close" id="modalClose" aria-label="Close modal"></button>
-    <div class="modal-card" id="modalCard"></div>
-  </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="script.js"></script>
-  <!-- pretext: reflow-free text measurement for animated heading reveals + bullet expand -->
-  <script type="module">
-    import { prepare, layout, prepareWithSegments, layoutWithLines, walkLineRanges, layoutNextLine }
-      from 'https://cdn.jsdelivr.net/npm/@chenglou/pretext/dist/layout.js';
-    window.__pretext = { prepare, layout, prepareWithSegments, layoutWithLines, walkLineRanges, layoutNextLine };
-    window.dispatchEvent(new CustomEvent('pretextReady'));
-  </script>
-  <!-- Motion One — view-triggered enters on 2026 Builds elements only.
-       Existing GSAP timelines (hero, timeline, skill cards, etc.) are
-       intentionally untouched. Motion One respects prefers-reduced-motion. -->
-  <script type="module">
-    import { animate, inView } from 'https://cdn.jsdelivr.net/npm/motion@10.18.0/+esm';
-
-    const ease = [0.22, 1, 0.36, 1];                           // outQuint-ish
-    const reveal = (el, dy, dur) => animate(el,
-      { opacity: [0, 1], transform: [`translateY(${dy}px)`, 'translateY(0)'] },
-      { duration: dur, easing: ease }
-    );
-
-    // Stagger 2026 Builds cards as they cross the viewport
-    inView('.project-grid-2026 .project-card', ({ target }) => reveal(target, 28, 0.6),
-      { margin: '0px 0px -10% 0px' });
-
-    // Sub-section headings (2026 Builds, Production Work)
-    inView('.project-subheader', ({ target }) => reveal(target, 14, 0.5),
-      { margin: '0px 0px -8% 0px' });
-
-    // Live builds strip
-    inView('.live-strip', ({ target }) => reveal(target, 10, 0.4));
-  </script>
+<script src="script.js"></script>
 </body>
 </html>
