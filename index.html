@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=8" />
+<link rel="stylesheet" href="styles.css?v=9" />
 </head>
 <body>
 
@@ -37,9 +37,9 @@
   <a class="wordmark" href="#top">Jowin&nbsp;Jestine</a>
   <nav aria-label="Sections">
     <a href="#work">Work</a>
+    <a href="#writing">Writing</a>
     <a href="#projects">Projects</a>
     <a href="#experience">Experience</a>
-    <a href="#writing">Writing</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
@@ -121,6 +121,7 @@
         <li><button type="button" data-case="case-quality">A bad spectrum looks completely fine.</button></li>
       </ul>
       <p class="failures-foot">
+        <button type="button" class="start-here" data-case="case-identifiers">Not sure? Start with the one I would defend hardest</button>
         <button type="button" class="show-all">Or read all eight</button>
       </p>
     </div>
@@ -727,6 +728,57 @@
     </article>
   </section>
 
+  <!-- ══════════════ WRITING ══════════════ -->
+  <section id="writing">
+    <div class="section-head">
+      <h2>Writing and research</h2>
+    </div>
+
+    <article class="pub">
+      <h3>
+        Urinary metabolite signatures to detect and differentiate graft injury in kidney
+        transplant recipients
+      </h3>
+      <p class="pub-meta">iScience, Cell Press, 2025</p>
+      <p>
+        A non-invasive classifier for kidney transplant graft injury built on urinary
+        metabolite signatures, validated against serum creatinine, which is the current
+        clinical standard. I contributed to the data and analysis work behind it.
+      </p>
+
+      <figure class="fig">
+        <svg viewBox="0 0 760 124" role="img" style="min-width:520px" aria-label="Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published."><rect class="track" x="70" y="52" width="630" height="18"/><rect class="fill grow" x="70" y="52" width="476.28" height="18"/><line class="ax" x1="70" y1="70" x2="70" y2="76"/><text class="l" x="70" y="90">0.5</text><line class="ax" x1="196" y1="70" x2="196" y2="76"/><text class="l" x="196" y="90">0.6</text><line class="ax" x1="322" y1="70" x2="322" y2="76"/><text class="l" x="322" y="90">0.7</text><line class="ax" x1="448" y1="70" x2="448" y2="76"/><text class="l" x="448" y="90">0.8</text><line class="ax" x1="574" y1="70" x2="574" y2="76"/><text class="l" x="574" y="90">0.9</text><line class="ax" x1="700" y1="70" x2="700" y2="76"/><text class="l" x="700" y="90">1.0</text><line class="mid" x1="546.28" y1="30" x2="546.28" y2="52"/><text class="t" x="546.28" y="24">0.878</text><text class="l ls" x="70" y="112">0.5 is no better than chance</text><text class="l le" x="700" y="112">1.0 is perfect separation</text></svg>
+        <figcaption><b>Figure 8.</b> Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published.</figcaption>
+      </figure>
+      <dl class="pub-figures">
+        <div><dt>Validation AUC</dt><dd>0.878</dd></div>
+        <div><dt>Accuracy</dt><dd>86.4%</dd></div>
+        <div><dt>Patients</dt><dd>145</dd></div>
+      </dl>
+      <p class="aside">
+        These figures are published, which is why they appear here. Internal Olaris
+        performance numbers do not.
+      </p>
+    </article>
+
+    <article class="pub">
+      <h3>Writing up the clinical intake architecture</h3>
+      <p class="pub-meta">Olaris journal club</p>
+      <p>
+        An external write-up of how an order becomes a clinical report, aimed at a mixed
+        audience of engineers and clinical staff. I led with the constraint rather than
+        hiding it: once you explain that a regulatory boundary decides which service may
+        touch which data, the architecture stops looking arbitrary and starts looking
+        necessary.
+      </p>
+      <p class="aside">
+        This is the part of my work I am worst at and most deliberately practising. Systems
+        that run quietly get taken for granted, and the fix is not better systems, it is
+        explaining them before somebody has to ask.
+      </p>
+    </article>
+  </section>
+
   <!-- ══════════════ PROJECTS ══════════════ -->
   <section id="projects">
     <div class="section-head">
@@ -754,7 +806,7 @@
 
         <figure class="fig">
           <svg viewBox="0 0 760 194" role="img" style="min-width:520px" aria-label="The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess."><rect class="b" x="4" y="76" width="112" height="40"/><text class="t" x="60" y="100">Features</text><rect class="b" x="164" y="16" width="128" height="34"/><text class="t" x="228" y="37">Lap, with tyre</text><rect class="b" x="164" y="58" width="128" height="34"/><text class="t" x="228" y="79">Lap, no tyre</text><rect class="b" x="164" y="100" width="128" height="34"/><text class="t" x="228" y="121">Pre-race</text><rect class="b" x="340" y="58" width="120" height="34"/><text class="t" x="400" y="79">Stacking</text><rect class="b" x="340" y="142" width="120" height="34"/><text class="t" x="400" y="163">Simulator</text><rect class="b" x="508" y="100" width="120" height="34"/><text class="t" x="568" y="121">Ensemble</text><rect class="b" x="660" y="100" width="96" height="34"/><text class="t" x="708" y="121">API</text><polyline class="e" points="116,96 140,96 140,33 162,33"/><polyline class="e" points="116,96 140,96 140,75 162,75"/><polyline class="e" points="116,96 140,96 140,117 162,117"/><polyline class="e" points="292,33 316,33 316,75 338,75"/><polyline class="e" points="292,75 316,75 316,75 338,75"/><polyline class="e" points="292,117 316,117 316,75 338,75"/><polyline class="e" points="292,117 316,117 316,159 338,159"/><polyline class="e" points="460,75 484,75 484,117 506,117"/><polyline class="e" points="460,159 484,159 484,117 506,117"/><line class="e" x1="628" y1="117" x2="658" y2="117"/><text class="l ls" x="508" y="76">calibrated probabilities</text><g class="anim f10"><circle class="row p" cx="120" cy="96" r="3.4"/></g></svg>
-          <figcaption><b>Figure 8.</b> The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess.</figcaption>
+          <figcaption><b>Figure 9.</b> The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess.</figcaption>
         </figure>
         <p class="aside">
           The useful lesson was about evaluation, not modelling. Time-ordered
@@ -777,11 +829,15 @@
         </p>
         <figure class="fig">
           <svg viewBox="0 0 760 142" role="img" style="min-width:520px" aria-label="Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss."><rect class="b" x="4" y="22" width="128" height="40"/><text class="t" x="68" y="46">FastF1</text><rect class="b" x="4" y="82" width="128" height="40"/><text class="t" x="68" y="106">Jolpica API</text><rect class="b" x="180" y="52" width="128" height="40"/><text class="t" x="244" y="69">Cloud Run</text><text class="t" x="244" y="84">ingest jobs</text><rect class="b" x="356" y="52" width="120" height="40"/><text class="t" x="416" y="69">GCS Parquet</text><text class="t" x="416" y="84">immutable</text><rect class="b" x="516" y="52" width="112" height="40"/><text class="t" x="572" y="69">BigQuery</text><text class="t" x="572" y="84">raw</text><rect class="b" x="660" y="52" width="96" height="40"/><text class="t" x="708" y="76">dbt marts</text><line class="e" x1="132" y1="42" x2="178" y2="60"/><line class="e" x1="132" y1="102" x2="178" y2="84"/><line class="e" x1="308" y1="72" x2="354" y2="72"/><text class="l" x="331" y="60">validate</text><line class="e" x1="476" y1="72" x2="514" y2="72"/><line class="e" x1="628" y1="72" x2="658" y2="72"/><text class="l ls" x="356" y="130">Hive-partitioned, never rewritten</text><text class="l ls" x="516" y="130">external tables, then dbt staging</text><g class="anim f9"><circle class="row a1" cx="136" cy="42" r="3.4" style="animation-delay:0s"/><circle class="row a2" cx="136" cy="42" r="3.4" style="animation-delay:1.2s"/></g></svg>
-          <figcaption><b>Figure 9.</b> Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss.</figcaption>
+          <figcaption><b>Figure 10.</b> Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss.</figcaption>
         </figure>
 
       </li>
 
+    </ul>
+
+    <p class="group-label">Still private, because they are still ugly</p>
+    <ul class="projects">
       <li>
         <h3>F1 simulation engine</h3>
         <p>
@@ -811,10 +867,6 @@
           </p>
         </div>
       </li>
-    </ul>
-
-    <p class="group-label">Still private, because they are still ugly</p>
-    <ul class="projects">
       <li>
         <h3>NeuroGolf Lab</h3>
         <p>
@@ -824,17 +876,13 @@
           identical validation gate, so neither gets a private definition of success.
         </p>
         <p class="entry-meta"><span class="tag wait">Private repository</span></p>
+
+        <figure class="fig">
+          <svg viewBox="0 0 760 196" role="img" style="min-width:560px" aria-label="A six node ONNX graph: an input grid is sliced to three by three, then sent down two branches, one tiling it and one resizing it to nine by nine with nearest neighbour sampling, before an elementwise minimum combines them into the output."><rect class="b" x="4" y="76" width="116" height="46"/><text class="t" x="62" y="97">Input</text><text class="l" x="62" y="112">1&#215;1&#215;30&#215;30</text><rect class="b" x="172" y="76" width="116" height="46"/><text class="t" x="230" y="97">Slice</text><text class="l" x="230" y="112">to 3&#215;3</text><rect class="b" x="340" y="18" width="116" height="46"/><text class="t" x="398" y="39">Tile</text><text class="l" x="398" y="54">repeat 3&#215;3</text><rect class="b" x="340" y="134" width="116" height="46"/><text class="t" x="398" y="155">Resize</text><text class="l" x="398" y="170">9&#215;9 nearest</text><rect class="b" x="508" y="76" width="100" height="46"/><text class="t" x="558" y="103">Min</text><rect class="b" x="636" y="76" width="100" height="46"/><text class="t" x="686" y="103">Output</text><line class="e" x1="120" y1="99" x2="170" y2="99"/><polyline class="e" points="288,99 314,99 314,41 338,41"/><polyline class="e" points="288,99 314,99 314,157 338,157"/><polyline class="e" points="456,41 482,41 482,99 506,99"/><polyline class="e" points="456,157 482,157 482,99 506,99"/><line class="e" x1="608" y1="99" x2="634" y2="99"/><text class="l" x="558" y="66">elementwise</text><g class="anim f11"><circle class="tok up" cx="124" cy="99" r="3.4"/><circle class="tok down" cx="124" cy="99" r="3.4"/></g></svg>
+          <figcaption><b>Figure 11.</b> A real solution graph built in the editor, node for node. It crops the top-left three by three, then combines a tiled copy with a nearest-neighbour upscale through an elementwise minimum. Six operators, no training, and it either reproduces the examples exactly or it does not.</figcaption>
+        </figure>
       </li>
 
-      <li>
-        <h3>ARC Prize 2026</h3>
-        <p>
-          An agent for the ARC-AGI-3 competition, with a local development and submission
-          loop so that iterating does not depend on a hosted notebook. I keep coming back to
-          this because it punishes memorisation, which makes it the honest test.
-        </p>
-        <p class="entry-meta"><span class="tag wait">Private repository</span></p>
-      </li>
     </ul>
   </section>
 
@@ -874,9 +922,8 @@
         <div class="role-what">
           <h3>Data Engineer, Biotherapeutics, Boehringer Ingelheim</h3>
           <p>
-            Moved thirteen research initiatives out of disconnected spreadsheets and decks
-            into a governed data lake with declared schemas, which made cross-initiative
-            analysis possible for the first time.
+            Moved thirteen research initiatives out of disconnected spreadsheets into a
+            governed data lake with declared schemas.
           </p>
         </div>
       </li>
@@ -885,10 +932,8 @@
         <div class="role-what">
           <h3>Graduate Data Science Consultant, Cigna</h3>
           <p>
-            Built an NLP classifier that routed IT service incidents automatically, with a
-            confidence filter so that low-certainty tickets went to human triage instead of
-            to the wrong team. Accuracy improved from 30% to 87%, and a retraining loop fed
-            every human correction back in.
+            Built an NLP classifier that routed IT incidents automatically, sending
+            low-certainty tickets to human triage. Accuracy went from 30% to 87%.
           </p>
         </div>
       </li>
@@ -898,8 +943,7 @@
           <h3>Graduate Assistant, Institutional Research, UConn</h3>
           <p>
             Replaced monthly static reporting with live dashboards over 400,000 student
-            records, which meant enrolment questions could be answered during registration
-            rather than after it.
+            records.
           </p>
         </div>
       </li>
@@ -909,57 +953,6 @@
       MS Business Analytics and Project Management, University of Connecticut.
       BE Computer Engineering, University of Mumbai.
     </p>
-  </section>
-
-  <!-- ══════════════ WRITING ══════════════ -->
-  <section id="writing">
-    <div class="section-head">
-      <h2>Writing and research</h2>
-    </div>
-
-    <article class="pub">
-      <h3>
-        Urinary metabolite signatures to detect and differentiate graft injury in kidney
-        transplant recipients
-      </h3>
-      <p class="pub-meta">iScience, Cell Press, 2025</p>
-      <p>
-        A non-invasive classifier for kidney transplant graft injury built on urinary
-        metabolite signatures, validated against serum creatinine, which is the current
-        clinical standard. I contributed to the data and analysis work behind it.
-      </p>
-
-      <figure class="fig">
-        <svg viewBox="0 0 760 124" role="img" style="min-width:520px" aria-label="Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published."><rect class="track" x="70" y="52" width="630" height="18"/><rect class="fill grow" x="70" y="52" width="476.28" height="18"/><line class="ax" x1="70" y1="70" x2="70" y2="76"/><text class="l" x="70" y="90">0.5</text><line class="ax" x1="196" y1="70" x2="196" y2="76"/><text class="l" x="196" y="90">0.6</text><line class="ax" x1="322" y1="70" x2="322" y2="76"/><text class="l" x="322" y="90">0.7</text><line class="ax" x1="448" y1="70" x2="448" y2="76"/><text class="l" x="448" y="90">0.8</text><line class="ax" x1="574" y1="70" x2="574" y2="76"/><text class="l" x="574" y="90">0.9</text><line class="ax" x1="700" y1="70" x2="700" y2="76"/><text class="l" x="700" y="90">1.0</text><line class="mid" x1="546.28" y1="30" x2="546.28" y2="52"/><text class="t" x="546.28" y="24">0.878</text><text class="l ls" x="70" y="112">0.5 is no better than chance</text><text class="l le" x="700" y="112">1.0 is perfect separation</text></svg>
-        <figcaption><b>Figure 10.</b> Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published.</figcaption>
-      </figure>
-      <dl class="pub-figures">
-        <div><dt>Validation AUC</dt><dd>0.878</dd></div>
-        <div><dt>Accuracy</dt><dd>86.4%</dd></div>
-        <div><dt>Patients</dt><dd>145</dd></div>
-      </dl>
-      <p class="aside">
-        These figures are published, which is why they appear here. Internal Olaris
-        performance numbers do not.
-      </p>
-    </article>
-
-    <article class="pub">
-      <h3>Writing up the clinical intake architecture</h3>
-      <p class="pub-meta">Olaris journal club</p>
-      <p>
-        An external write-up of how an order becomes a clinical report, aimed at a mixed
-        audience of engineers and clinical staff. I led with the constraint rather than
-        hiding it: once you explain that a regulatory boundary decides which service may
-        touch which data, the architecture stops looking arbitrary and starts looking
-        necessary.
-      </p>
-      <p class="aside">
-        This is the part of my work I am worst at and most deliberately practising. Systems
-        that run quietly get taken for granted, and the fix is not better systems, it is
-        explaining them before somebody has to ask.
-      </p>
-    </article>
   </section>
 
   <!-- ══════════════ ABOUT ══════════════ -->
@@ -1026,6 +1019,6 @@
   <p>Built by hand in Boston. No framework, no build step, three files.</p>
 </footer>
 
-<script src="script.js?v=8"></script>
+<script src="script.js?v=9"></script>
 </body>
 </html>

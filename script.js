@@ -293,6 +293,9 @@
     b.addEventListener('click', () => reveal(b.dataset.case, true));
   }
   for (const b of work.querySelectorAll('.show-all')) b.addEventListener('click', showAll);
+  for (const b of work.querySelectorAll('.start-here')) {
+    b.addEventListener('click', () => reveal(b.dataset.case, true));
+  }
   for (const b of work.querySelectorAll('.back-to-list')) b.addEventListener('click', collapse);
 
   /* A link straight to a case study still works. */
