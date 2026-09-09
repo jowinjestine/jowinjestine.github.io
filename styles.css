@@ -553,99 +553,6 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
    when the figure is scrolled into view and never run under reduced motion.
    ═══════════════════════════════════════════════════════════════════════ */
 
-.fig .pkt, .fig .recon, .fig .walk, .fig .rd, .fig .ord { opacity: 0; }
-.fig .pkt, .fig .walk, .fig .rd.in, .fig .ord.done { fill: var(--accent); }
-.fig .recon { fill: var(--ok); }
-.fig .rd.out, .fig .ord.killed { fill: var(--wait); }
-.fig .spc { fill: var(--ink); }
-.fig .spc.s1 { fill: var(--wait); }
-.fig .spc.s2 { fill: var(--ink-3); }
-.fig .spc.s3 { fill: var(--ok); }
-
-@media (prefers-reduced-motion: no-preference) {
-
-  /* Figure 2 — events run the lossy lane; the middle one is lost, then the
-     reconciliation sweep walks the poll route and re-enters the queue. */
-  @keyframes f2run  { from { transform: translateX(0); } to { transform: translateX(556px); } }
-  @keyframes f2fade { 0%, 4% { opacity: 1; } 12%, 100% { opacity: 0; } }
-  @keyframes f2hold { 0%, 4% { opacity: 0; } 8%, 94% { opacity: 1; } 100% { opacity: 0; } }
-  @keyframes f2recon {
-    0%   { transform: translate(0, 0);         opacity: 0; }
-    8%   { opacity: 1; }
-    28%  { transform: translate(0, 118px); }
-    58%  { transform: translate(328px, 118px); }
-    88%  { transform: translate(328px, 2px);   opacity: 1; }
-    100% { transform: translate(328px, 2px);   opacity: 0; }
-  }
-  .fig.play .f2 .pkt   { animation: f2run 5s linear infinite, f2hold 5s linear infinite; }
-  .fig.play .f2 .lost  { animation: f2run 5s linear infinite, f2fade 5s linear infinite; }
-  .fig.play .f2 .recon { animation: f2recon 5s 1.9s linear infinite; }
-
-  /* Figure 3 — a traversal walks patient to processed spectrum. */
-  @keyframes f3walk {
-    0%   { transform: translate(0, 0);          opacity: 0; }
-    6%   { opacity: 1; }
-    60%  { transform: translate(498px, 0); }
-    70%  { transform: translate(557px, 0); }
-    88%  { transform: translate(557px, 58px);   opacity: 1; }
-    100% { transform: translate(557px, 58px);   opacity: 0; }
-  }
-  .fig.play .f3 .walk { animation: f3walk 5.6s 0.3s linear infinite; }
-
-  /* Figure 4 — one reading inside its range, one outside. Both recorded. */
-  @keyframes f4in {
-    0%   { transform: translate(0, 0);           opacity: 0; }
-    8%   { opacity: 1; }
-    45%  { transform: translate(308px, 0); }
-    58%  { transform: translate(342px, 0); }
-    72%  { transform: translate(342px, -64px); }
-    88%  { transform: translate(376px, -64px);   opacity: 1; }
-    100% { transform: translate(376px, -64px);   opacity: 0; }
-  }
-  @keyframes f4out {
-    0%   { transform: translate(0, 0);           opacity: 0; }
-    8%   { opacity: 1; }
-    45%  { transform: translate(308px, 0); }
-    58%  { transform: translate(342px, 0); }
-    72%  { transform: translate(342px, 64px); }
-    88%  { transform: translate(376px, 64px);    opacity: 1; }
-    100% { transform: translate(376px, 64px);    opacity: 0; }
-  }
-  .fig.play .f4 .in  { animation: f4in 5.2s linear infinite; }
-  .fig.play .f4 .out { animation: f4out 5.2s 2.6s linear infinite; }
-
-  /* Figure 5 — one order reaches a report; one is withdrawn on the way. */
-  @keyframes f5done {
-    0%   { transform: translateX(0);      opacity: 0; }
-    8%   { opacity: 1; }
-    88%  { transform: translateX(368px);  opacity: 1; }
-    100% { transform: translateX(368px);  opacity: 0; }
-  }
-  @keyframes f5kill {
-    0%   { transform: translate(0, 0);          opacity: 0; }
-    10%  { opacity: 1; }
-    40%  { transform: translate(102px, 0); }
-    78%  { transform: translate(102px, 89px);   opacity: 1; }
-    100% { transform: translate(102px, 89px);   opacity: 0; }
-  }
-  .fig.play .f5 .done   { animation: f5done 5.4s linear infinite; }
-  .fig.play .f5 .killed { animation: f5kill 5.4s 2.7s linear infinite; }
-
-  /* Figure 6 — spectra arrive and settle into the band they belong to. */
-  @keyframes f6drop {
-    0%   { transform: translateY(-30px); opacity: 0; }
-    45%  { opacity: 1; }
-    70%  { transform: translateY(3px); }
-    100% { transform: translateY(0);     opacity: 1; }
-  }
-  .fig.play .f6 .spc { animation: f6drop 0.85s cubic-bezier(.3,.9,.35,1) both; }
-
-  /* Figure 7 — the bar grows to the published value. */
-  .fig .grow { transform-box: fill-box; transform-origin: left center; }
-  @keyframes f7grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-  .fig.play .grow { animation: f7grow 1.15s cubic-bezier(.25,.9,.3,1) both; }
-}
-
 /* ── The failure list: an entry point that poses problems, not answers ── */
 .failures { margin: 0 0 clamp(2rem, 4vw, 3rem); }
 .failures-lead {
@@ -730,48 +637,6 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
 #spectrum:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 
 /* ── Motion for the three figures added later ──────────────────────────── */
-.fig .job, .fig .row { opacity: 0; fill: var(--accent); }
-
-@media (prefers-reduced-motion: no-preference) {
-  /* Figure: spectra fan out across a pool of nodes, then converge. */
-  @keyframes f8job {
-    0%   { transform: translate(0, 0);          opacity: 0; }
-    8%   { opacity: 1; }
-    30%  { transform: translate(226px, 0); }
-    52%  { transform: translate(370px, 0); }
-    74%  { transform: translate(518px, 0); }
-    90%  { transform: translate(534px, 0);      opacity: 1; }
-    100% { transform: translate(534px, 0);      opacity: 0; }
-  }
-  .fig.play .f8 .t1 { animation: f8job 4.4s linear infinite; }
-  .fig.play .f8 .t2 { animation: f8job 4.4s 0.6s linear infinite; }
-  .fig.play .f8 .t3 { animation: f8job 4.4s 1.2s linear infinite; }
-
-  /* Figure: rows travel the medallion path and are never rewritten. */
-  @keyframes f9row {
-    0%   { transform: translate(0, 0);          opacity: 0; }
-    8%   { opacity: 1; }
-    28%  { transform: translate(44px, 18px); }
-    50%  { transform: translate(222px, 30px); }
-    70%  { transform: translate(382px, 30px); }
-    88%  { transform: translate(526px, 30px);   opacity: 1; }
-    100% { transform: translate(526px, 30px);   opacity: 0; }
-  }
-  .fig.play .f9 .a1 { animation: f9row 4.6s linear infinite; }
-  .fig.play .f9 .a2 { animation: f9row 4.6s 1.3s linear infinite; }
-
-  /* Figure: features fan into three views, then converge on one ensemble. */
-  @keyframes f10row {
-    0%   { transform: translate(0, 0);          opacity: 0; }
-    10%  { opacity: 1; }
-    34%  { transform: translate(46px, -21px); }
-    56%  { transform: translate(222px, -21px); }
-    78%  { transform: translate(392px, 21px); }
-    92%  { transform: translate(544px, 21px);   opacity: 1; }
-    100% { transform: translate(544px, 21px);   opacity: 0; }
-  }
-  .fig.play .f10 .p { animation: f10row 4.8s linear infinite; }
-}
 
 /* ── The portrait, set like an author photo beside standing text ───────── */
 .intro-body {
@@ -907,44 +772,8 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
 .start-here:hover { border-bottom-color: var(--ink); color: var(--ink); }
 
 /* Motion for the ONNX graph figure: one token per branch, meeting at Min */
-.fig .tok { opacity: 0; fill: var(--accent); }
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes f11up {
-    0%   { transform: translate(0, 0);        opacity: 0; }
-    10%  { opacity: 1; }
-    30%  { transform: translate(48px, 0); }
-    46%  { transform: translate(190px, -58px); }
-    64%  { transform: translate(358px, -58px); }
-    80%  { transform: translate(384px, 0); }
-    92%  { transform: translate(512px, 0);   opacity: 1; }
-    100% { transform: translate(512px, 0);   opacity: 0; }
-  }
-  @keyframes f11down {
-    0%   { transform: translate(0, 0);        opacity: 0; }
-    10%  { opacity: 1; }
-    30%  { transform: translate(48px, 0); }
-    46%  { transform: translate(190px, 58px); }
-    64%  { transform: translate(358px, 58px); }
-    80%  { transform: translate(384px, 0); }
-    92%  { transform: translate(512px, 0);   opacity: 1; }
-    100% { transform: translate(512px, 0);   opacity: 0; }
-  }
-  .fig.play .f11 .up   { animation: f11up 4.6s linear infinite; }
-  .fig.play .f11 .down { animation: f11down 4.6s 0.35s linear infinite; }
-}
 
 /* Motion for the receipt lifecycle figure */
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes f12fwd {
-    0%   { transform: translateX(0);     opacity: 0; }
-    10%  { opacity: 1; }
-    38%  { transform: translateX(122px); }
-    66%  { transform: translateX(314px); }
-    90%  { transform: translateX(506px); opacity: 1; }
-    100% { transform: translateX(506px); opacity: 0; }
-  }
-  .fig.play .f12 .fwd { animation: f12fwd 4.4s linear infinite; }
-}
 
 /* ── What he is looking for. High on the page, because a recruiter who
       cannot tell whether you are open assumes you are not. ───────────── */
@@ -997,3 +826,43 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
   line-height: 1.5;
   color: var(--ink);
 }
+
+/* ── Steppable figures ────────────────────────────────────────────────
+   No figure moves on its own. Picking a step dims the parts that are not
+   involved and says what happens on that path, so the motion answers a
+   click rather than running in the background. ──────────────────────── */
+.fig .steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.6rem;
+  margin-top: 1.1rem;
+}
+.fig .steps button {
+  padding: 0.36rem 0.78rem;
+  font: 400 0.875rem var(--sans);
+  color: var(--ink-2);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background-color 0.15s;
+}
+.fig .steps button:hover { color: var(--ink); border-color: var(--ink-3); }
+.fig .steps button[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.fig .step-note {
+  min-height: 2.9em;
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 42rem;
+}
+
+.fig [data-s] { transition: opacity 0.18s ease; }
+.fig[data-step="1"] [data-s]:not([data-s~="1"]),
+.fig[data-step="2"] [data-s]:not([data-s~="2"]),
+.fig[data-step="3"] [data-s]:not([data-s~="3"]) { opacity: 0.14; }

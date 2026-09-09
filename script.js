@@ -345,23 +345,25 @@
 })();
 
 
-/* ── Figures animate only once they are on screen ────────────────────── */
-(function figuresInView() {
-  const figs = document.querySelectorAll('.fig');
-  if (!figs.length) return;
-  if (!('IntersectionObserver' in window)) {
-    figs.forEach(f => f.classList.add('play'));
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) {
-        e.target.classList.add('play');
-        io.unobserve(e.target);
-      }
+/* ── Steppable figures. Nothing animates on its own; a step highlights the
+      path it describes and explains it. Clicking the active step clears it. ── */
+(function figureSteps() {
+  for (const fig of document.querySelectorAll('.fig[data-step]')) {
+    const note = fig.querySelector('.step-note');
+    const buttons = Array.from(fig.querySelectorAll('.steps button'));
+    if (!buttons.length) continue;
+
+    for (const b of buttons) {
+      b.addEventListener('click', () => {
+        const alreadyOn = fig.dataset.step === b.dataset.step;
+        fig.dataset.step = alreadyOn ? '0' : b.dataset.step;
+        for (const other of buttons) {
+          other.setAttribute('aria-pressed', String(!alreadyOn && other === b));
+        }
+        if (note) note.textContent = alreadyOn ? '' : (b.dataset.note || '');
+      });
     }
-  }, { threshold: 0.3 });
-  figs.forEach(f => io.observe(f));
+  }
 })();
 
 
