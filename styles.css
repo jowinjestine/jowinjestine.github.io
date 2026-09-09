@@ -945,3 +945,55 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
   }
   .fig.play .f12 .fwd { animation: f12fwd 4.4s linear infinite; }
 }
+
+/* ── What he is looking for. High on the page, because a recruiter who
+      cannot tell whether you are open assumes you are not. ───────────── */
+.seeking {
+  margin: clamp(2rem, 4vw, 2.75rem) 0 0;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--accent);
+  background: var(--card);
+  font-size: 1.01rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 46rem;
+}
+.seeking span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  margin-bottom: 0.35rem;
+}
+
+/* CV sits in the masthead as well as the footer */
+.nav-cv {
+  border-bottom: 1px solid var(--rule);
+  transition: border-color 0.15s, color 0.15s;
+}
+.nav-cv:hover { border-bottom-color: var(--accent); color: var(--accent); }
+
+/* ── A scannable stack beside the prose one. The paragraph reads better;
+      this is what survives someone pressing Ctrl-F for "dbt". ────────── */
+.stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 0;
+  margin: clamp(2.25rem, 4vw, 3rem) 0 0;
+  border-top: 1px solid var(--rule);
+}
+.stack > div {
+  padding: 0.9rem 1.5rem 0.9rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+.stack dt {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  margin-bottom: 0.28rem;
+}
+.stack dd {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: var(--ink);
+}

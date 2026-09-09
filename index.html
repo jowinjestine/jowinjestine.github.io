@@ -13,13 +13,50 @@
 <meta property="og:url" content="https://jowinjestine.github.io/" />
 <meta property="og:title" content="Jowin Jestine — data platform engineer" />
 <meta property="og:description" content="I build the data platform a clinical lab runs on. Case studies on sample traceability, instrument monitoring, and engineering inside a regulated boundary." />
-<meta property="og:image" content="https://jowinjestine.github.io/og-image.svg" />
+<meta property="og:image" content="https://jowinjestine.github.io/og-image.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Jowin Jestine. I build the data platform a clinical lab runs on." />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://jowinjestine.github.io/og-image.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=10" />
+<link rel="stylesheet" href="styles.css?v=11" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jowin Jestine",
+  "jobTitle": "Data Engineer III",
+  "worksFor": { "@type": "Organization", "name": "Olaris" },
+  "url": "https://jowinjestine.github.io/",
+  "image": "https://jowinjestine.github.io/images/jowin.jpg",
+  "email": "mailto:jowinjestine@gmail.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Boston",
+    "addressRegion": "MA",
+    "addressCountry": "US"
+  },
+  "alumniOf": [
+    { "@type": "CollegeOrUniversity", "name": "University of Connecticut" },
+    { "@type": "CollegeOrUniversity", "name": "University of Mumbai" }
+  ],
+  "sameAs": [
+    "https://github.com/jowinjestine",
+    "https://www.linkedin.com/in/jowinjestine"
+  ],
+  "knowsAbout": [
+    "Data engineering", "Data platform architecture", "Azure", "PostgreSQL",
+    "Python", "SQL", "dbt", "Docker", "CLIA compliance", "HIPAA",
+    "NMR metabolomics", "Machine learning"
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -41,6 +78,7 @@
     <a href="#projects">Projects</a>
     <a href="#experience">Experience</a>
     <a href="#contact">Contact</a>
+    <a href="Jowin%20Jestine%20-%20Resume.pdf" class="nav-cv" download>CV</a>
   </nav>
 </header>
 
@@ -72,6 +110,14 @@
         <img src="images/jowin.jpg" width="560" height="560" alt="Jowin Jestine" />
       </figure>
     </div>
+
+    <p class="seeking">
+      <span>Looking for</span>
+      Platform and data-architecture work where correctness is not negotiable: regulated or
+      high-consequence data, in diagnostics, finance, or anywhere a wrong answer costs
+      something real. Based in Boston. If that is what you are hiring for,
+      <a href="mailto:jowinjestine@gmail.com">say hello</a>.
+    </p>
 
     <figure class="spectrum-figure">
       <canvas id="spectrum" width="1200" height="300" tabindex="0" role="img"
@@ -1032,6 +1078,17 @@
         </p>
       </div>
     </div>
+
+    <dl class="stack">
+      <div><dt>Languages</dt><dd>Python, SQL, R</dd></div>
+      <div><dt>Data</dt><dd>PostgreSQL, dbt, SQLMesh, DuckDB, pandas, PySpark</dd></div>
+      <div><dt>Azure</dt><dd>Functions, API Management, ADLS Gen2, Event Grid, Key Vault, Azure Database for PostgreSQL, Batch</dd></div>
+      <div><dt>Google Cloud</dt><dd>Cloud Run, BigQuery, Pub/Sub, Cloud Functions</dd></div>
+      <div><dt>Orchestration and delivery</dt><dd>Mage AI, Docker, Bitbucket Pipelines, GitHub Actions, Terraform, Atlas</dd></div>
+      <div><dt>Machine learning</dt><dd>PyTorch, XGBoost, scikit-learn, ONNX, MLflow, SHAP</dd></div>
+      <div><dt>Interfaces</dt><dd>FastAPI, Streamlit, NiceGUI, R Shiny, Plotly</dd></div>
+      <div><dt>Regulated work</dt><dd>CLIA, HIPAA, audit trails, de-identification, schema migrations</dd></div>
+    </dl>
   </section>
 
   <!-- ══════════════ CONTACT ══════════════ -->
@@ -1058,6 +1115,6 @@
   <p>Built by hand in Boston. No framework, no build step, three files.</p>
 </footer>
 
-<script src="script.js?v=10"></script>
+<script src="script.js?v=11"></script>
 </body>
 </html>

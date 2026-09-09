@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Social card source</title>
+<!--
+  Source for og-image.png. Rendered at 1200x630 and screenshotted, so the
+  card uses the same fonts and palette as the site and cannot drift from it.
+  To regenerate: serve the repo, open this at 1200x630, screenshot to
+  og-image.png. Not linked from the site.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@300;400&family=Instrument+Sans:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #f6f6f3;
+    color: #17191c;
+    font: 400 17px/1.6 'Instrument Sans', system-ui, sans-serif;
+    padding: 74px 82px 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .name {
+    font: 400 27px/1 'Spectral', Georgia, serif;
+    letter-spacing: 0.01em;
+  }
+  h1 {
+    font: 300 78px/1.06 'Spectral', Georgia, serif;
+    letter-spacing: -0.015em;
+    margin-top: 46px;
+    max-width: 22ch;
+  }
+  .meta {
+    margin-top: 40px;
+    padding-top: 26px;
+    border-top: 1px solid #d9dad4;
+    display: flex;
+    gap: 62px;
+  }
+  .meta div { font-size: 19px; }
+  .meta span { display: block; font-size: 14px; color: #6b7178; margin-bottom: 5px; }
+  svg { position: absolute; left: 0; bottom: 0; width: 1200px; height: 150px; }
+</style>
+</head>
+<body>
+  <p class="name">Jowin&nbsp;Jestine</p>
+  <h1>I build the data platform a clinical lab runs on.</h1>
+  <div class="meta">
+    <div><span>Role</span>Data Engineer III, Olaris</div>
+    <div><span>Based</span>Boston, Massachusetts</div>
+    <div><span>Published</span>iScience, Cell Press</div>
+  </div>
+  <svg viewBox="0 0 1200 150" aria-hidden="true">
+    <path id="trace" fill="none" stroke="#17191c" stroke-width="1.6" stroke-linejoin="round" />
+  </svg>
+  <script>
+    /* The same Lorentzian trace the site draws, flattened into one path. */
+    const PEAKS = [
+      [8.46, 0.42, 0.010], [7.83, 0.30, 0.012], [7.64, 0.38, 0.013], [7.55, 0.24, 0.011],
+      [4.06, 0.34, 0.012], [3.57, 0.46, 0.011], [3.04, 0.78, 0.010], [2.67, 0.62, 0.012],
+      [2.55, 0.54, 0.012], [2.45, 0.36, 0.013], [1.92, 0.44, 0.011], [1.48, 0.58, 0.010],
+      [1.33, 1.00, 0.010], [0.95, 0.50, 0.014],
+    ];
+    const HI = 9.2, LO = 0.3, W = 1200, H = 150, BASE = H - 6;
+    let d = '';
+    for (let x = 0; x <= W; x += 1) {
+      const ppm = HI - (x / W) * (HI - LO);
+      let y = 0;
+      for (const [c, h, w] of PEAKS) { const t = (ppm - c) / w; y += h / (1 + t * t); }
+      const py = BASE - Math.min(y, 1.08) * (H - 20) * 0.86;
+      d += (x === 0 ? 'M' : 'L') + x + ',' + py.toFixed(1) + ' ';
+    }
+    document.getElementById('trace').setAttribute('d', d);
+  </script>
+</body>
+</html>
