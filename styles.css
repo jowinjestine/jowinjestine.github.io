@@ -932,3 +932,16 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
   .fig.play .f11 .up   { animation: f11up 4.6s linear infinite; }
   .fig.play .f11 .down { animation: f11down 4.6s 0.35s linear infinite; }
 }
+
+/* Motion for the receipt lifecycle figure */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes f12fwd {
+    0%   { transform: translateX(0);     opacity: 0; }
+    10%  { opacity: 1; }
+    38%  { transform: translateX(122px); }
+    66%  { transform: translateX(314px); }
+    90%  { transform: translateX(506px); opacity: 1; }
+    100% { transform: translateX(506px); opacity: 0; }
+  }
+  .fig.play .f12 .fwd { animation: f12fwd 4.4s linear infinite; }
+}

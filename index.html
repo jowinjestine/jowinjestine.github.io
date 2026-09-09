@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="styles.css?v=9" />
+<link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
 
@@ -173,10 +173,17 @@
 
           <h5>Reconcile on a schedule instead of hoping for completeness</h5>
           <p>
-            Because delivery cannot be relied on, a second process periodically walks the
-            notebook's API and compares it against what we hold. Anything missing is pulled
-            in. This is the part that turns completeness from a hope into a property: the
-            steady state is correct even if every webhook in a window is lost.
+            Because delivery cannot be relied on, a scheduled job walks the notebook's
+            API over a look-back window and compares it against what we hold. Anything
+            missing is pulled in. This is the part that turns completeness from a hope into a
+            property: the steady state is correct even if every webhook in a window is lost.
+          </p>
+          <p>
+            A second scheduled job does a different thing, and keeping them separate matters.
+            Reconciliation asks &ldquo;is anything missing?&rdquo;. Change detection asks
+            &ldquo;has anything I already hold been edited?&rdquo;. Those questions have
+            different look-back windows and different costs, and a single job doing both ends
+            up doing neither well.
           </p>
 
           <h5>Detect change by hashing fields, not by trusting timestamps</h5>
@@ -187,12 +194,33 @@
             “seen again” and “actually changed”, and only genuine changes are written.
           </p>
 
+          <h5>Give every event a receipt, and make the receipt the source of safety</h5>
+          <p>
+            Each event gets a row recording where it is: queued, processing, or finished. That
+            row is what makes reprocessing safe, because the same event arriving twice finds
+            its own receipt rather than creating a second sample.
+          </p>
+          <p>
+            The subtle case is a crash halfway through. The queue makes the message visible
+            again after a timeout, and the receipt is still sitting in <em>processing</em>.
+            Matching that state, rather than only matching untouched work, is what lets the
+            retry resume instead of quietly discarding the message. Treating a
+            half-finished receipt as if it were finished is the bug that would be hardest to
+            notice.
+          </p>
+
+          <figure class="fig">
+            <svg viewBox="0 0 760 186" role="img" style="min-width:560px" aria-label="A receipt moves from received to queued to processing to done. A retry arrow returns from processing to processing, and reconciliation enters at the queued state through the same path a webhook uses."><rect class="b" x="4" y="66" width="132" height="46"/><text class="t" x="70" y="93">Received</text><rect class="b" x="196" y="66" width="132" height="46"/><text class="t" x="262" y="93">Queued</text><rect class="b" x="388" y="66" width="132" height="46"/><text class="t" x="454" y="93">Processing</text><rect class="b" x="580" y="66" width="132" height="46"/><text class="t" x="646" y="93">Done</text><line class="e" x1="136" y1="89" x2="194" y2="89"/><line class="e" x1="328" y1="89" x2="386" y2="89"/><line class="e" x1="520" y1="89" x2="578" y2="89"/><polyline class="e wait" points="490,112 490,150 418,150 418,114"/><text class="l ls" x="4" y="176">a crash leaves the receipt in processing, so the redelivered message resumes rather than being dropped</text><polyline class="e ok" points="262,150 262,114"/><text class="l ls" x="150" y="166">reconciliation enqueues here too</text><g class="anim f12"><circle class="tok fwd" cx="140" cy="89" r="3.4"/></g></svg>
+            <figcaption><b>Figure 3.</b> Every event gets a receipt row, and the row is what makes reprocessing safe. Reconciliation enqueues into the same state a webhook does, so there is one processing path rather than two that have to agree.</figcaption>
+          </figure>
+
           <h5>Archive the raw payload before interpreting it</h5>
           <p>
             Every payload lands in object storage exactly as received, before any parsing.
-            When a mapping turns out to be wrong months later, the original is still there
-            and the history can be rebuilt. Parsing logic is the thing most likely to be
-            wrong; the raw event is the thing least likely to be.
+            When a mapping turns out to be wrong months later, the original is still
+            there, and there is an endpoint that feeds archived payloads back through the same
+            processing path to rebuild the history. Parsing logic is the thing most likely to
+            be wrong; the raw event is the thing least likely to be.
           </p>
 
           <h4>What this guarantees</h4>
@@ -226,7 +254,7 @@
       <p class="hook">When an identifier is missing, people put the meaning in the name field. That is the one field nobody can enforce.</p>
       <figure class="fig">
         <svg viewBox="0 0 760 190" role="img" style="min-width:560px" aria-label="Every edge is a recorded relationship rather than a naming convention. A pooled sample has two parents, a research sample has no patient, and a processed spectrum points back at the acquisition it came from. None of those cases needs a workaround."><rect class="b" x="6" y="24" width="118" height="42"/><text class="t" x="65" y="49">Patient</text><rect class="b" x="160" y="24" width="118" height="42"/><text class="t" x="219" y="49">Order</text><rect class="b" x="314" y="24" width="118" height="42"/><text class="t" x="373" y="49">Sample</text><rect class="b" x="468" y="24" width="118" height="42"/><text class="t" x="527" y="49">Aliquot</text><rect class="b" x="622" y="24" width="118" height="42"/><text class="t" x="681" y="49">Spectrum</text><rect class="b" x="160" y="124" width="118" height="42"/><text class="t" x="219" y="142">Research</text><text class="t" x="219" y="157">sample</text><rect class="b" x="314" y="124" width="118" height="42"/><text class="t" x="373" y="142">Pooled</text><text class="t" x="373" y="157">sample</text><rect class="b" x="622" y="124" width="118" height="42"/><text class="t" x="681" y="142">Processed</text><text class="t" x="681" y="157">spectrum</text><line class="e" x1="124" y1="45" x2="158" y2="45"/><line class="e" x1="278" y1="45" x2="312" y2="45"/><line class="e" x1="432" y1="45" x2="466" y2="45"/><line class="e" x1="586" y1="45" x2="620" y2="45"/><line class="e" x1="278" y1="145" x2="312" y2="145"/><polyline class="e" points="373,66 373,122"/><polyline class="e" points="681,66 681,122"/><text class="l" x="381" y="98">parent of</text><text class="l" x="689" y="98">derived from</text><g class="anim f3"><circle class="walk" cx="124" cy="45" r="3.4"/></g></svg>
-        <figcaption><b>Figure 3.</b> Every edge is a recorded relationship rather than a naming convention. A pooled sample has two parents, a research sample has no patient, and a processed spectrum points back at the acquisition it came from. None of those cases needs a workaround.</figcaption>
+        <figcaption><b>Figure 4.</b> Every edge is a recorded relationship rather than a naming convention. A pooled sample has two parents, a research sample has no patient, and a processed spectrum points back at the acquisition it came from. None of those cases needs a workaround.</figcaption>
       </figure>
 
       <details>
@@ -317,7 +345,7 @@
       <p class="hook">An overnight run can start degrading at two in the morning. Finding out at nine costs the whole night of instrument time.</p>
       <figure class="fig">
         <svg viewBox="0 0 760 226" role="img" style="min-width:560px" aria-label="Each parameter is judged against its own reference range, so normal variation in one reading cannot trigger the same alarm as meaningful drift in another. Both branches record; only one interrupts anybody."><rect class="b" x="6" y="88" width="118" height="44"/><text class="t" x="65" y="114">Acquisition</text><rect class="b" x="160" y="88" width="118" height="44"/><text class="t" x="219" y="114">Parse run</text><rect class="b" x="314" y="88" width="118" height="44"/><text class="t" x="373" y="114">Compare</text><rect class="b ok" x="500" y="24" width="250" height="44"/><text class="t" x="625" y="50">Within range: record only</text><rect class="b wait" x="500" y="152" width="250" height="44"/><text class="t" x="625" y="178">Outside range: record and alert</text><line class="e" x1="124" y1="110" x2="158" y2="110"/><line class="e" x1="278" y1="110" x2="312" y2="110"/><polyline class="e ok" points="432,110 466,110 466,46 498,46"/><polyline class="e wait" points="432,110 466,110 466,174 498,174"/><text class="l" x="373" y="152">against a reference</text><text class="l" x="373" y="166">range per parameter</text><text class="l" x="508" y="212">cooldown suppresses a repeat alert on the same parameter</text><g class="anim f4"><circle class="rd in" cx="124" cy="110" r="3.4"/><circle class="rd out" cx="124" cy="110" r="3.4"/></g></svg>
-        <figcaption><b>Figure 4.</b> Each parameter is judged against its own reference range, so normal variation in one reading cannot trigger the same alarm as meaningful drift in another. Both branches record; only one interrupts anybody.</figcaption>
+        <figcaption><b>Figure 5.</b> Each parameter is judged against its own reference range, so normal variation in one reading cannot trigger the same alarm as meaningful drift in another. Both branches record; only one interrupts anybody.</figcaption>
       </figure>
 
       <details>
@@ -399,7 +427,7 @@
       <p class="hook">Orders get cancelled. If that is someone editing a row, the audit trail is a story rather than a record.</p>
       <figure class="fig">
         <svg viewBox="0 0 760 204" role="img" style="min-width:560px" aria-label="Withdrawal and amendment are states with their own transitions, not an operator editing a row. An amended order returns to verification rather than skipping ahead, so the audit trail records what happened instead of describing it afterwards."><rect class="b" x="6" y="20" width="124" height="42"/><text class="t" x="68" y="45">Received</text><rect class="b" x="170" y="20" width="124" height="42"/><text class="t" x="232" y="45">Verified</text><rect class="b" x="334" y="20" width="124" height="42"/><text class="t" x="396" y="45">Accepted</text><rect class="b" x="498" y="20" width="124" height="42"/><text class="t" x="560" y="45">Reported</text><rect class="b wait" x="140" y="130" width="124" height="42"/><text class="t" x="202" y="155">Cancelled</text><rect class="b wait" x="380" y="130" width="124" height="42"/><text class="t" x="442" y="155">Amended</text><line class="e" x1="130" y1="41" x2="168" y2="41"/><line class="e" x1="294" y1="41" x2="332" y2="41"/><line class="e" x1="458" y1="41" x2="496" y2="41"/><polyline class="e wait" points="68,62 68,151 138,151"/><polyline class="e wait" points="232,62 232,128"/><polyline class="e wait" points="396,62 396,128"/><polyline class="e" points="380,151 314,151 314,80 252,80 252,64"/><text class="l" x="330" y="192">re-verified after amendment</text><g class="anim f5"><circle class="ord done" cx="130" cy="41" r="3.4"/><circle class="ord killed" cx="130" cy="41" r="3.4"/></g></svg>
-        <figcaption><b>Figure 5.</b> Withdrawal and amendment are states with their own transitions, not an operator editing a row. An amended order returns to verification rather than skipping ahead, so the audit trail records what happened instead of describing it afterwards.</figcaption>
+        <figcaption><b>Figure 6.</b> Withdrawal and amendment are states with their own transitions, not an operator editing a row. An amended order returns to verification rather than skipping ahead, so the audit trail records what happened instead of describing it afterwards.</figcaption>
       </figure>
 
       <details>
@@ -505,9 +533,20 @@
             asking for.
           </p>
 
+          <h5>The database schema is code as well</h5>
+          <p>
+            Application code being reviewed is only half of it, because a schema change can
+            break a clinical report just as thoroughly. The logging schema is written
+            declaratively, reviewed like any other change, and applied as ordered,
+            checksummed migrations across more than one instance. Checksums are the part that
+            matters: they turn &ldquo;we think these databases match&rdquo; into something a
+            machine can verify.
+          </p>
+
           <h4>What this guarantees</h4>
           <ul class="guarantees">
             <li>Every change to a clinical application is reviewed and recorded before release.</li>
+            <li>Schema changes are versioned and checksummed, so two instances can be proven to agree.</li>
             <li>There is no informal path to production for anyone, including me.</li>
             <li>A past result can be produced as evidence, not reconstructed from memory.</li>
           </ul>
@@ -530,7 +569,7 @@
 
       <figure class="fig">
         <svg viewBox="0 0 760 226" role="img" style="min-width:560px" aria-label="Raw acquisitions are synced off the spectrometer, then one processing task runs per spectrum across a pool of nodes. Each run writes its own audit record alongside the processed output, so a result can be traced to the code and the operator that produced it."><rect class="b" x="4" y="96" width="116" height="44"/><text class="t" x="62" y="122">Spectrometer</text><rect class="b" x="178" y="96" width="116" height="44"/><text class="t" x="236" y="122">Raw FID store</text><rect class="b" x="352" y="96" width="116" height="44"/><text class="t" x="410" y="122">Batch pool</text><rect class="b" x="520" y="44" width="104" height="34"/><text class="t" x="572" y="65">Task</text><rect class="b" x="520" y="101" width="104" height="34"/><text class="t" x="572" y="122">Task</text><rect class="b" x="520" y="158" width="104" height="34"/><text class="t" x="572" y="179">Task</text><rect class="b" x="660" y="101" width="96" height="34"/><text class="t" x="708" y="122">Processed</text><line class="e" x1="120" y1="118" x2="176" y2="118"/><text class="l" x="149" y="106">sync</text><line class="e" x1="294" y1="118" x2="350" y2="118"/><text class="l" x="322" y="106">submit</text><polyline class="e" points="468,118 494,118 494,61 518,61"/><polyline class="e" points="468,118 494,118 494,118 518,118"/><polyline class="e" points="468,118 494,118 494,175 518,175"/><polyline class="e" points="624,61 642,61 642,118 658,118"/><polyline class="e" points="624,118 642,118 642,118 658,118"/><polyline class="e" points="624,175 642,175 642,118 658,118"/><text class="l" x="572" y="212">one spectrum per task, run in parallel</text><text class="l ls" x="4" y="72">auto-phase, baseline, calibrate against a reference standard</text><g class="anim f8"><circle class="job t1" cx="124" cy="118" r="3.4" style="animation-delay:0s"/><circle class="job t2" cx="124" cy="118" r="3.4" style="animation-delay:0.5s"/><circle class="job t3" cx="124" cy="118" r="3.4" style="animation-delay:1s"/></g></svg>
-        <figcaption><b>Figure 6.</b> Raw acquisitions are synced off the spectrometer, then one processing task runs per spectrum across a pool of nodes. Each run writes its own audit record alongside the processed output, so a result can be traced to the code and the operator that produced it.</figcaption>
+        <figcaption><b>Figure 7.</b> Raw acquisitions are synced off the spectrometer, then one processing task runs per spectrum across a pool of nodes. Each run writes its own audit record alongside the processed output, so a result can be traced to the code and the operator that produced it.</figcaption>
       </figure>
 
       <details>
@@ -668,7 +707,7 @@
       <p class="hook">A bad spectrum passed off as a good one is a clinical problem, not an accuracy statistic.</p>
       <figure class="fig">
         <svg viewBox="0 0 760 140" role="img" style="min-width:520px" aria-label="The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one."><line class="ax" x1="40" y1="86" x2="720" y2="86"/><rect class="band wait" x="40" y="58" width="260" height="28"/><text class="l" x="170" y="106">recorded as failing</text><rect class="band rev" x="300" y="58" width="170" height="28"/><text class="l" x="385" y="106">routed to a reviewer</text><rect class="band ok" x="470" y="58" width="250" height="28"/><text class="l" x="595" y="106">passes automatically</text><line class="mid" x1="380" y1="44" x2="380" y2="94"/><text class="l" x="380" y="36">the midpoint, where the boundary is not</text><text class="l ls" x="40" y="128">less confident</text><text class="l le" x="720" y="128">more confident</text><g class="anim f6"><circle class="spc s1" cx="180" cy="72" r="3.6" style="animation-delay:0.15s"/><circle class="spc s2" cx="392" cy="72" r="3.6" style="animation-delay:0.55s"/><circle class="spc s3" cx="600" cy="72" r="3.6" style="animation-delay:0.95s"/></g></svg>
-        <figcaption><b>Figure 7.</b> The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one.</figcaption>
+        <figcaption><b>Figure 8.</b> The decision boundary is a clinical choice rather than a modelling default. Setting it well above the midpoint means a band of uncertain spectra reaches a person, which trades throughput for not passing a bad spectrum as a good one.</figcaption>
       </figure>
 
       <details>
@@ -748,7 +787,7 @@
 
       <figure class="fig">
         <svg viewBox="0 0 760 124" role="img" style="min-width:520px" aria-label="Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published."><rect class="track" x="70" y="52" width="630" height="18"/><rect class="fill grow" x="70" y="52" width="476.28" height="18"/><line class="ax" x1="70" y1="70" x2="70" y2="76"/><text class="l" x="70" y="90">0.5</text><line class="ax" x1="196" y1="70" x2="196" y2="76"/><text class="l" x="196" y="90">0.6</text><line class="ax" x1="322" y1="70" x2="322" y2="76"/><text class="l" x="322" y="90">0.7</text><line class="ax" x1="448" y1="70" x2="448" y2="76"/><text class="l" x="448" y="90">0.8</text><line class="ax" x1="574" y1="70" x2="574" y2="76"/><text class="l" x="574" y="90">0.9</text><line class="ax" x1="700" y1="70" x2="700" y2="76"/><text class="l" x="700" y="90">1.0</text><line class="mid" x1="546.28" y1="30" x2="546.28" y2="52"/><text class="t" x="546.28" y="24">0.878</text><text class="l ls" x="70" y="112">0.5 is no better than chance</text><text class="l le" x="700" y="112">1.0 is perfect separation</text></svg>
-        <figcaption><b>Figure 8.</b> Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published.</figcaption>
+        <figcaption><b>Figure 9.</b> Validation AUC for the published classifier, on a scale where 0.5 carries no information. Accuracy was 86.4% across 145 patients. These numbers appear because they are published.</figcaption>
       </figure>
       <dl class="pub-figures">
         <div><dt>Validation AUC</dt><dd>0.878</dd></div>
@@ -806,7 +845,7 @@
 
         <figure class="fig">
           <svg viewBox="0 0 760 194" role="img" style="min-width:520px" aria-label="The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess."><rect class="b" x="4" y="76" width="112" height="40"/><text class="t" x="60" y="100">Features</text><rect class="b" x="164" y="16" width="128" height="34"/><text class="t" x="228" y="37">Lap, with tyre</text><rect class="b" x="164" y="58" width="128" height="34"/><text class="t" x="228" y="79">Lap, no tyre</text><rect class="b" x="164" y="100" width="128" height="34"/><text class="t" x="228" y="121">Pre-race</text><rect class="b" x="340" y="58" width="120" height="34"/><text class="t" x="400" y="79">Stacking</text><rect class="b" x="340" y="142" width="120" height="34"/><text class="t" x="400" y="163">Simulator</text><rect class="b" x="508" y="100" width="120" height="34"/><text class="t" x="568" y="121">Ensemble</text><rect class="b" x="660" y="100" width="96" height="34"/><text class="t" x="708" y="121">API</text><polyline class="e" points="116,96 140,96 140,33 162,33"/><polyline class="e" points="116,96 140,96 140,75 162,75"/><polyline class="e" points="116,96 140,96 140,117 162,117"/><polyline class="e" points="292,33 316,33 316,75 338,75"/><polyline class="e" points="292,75 316,75 316,75 338,75"/><polyline class="e" points="292,117 316,117 316,75 338,75"/><polyline class="e" points="292,117 316,117 316,159 338,159"/><polyline class="e" points="460,75 484,75 484,117 506,117"/><polyline class="e" points="460,159 484,159 484,117 506,117"/><line class="e" x1="628" y1="117" x2="658" y2="117"/><text class="l ls" x="508" y="76">calibrated probabilities</text><g class="anim f10"><circle class="row p" cx="120" cy="96" r="3.4"/></g></svg>
-          <figcaption><b>Figure 9.</b> The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess.</figcaption>
+          <figcaption><b>Figure 10.</b> The stack separates what each model is allowed to see. One view includes tyre state, one deliberately does not, and a pre-race view knows nothing about the race yet. Stacking and a lap-by-lap simulator feed one ensemble, so the output is a distribution over the grid rather than a single guess.</figcaption>
         </figure>
         <p class="aside">
           The useful lesson was about evaluation, not modelling. Time-ordered
@@ -829,7 +868,7 @@
         </p>
         <figure class="fig">
           <svg viewBox="0 0 760 142" role="img" style="min-width:520px" aria-label="Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss."><rect class="b" x="4" y="22" width="128" height="40"/><text class="t" x="68" y="46">FastF1</text><rect class="b" x="4" y="82" width="128" height="40"/><text class="t" x="68" y="106">Jolpica API</text><rect class="b" x="180" y="52" width="128" height="40"/><text class="t" x="244" y="69">Cloud Run</text><text class="t" x="244" y="84">ingest jobs</text><rect class="b" x="356" y="52" width="120" height="40"/><text class="t" x="416" y="69">GCS Parquet</text><text class="t" x="416" y="84">immutable</text><rect class="b" x="516" y="52" width="112" height="40"/><text class="t" x="572" y="69">BigQuery</text><text class="t" x="572" y="84">raw</text><rect class="b" x="660" y="52" width="96" height="40"/><text class="t" x="708" y="76">dbt marts</text><line class="e" x1="132" y1="42" x2="178" y2="60"/><line class="e" x1="132" y1="102" x2="178" y2="84"/><line class="e" x1="308" y1="72" x2="354" y2="72"/><text class="l" x="331" y="60">validate</text><line class="e" x1="476" y1="72" x2="514" y2="72"/><line class="e" x1="628" y1="72" x2="658" y2="72"/><text class="l ls" x="356" y="130">Hive-partitioned, never rewritten</text><text class="l ls" x="516" y="130">external tables, then dbt staging</text><g class="anim f9"><circle class="row a1" cx="136" cy="42" r="3.4" style="animation-delay:0s"/><circle class="row a2" cx="136" cy="42" r="3.4" style="animation-delay:1.2s"/></g></svg>
-          <figcaption><b>Figure 10.</b> Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss.</figcaption>
+          <figcaption><b>Figure 11.</b> Two sources with very different coverage land in the same immutable Parquet layer, are validated on the way in, and only then become external tables and dbt models. Raw files are never rewritten, so a transformation bug is a rebuild rather than a data loss.</figcaption>
         </figure>
 
       </li>
@@ -879,7 +918,7 @@
 
         <figure class="fig">
           <svg viewBox="0 0 760 196" role="img" style="min-width:560px" aria-label="A six node ONNX graph: an input grid is sliced to three by three, then sent down two branches, one tiling it and one resizing it to nine by nine with nearest neighbour sampling, before an elementwise minimum combines them into the output."><rect class="b" x="4" y="76" width="116" height="46"/><text class="t" x="62" y="97">Input</text><text class="l" x="62" y="112">1&#215;1&#215;30&#215;30</text><rect class="b" x="172" y="76" width="116" height="46"/><text class="t" x="230" y="97">Slice</text><text class="l" x="230" y="112">to 3&#215;3</text><rect class="b" x="340" y="18" width="116" height="46"/><text class="t" x="398" y="39">Tile</text><text class="l" x="398" y="54">repeat 3&#215;3</text><rect class="b" x="340" y="134" width="116" height="46"/><text class="t" x="398" y="155">Resize</text><text class="l" x="398" y="170">9&#215;9 nearest</text><rect class="b" x="508" y="76" width="100" height="46"/><text class="t" x="558" y="103">Min</text><rect class="b" x="636" y="76" width="100" height="46"/><text class="t" x="686" y="103">Output</text><line class="e" x1="120" y1="99" x2="170" y2="99"/><polyline class="e" points="288,99 314,99 314,41 338,41"/><polyline class="e" points="288,99 314,99 314,157 338,157"/><polyline class="e" points="456,41 482,41 482,99 506,99"/><polyline class="e" points="456,157 482,157 482,99 506,99"/><line class="e" x1="608" y1="99" x2="634" y2="99"/><text class="l" x="558" y="66">elementwise</text><g class="anim f11"><circle class="tok up" cx="124" cy="99" r="3.4"/><circle class="tok down" cx="124" cy="99" r="3.4"/></g></svg>
-          <figcaption><b>Figure 11.</b> A real solution graph built in the editor, node for node. It crops the top-left three by three, then combines a tiled copy with a nearest-neighbour upscale through an elementwise minimum. Six operators, no training, and it either reproduces the examples exactly or it does not.</figcaption>
+          <figcaption><b>Figure 12.</b> A real solution graph built in the editor, node for node. It crops the top-left three by three, then combines a tiled copy with a nearest-neighbour upscale through an elementwise minimum. Six operators, no training, and it either reproduces the examples exactly or it does not.</figcaption>
         </figure>
       </li>
 
@@ -1019,6 +1058,6 @@
   <p>Built by hand in Boston. No framework, no build step, three files.</p>
 </footer>
 
-<script src="script.js?v=9"></script>
+<script src="script.js?v=10"></script>
 </body>
 </html>
