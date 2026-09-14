@@ -22,3 +22,6 @@ skills-lock.json
 .playwright-mcp/
 *.png
 !og-image.png
+
+# Unpublished writing, yours to review before it goes anywhere
+drafts/
