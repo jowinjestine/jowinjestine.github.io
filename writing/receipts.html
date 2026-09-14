@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The receipt is what makes a retry safe — Jowin Jestine</title>
+
+<meta name="description" content="A vendor's webhooks lose events in production and nothing errors. Why reconciliation, not a cleverer receiver, is what makes inventory complete, and why a half-finished receipt has to be treated as resumable." />
+<meta name="theme-color" content="#f6f6f3" />
+<link rel="canonical" href="https://jowinjestine.github.io/writing/receipts.html" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jowinjestine.github.io/writing/receipts.html" />
+<meta property="og:title" content="The receipt is what makes a retry safe" />
+<meta property="og:description" content="A vendor's webhooks lose events in production and nothing errors. What it takes to keep an inventory correct anyway." />
+<meta property="og:image" content="https://jowinjestine.github.io/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://jowinjestine.github.io/og-image.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=14" />
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <a class="wordmark" href="/">Jowin&nbsp;Jestine</a>
+  <nav aria-label="Sections">
+    <a href="/#work">Work</a>
+    <a href="/#writing">Writing</a>
+    <a href="/#projects">Projects</a>
+    <a href="/#experience">Experience</a>
+    <a href="/#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+  <article class="post">
+    <h1>The receipt is what makes a retry safe</h1>
+    <p class="post-meta">
+      <time datetime="2026-09-14">14 September 2026</time>. On keeping an inventory correct
+      when the events that feed it are not guaranteed to arrive.
+    </p>
+
+    <p>
+      A vendor sends us webhooks when inventory changes. The obvious design is to receive each
+      event and write it down, and that design is wrong in a way that takes months to notice.
+    </p>
+    <p>
+      It is wrong because delivery is not guaranteed and failure is not loud. A webhook that
+      never arrives raises nothing. No error, no alert, no retry you can see. The database
+      simply drifts away from the freezer, and the first symptom is a scientist being told a
+      sample exists when it does not. A system that is wrong but confident is worse than one
+      that is visibly down, because nobody goes looking.
+    </p>
+    <p>
+      So the receiver does almost nothing. It accepts the payload, puts it on a queue, and
+      returns. No parsing, no business logic, no validation that could reject something
+      surprising. Everything that could go wrong has moved out of the one path we do not
+      control.
+    </p>
+
+    <h2>Reconciliation is what makes completeness a property</h2>
+    <p>
+      The real work is a scheduled job that walks the vendor's API over a look-back window and
+      compares it against what we hold. Anything missing gets pulled in.
+    </p>
+    <p>
+      This is the part that changes the guarantee. With only webhooks, completeness is a hope.
+      With reconciliation, the steady state is correct even if every webhook in a window is
+      lost, and losing an event stops being data loss and becomes latency.
+    </p>
+    <p>
+      A second scheduled job asks a different question. Reconciliation asks whether anything is
+      missing. Change detection asks whether anything I already hold has been edited since.
+      Those have different look-back windows and different costs, and one job doing both does
+      neither well.
+    </p>
+    <p>
+      Reconciliation enqueues into the same state a webhook does, deliberately. Two paths that
+      both write records have to agree with each other forever. One path that two things can
+      feed does not.
+    </p>
+
+    <h2>The receipt</h2>
+    <p>
+      Every event gets a row recording where it is: queued, processing, or finished. That row
+      is what makes reprocessing safe. The same event arriving twice finds its own receipt
+      instead of creating a second sample.
+    </p>
+    <p>The interesting case is a crash halfway through.</p>
+    <p>
+      The queue makes a message visible again after a visibility timeout, so the event comes
+      back. Meanwhile the receipt is still sitting in <code>processing</code>, because the
+      process that was working on it died without finishing. If the retry only matches receipts
+      that are untouched, it sees work that looks claimed, assumes someone else has it, and
+      drops the message. Silently. Again.
+    </p>
+    <p>
+      So the match has to include <code>processing</code>, not just <code>queued</code>.
+      Recognising a half-finished receipt as resumable is the whole thing, and it is the kind
+      of detail that is obvious once written down and invisible in a design review.
+    </p>
+
+    <h2>What I would tell someone starting this</h2>
+    <p>
+      The instinct is to make the receiver clever. Validate harder, deduplicate, add retries.
+      That is effort spent in the one place that cannot be made reliable, because you do not
+      control the sender.
+    </p>
+    <p>
+      Put the cleverness in reconciliation. Keep the receiver boring. Give every event a
+      receipt, and be careful about what a retry is allowed to assume.
+    </p>
+    <p>
+      And archive the raw payload before you interpret it. Parsing logic is the thing most
+      likely to be wrong months later; the raw event is the thing least likely to be. Ours goes
+      to object storage untouched, and there is an endpoint that feeds it back through the same
+      path to rebuild history when a mapping turns out to have been wrong.
+    </p>
+
+    <p class="post-back">
+      <a href="/#case-inventory">See the architecture this describes</a>
+    </p>
+  </article>
+</main>
+
+<footer>
+  <p>Built by hand in Boston. No framework, no build step.</p>
+</footer>
+
+</body>
+</html>
