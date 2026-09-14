@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# The card source is a build artefact, not a page.
+Disallow: /og-card.html
+
+Sitemap: https://jowinjestine.github.io/sitemap.xml

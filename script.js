@@ -271,6 +271,10 @@
     }
     setActive(id);
     if (found && scroll) found.scrollIntoView({ behavior: how, block: 'start' });
+    if (found) {
+      found.classList.add('landed');
+      setTimeout(() => found.classList.remove('landed'), 1800);
+    }
     return found;
   }
 

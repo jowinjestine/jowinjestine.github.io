@@ -866,3 +866,17 @@ footer p { font-size: 0.86rem; color: var(--ink-3); margin: 0; }
 .fig[data-step="1"] [data-s]:not([data-s~="1"]),
 .fig[data-step="2"] [data-s]:not([data-s~="2"]),
 .fig[data-step="3"] [data-s]:not([data-s~="3"]) { opacity: 0.14; }
+
+/* Year and measured figures on a case study */
+.when { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.measured {
+  margin: 0.65rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 44rem;
+}
+.measured span {
+  color: var(--ink-3);
+  margin-right: 0.5rem;
+}
