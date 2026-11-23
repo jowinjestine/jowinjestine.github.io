@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>300,000 users on a $12 server — Jowin Jestine</title>
+<meta name="description" content="Engineering case study: 300,000 concurrent virtual users and 28,394 requests/second on one 1-vCPU, 2-GB server, with C, io_uring, SQLite and pressure-aware memory control. Verified leaderboard results and the PR history." />
+<meta name="theme-color" content="#f6f6f3" />
+<link rel="canonical" href="https://jowinjestine.github.io/projects/twelve-dollar-server.html" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="300,000 users on a $12 server — Jowin Jestine" />
+<meta property="og:description" content="What 1 vCPU and 2 GB taught me about io_uring, SQLite WAL, memory pressure and tail latency." />
+<meta property="og:url" content="https://jowinjestine.github.io/projects/twelve-dollar-server.html" />
+<meta property="og:image" content="https://jowinjestine.github.io/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/styles.css?v=14" />
+<link rel="stylesheet" href="/projects/server-challenge.css?v=1" />
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="masthead">
+  <a class="wordmark" href="/">Jowin&nbsp;Jestine</a>
+  <nav aria-label="Sections">
+    <a href="/#work">Work</a><a href="/#writing">Writing</a><a href="/#projects">Projects</a><a href="/#experience">Experience</a><a href="/#contact">Contact</a>
+  </nav>
+</header>
+<main id="main">
+<article class="post challenge-post">
+  <p class="challenge-kicker">Open source / performance engineering / November 2026</p>
+  <h1>300,000 users on a $12 server.</h1>
+  <p class="challenge-lede">One CPU. Two gigabytes of memory. A SQLite-backed social feed. The challenge was not to make an endpoint fast once; it was to keep hundreds of thousands of users moving through a mixed workload for five minutes without the tail latency collapsing.</p>
+  <p class="post-meta">C · Linux io_uring · SQLite B-tree reads · WAL checkpoints · TCP memory pressure<br />Implementation: <a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/tree/main/submissions/c-iouring-jowinjestine">c-iouring-jowinjestine</a> · <a href="https://benchmarks.arjaythedev.com/12-dollar-server/leaderboard">Official results</a></p>
+
+  <dl class="challenge-metrics" aria-label="Official five-minute hold results">
+    <div><dt>Virtual users</dt><dd>300,000</dd></div>
+    <div><dt>Requests / sec</dt><dd>28,394</dd></div>
+    <div><dt>p95 latency</dt><dd>199.6 ms</dd></div>
+    <div><dt>p99 latency</dt><dd>425.2 ms</dd></div>
+  </dl>
+  <p class="challenge-caption">Official independent benchmark; 0% errors, 83% CPU, 1,503 MB peak RAM. Snapshot verified 23 November 2026. New experiments described below are not part of this scored result.</p>
+
+  <h2>The workload and the box</h2>
+  <p>Arjay's <a href="https://github.com/arjaythedev/twelve-dollar-server-challenge">Twelve-Dollar Server Challenge</a> runs competing implementations of the same small feed API on the same unmodified VPS: one Xeon Platinum 8260 virtual CPU, 2 GB of RAM, no swap, and a fresh SQLite seed database for each run. Clients request feeds, create posts, and sometimes like them. Each implementation must pass a 42-check correctness suite before the load test; the published score is the number of virtual users it can hold for five minutes while keeping p95 below 500 ms, p99 below one second, and errors below 1%.</p>
+  <p>The hard limit was not simply throughput. With so little memory, every accepted connection consumes part of the budget. With one CPU, a slow database checkpoint or an unexpectedly long event-loop pass can delay thousands of other requests at once. At high concurrency, packet processing and delayed acknowledgements can become just as relevant as application code.</p>
+
+  <h2>How the implementation is structured</h2>
+  <figure class="challenge-flow" aria-label="Simplified server request flow from sockets through scheduling to SQLite and replies">
+    <div><dt>01 / network</dt><dd>TCP listeners<br />io_uring receives</dd></div>
+    <div><dt>02 / loop</dt><dd>Ready queue<br />batched answers</dd></div>
+    <div><dt>03 / storage</dt><dd>SQLite B-tree reads<br />WAL-backed writes</dd></div>
+    <div><dt>04 / response</dt><dd>Send completions<br />socket cleanup</dd></div>
+    <figcaption>Conceptual request path. Memory-pressure monitoring and background checkpoint work sit alongside this hot path; not every subsystem is drawn.</figcaption>
+  </figure>
+  <p>The implementation uses C and Linux <code>io_uring</code> to manage network work in batches, reads SQLite B-tree pages for hot-path lookups, and keeps checkpoint work from monopolizing the request loop. Two merged pull requests document the specific performance and memory changes I contributed.</p>
+
+  <h2>Decision 1: bound the work of checkpointing</h2>
+  <p>A write-ahead log lets SQLite commit without rewriting the whole database on each request. That defers work; it does not remove it. Earlier attempts could accumulate a large WAL and eventually force a costly catch-up on the same CPU that was supposed to answer requests.</p>
+  <p>In <a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/404">merged PR #404</a>, I worked on making the checkpoint cycle converge to a small remaining tail, allowing a bounded write hold when restarting the WAL, and kicking off background writeback ahead of expensive syncs. This is a useful example of latency engineering: a long rare pause matters more to p99 than a small saving on the average request.</p>
+  <div class="challenge-code"><strong>Trade-off</strong> / brief controlled holds and a bounded log, instead of allowing an occasional unbounded stall to determine the whole run.</div>
+
+  <h2>Decision 2: treat TCP buffers as part of application memory</h2>
+  <p>At hundreds of thousands of persistent connections, the kernel's per-socket allocation competes directly with the database and application for RAM. It is not enough to watch the process's resident memory.</p>
+  <p><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/486">Merged PR #486</a> added a pressure-aware TCP receive-memory governor. It samples cgroup v2 memory usage and pressure-stall information, plus kernel socket statistics. With hysteresis, it tightens the receive-buffer setting used for <em>future accepted sockets</em> during pressure and relaxes it after sustained recovery. Existing sockets are deliberately not rewritten by that merged design.</p>
+  <div class="challenge-code"><strong>Control</strong> / TCP_MEM_GOVERNOR=0 &nbsp; · &nbsp; <strong>Experiment</strong> / nominal 16 KiB, pressure 8 KiB requested receive buffers</div>
+  <p>The official score associated with this implementation is 300,000 users and 28,394 requests per second. The result should not be described as proof that the governor alone caused every improvement: the score belongs to the full system.</p>
+
+  <h2>What the next experiments are trying to resolve</h2>
+  <p>Once the 300,000-user run passed, the remaining problem was a latency cliff. Higher load did not necessarily produce application errors; more often, the queue stopped draining quickly enough and p99 breached the scoring limit. I have used independent, switchable experiments to isolate causes rather than treating every new idea as an automatic improvement.</p>
+  <ul class="challenge-prs">
+    <li><strong><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/538">#538 — Event-loop phase tracing</a> <span class="challenge-status open">Open / diagnostic</span></strong><span>Instrument wait, ready-queue, database, CQ reaping, reads, commits and flushes to find which phase creates the long turns. The instrumentation is optional so the uninstrumented baseline remains comparable.</span></li>
+    <li><strong><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/521">#521 — Live receive-buffer updates</a> <span class="challenge-status open">Open / experimental</span></strong><span>Tests updating receive-buffer settings on already accepted fixed-file sockets using temporary installed descriptors. The PR itself calls for correctness testing and benchmarking; no official performance gain is claimed here.</span></li>
+    <li><strong><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/540">#540 — Deadline-aware, newest-first scheduling</a> <span class="challenge-status open">Open / local measurements</span></strong><span>Explores answering recent arrivals before old backlog work, while guaranteeing the old backlog eventual service. Also investigates connection caps and a faster SQLite rowid lookup path. The linked PR documents multiple 320,000-user local test runs, but they are <em>not</em> official challenge scores.</span></li>
+  </ul>
+  <div class="challenge-notice"><strong>Official vs. experimental results</strong><p>The 300,000-user benchmark is published by the challenge organizer. Results attached to unmerged PRs use separate local machines, durations and conditions; they are engineering evidence, not interchangeable with the organizer's five-minute leaderboard score.</p></div>
+
+  <h2>What I learned</h2>
+  <p>There are no independent knobs at this scale. A shorter receive buffer saves memory but changes packet and receive behavior. A larger answer batch amortizes overhead but can make everyone else wait. Checkpointing less often saves work until it leaves a log too large to recover from. A scheduler that improves p95 may still fail the p99 requirement.</p>
+  <p>My approach has been to make changes reversible, compare against the same baseline, measure latency and kernel memory together, and leave the unsuccessful experiments visible. That is how a tiny server challenge becomes useful systems-engineering practice rather than a collection of benchmark tricks.</p>
+
+  <h2>Source and verification</h2>
+  <ul class="challenge-sources">
+    <li><a href="https://benchmarks.arjaythedev.com/12-dollar-server/leaderboard">Official $12 Server Challenge leaderboard</a> — score, latency, CPU, RAM and scoring methodology</li>
+    <li><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/tree/main/submissions/c-iouring-jowinjestine">Implementation source code</a> — the submission in the challenge repository</li>
+    <li><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/404">Merged PR #404</a> — WAL checkpoint work</li>
+    <li><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/486">Merged PR #486</a> — pressure-guided TCP receive-buffer governor</li>
+    <li><a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/540">Open PR #540</a> — further scheduling and B-tree optimization experiments</li>
+  </ul>
+  <p class="post-back"><a href="/#projects">← Back to projects</a> &nbsp; · &nbsp; <a href="https://github.com/jowinjestine">My GitHub</a></p>
+</article>
+</main>
+<footer><p>Jowin Jestine · <a href="mailto:jowinjestine@gmail.com">Email</a> · <a href="https://github.com/jowinjestine">GitHub</a></p></footer>
+</body>
+</html>
