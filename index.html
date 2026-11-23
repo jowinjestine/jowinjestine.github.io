@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Jowin Jestine — data platform engineer</title>
 
-<meta name="description" content="Jowin Jestine is a data engineer at Olaris, where he owns the Azure infrastructure, ingestion pipelines, CI/CD and internal applications behind NMR-based metabolomic diagnostics. Case studies on sample traceability, instrument monitoring and building for a regulated lab." />
+<meta name="description" content="Jowin Jestine builds regulated diagnostics data platforms at Olaris and experiments with high-performance systems engineering. Case studies include scientific data traceability, instrument monitoring and a verified 300,000-user $12 server benchmark." />
 <meta name="theme-color" content="#f6f6f3" />
 <link rel="canonical" href="https://jowinjestine.github.io/" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -26,6 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css?v=14" />
+<link rel="stylesheet" href="projects/server-challenge.css?v=1" />
 
 <script type="application/ld+json">
 {
@@ -142,6 +143,8 @@
       <div><dt>Before</dt><dd>Boehringer Ingelheim, Cigna, UConn</dd></div>
       <div><dt>Published</dt><dd>iScience, Cell Press, 2025</dd></div>
     </dl>
+
+    <p class="challenge-intro-link"><strong>Beyond the lab:</strong> my C + io_uring server held <strong>300,000 virtual users</strong> on one 1-vCPU, 2-GB machine in the independently scored <a href="https://benchmarks.arjaythedev.com/12-dollar-server/leaderboard">$12 Server Challenge</a>. <a href="/projects/twelve-dollar-server.html">Read the engineering case study</a>.</p>
   </section>
 
   <!-- ══════════════ WORK ══════════════ -->
@@ -921,6 +924,30 @@
 
     <p class="group-label">Public repositories</p>
     <ul class="projects">
+      <li class="challenge-feature" id="server-challenge">
+        <p class="challenge-kicker">Featured open source · C / Linux / io_uring / SQLite</p>
+        <h3><a href="/projects/twelve-dollar-server.html">The $12 Server Challenge: 300,000 users on one CPU</a></h3>
+        <p>
+          A SQLite-backed feed API serving 300,000 concurrent virtual users on a single-vCPU,
+          2-GB VPS. My merged work includes bounded WAL checkpointing and a pressure-aware
+          TCP receive-memory governor. Ongoing experiments study queue fairness, tail latency
+          and connection-memory limits without presenting local runs as official scores.
+        </p>
+        <dl class="challenge-metrics" aria-label="Official challenge results">
+          <div><dt>Users held</dt><dd>300,000</dd></div>
+          <div><dt>Requests/sec</dt><dd>28,394</dd></div>
+          <div><dt>p99</dt><dd>425.2 ms</dd></div>
+          <div><dt>Errors</dt><dd>0%</dd></div>
+        </dl>
+        <p class="entry-meta">
+          <a href="/projects/twelve-dollar-server.html">Read the technical case study</a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://benchmarks.arjaythedev.com/12-dollar-server/leaderboard">Independently verified benchmark</a>
+          <span aria-hidden="true"> · </span>
+          <a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/pull/486">Merged PR #486</a>
+        </p>
+        <p class="challenge-note">Official 5-minute hold on a 1-vCPU / 2-GB server, benchmark snapshot verified 23 November 2026. Experimental #540 results are not official scores.</p>
+      </li>
       <li>
         <h3>F1 race position predictor</h3>
         <p>
