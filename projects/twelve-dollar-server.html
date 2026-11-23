@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>300,000 users on a $12 server — Jowin Jestine</title>
+<title>Tied #4: 300,000 users on a $12 server — Jowin Jestine</title>
 <meta name="description" content="Engineering case study: 300,000 concurrent virtual users and 28,394 requests/second on one 1-vCPU, 2-GB server, with C, io_uring, SQLite and pressure-aware memory control. Verified leaderboard results and the PR history." />
 <meta name="theme-color" content="#f6f6f3" />
 <link rel="canonical" href="https://jowinjestine.github.io/projects/twelve-dollar-server.html" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="300,000 users on a $12 server — Jowin Jestine" />
+<meta property="og:title" content="Tied #4 on the $12 Server Challenge — Jowin Jestine" />
 <meta property="og:description" content="What 1 vCPU and 2 GB taught me about io_uring, SQLite WAL, memory pressure and tail latency." />
 <meta property="og:url" content="https://jowinjestine.github.io/projects/twelve-dollar-server.html" />
 <meta property="og:image" content="https://jowinjestine.github.io/og-image.png" />
@@ -30,8 +30,9 @@
 </header>
 <main id="main">
 <article class="post challenge-post">
-  <p class="challenge-kicker">Open source / performance engineering / November 2026</p>
-  <h1>300,000 users on a $12 server.</h1>
+  <p class="challenge-kicker">Open source / performance engineering / official joint #4</p>
+  <h1>Tied for #4. 300,000 users on a $12 server.</h1>
+  <p class="challenge-rank"><strong>#4</strong><span>Official leaderboard ranking, tied with two other entries at 300,000 users. <a href="https://benchmarks.arjaythedev.com/12-dollar-server">See the independent results</a>.</span></p>
   <p class="challenge-lede">One CPU. Two gigabytes of memory. A SQLite-backed social feed. The challenge was not to make an endpoint fast once; it was to keep hundreds of thousands of users moving through a mixed workload for five minutes without the tail latency collapsing.</p>
   <p class="post-meta">C · Linux io_uring · SQLite B-tree reads · WAL checkpoints · TCP memory pressure<br />Implementation: <a href="https://github.com/arjaythedev/twelve-dollar-server-challenge/tree/main/submissions/c-iouring-jowinjestine">c-iouring-jowinjestine</a> · <a href="https://benchmarks.arjaythedev.com/12-dollar-server">Official leaderboard</a></p>
 
@@ -41,7 +42,7 @@
     <div><dt>p95 latency</dt><dd>199.6 ms</dd></div>
     <div><dt>p99 latency</dt><dd>425.2 ms</dd></div>
   </dl>
-  <p class="challenge-caption">Official independent benchmark; 0% errors, 83% CPU, 1,503 MB peak RAM. Snapshot verified 23 November 2026. New experiments described below are not part of this scored result.</p>
+  <p class="challenge-caption">Official independent benchmark, tied #4 on the leaderboard; 0% errors, 83% CPU, 1,503 MB peak RAM. Snapshot verified 23 November 2026. New experiments described below are not part of this scored result.</p>
 
   <h2>The workload and the box</h2>
   <p>Arjay's <a href="https://github.com/arjaythedev/twelve-dollar-server-challenge">Twelve-Dollar Server Challenge</a> runs competing implementations of the same small feed API on the same unmodified VPS: one Xeon Platinum 8260 virtual CPU, 2 GB of RAM, no swap, and a fresh SQLite seed database for each run. Clients request feeds, create posts, and sometimes like them. Each implementation must pass a 42-check correctness suite before the load test; the published score is the number of virtual users it can hold for five minutes while keeping p95 below 500 ms, p99 below one second, and errors below 1%.</p>
